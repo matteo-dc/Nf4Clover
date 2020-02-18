@@ -43,6 +43,7 @@ struct oper_t
     int _nm_Sea;
     string _SeaMasses_label;
     string _theta_label;
+    string _volume_label;
     double g2;
     double g2_tilde;
     

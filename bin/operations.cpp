@@ -204,65 +204,84 @@ void oper_t::create_basic(const int b, const int th, const int msea)
     
     _beta=beta[b];
     _beta_label=beta_label[b];
+    _volume_label=volume_label[b];
     _nm_Sea=nm_Sea[b];
     _SeaMasses_label=to_string(SeaMasses_label[b][msea]);
     _theta_label=theta_label[th];
     
-    if(inte_analysis)
-    {
-        // e.g. /.../matteo/Nf4/
-        path_ensemble = path_folder + path_analysis[0]+"/";
-        
-        // e.g. /.../matteo/Nf4/B_b1.95/
-        if(strcmp(an_suffix.c_str(),"")==0)
-            path_to_beta = path_ensemble + _beta_label + "_b" +
-            to_string_with_precision(_beta,2) + "/";
-        else
-            path_to_beta = path_ensemble;
-        
-        // e.g. B1m
-        ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
-        
-        // e.g. /.../matteo/Nf4/B_b1.95/B1m/
-        path_to_ens =  path_to_beta + ensemble_name + "/";
-    }
-    else if(free_analysis)
-    {
-        // e.g. /.../matteo/free_matching/
-        path_ensemble = path_folder + path_analysis[0]+"/";
-        
-        // e.g. /.../matteo/free_matching/B/
-        path_to_beta = path_ensemble;
-        
-        // e.g. B1m
-        ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
-        
-        // e.g. /.../matteo/free_matching/B1m/
-        path_to_ens = path_ensemble + ensemble_name + "/";
-    }
-    else if(eta_analysis)
-    {
-        // e.g. /.../matteo/Rat/
-        path_to_beta = path_folder + path_analysis[0]+"/";
-        
-        // e.g. /.../matteo/****/
-        if(!recompute_basic)
+    if(!clover_analysis)
+        if(inte_analysis)
         {
-            if(strcmp(an_suffix.c_str(),"")==0) /* Nf4/B_b1.95 */
-                path_ensemble = path_folder + path_analysis[1]+"/" +
-                                _beta_label + "_b" + to_string_with_precision(_beta,2) + "/";
-            else    /* Nf4/ */
-                path_ensemble = path_folder + path_analysis[1]+"/";
+            // e.g. /.../matteo/Nf4/
+            path_ensemble = path_folder + path_analysis[0]+"/";
+            
+            // e.g. /.../matteo/Nf4/B_b1.95/
+            if(strcmp(an_suffix.c_str(),"")==0)
+                path_to_beta = path_ensemble + _beta_label + "_b" +
+                to_string_with_precision(_beta,2) + "/";
+            else
+                path_to_beta = path_ensemble;
+            
+            // e.g. B1m
+            ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
+            
+            // e.g. /.../matteo/Nf4/B_b1.95/B1m/
+            path_to_ens =  path_to_beta + ensemble_name + "/";
         }
-        else                 /* free_matching */
-            path_ensemble = path_folder + path_analysis[2]+"/";
-        
-        // e.g. B1m
-        ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
-        
-        // e.g /.../matteo/*****/B1m/
-        path_to_ens = path_ensemble + ensemble_name + "/";
-    }
+        else if(free_analysis)
+        {
+            // e.g. /.../matteo/free_matching/
+            path_ensemble = path_folder + path_analysis[0]+"/";
+            
+            // e.g. /.../matteo/free_matching/B/
+            path_to_beta = path_ensemble;
+            
+            // e.g. B1m
+            ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
+            
+            // e.g. /.../matteo/free_matching/B1m/
+            path_to_ens = path_ensemble + ensemble_name + "/";
+        }
+        else if(eta_analysis)
+        {
+            // e.g. /.../matteo/Rat/
+            path_to_beta = path_folder + path_analysis[0]+"/";
+            
+            // e.g. /.../matteo/****/
+            if(!recompute_basic)
+            {
+                if(strcmp(an_suffix.c_str(),"")==0) /* Nf4/B_b1.95 */
+                    path_ensemble = path_folder + path_analysis[1]+"/" +
+                    _beta_label + "_b" + to_string_with_precision(_beta,2) + "/";
+                else    /* Nf4/ */
+                    path_ensemble = path_folder + path_analysis[1]+"/";
+            }
+            else                 /* free_matching */
+                path_ensemble = path_folder + path_analysis[2]+"/";
+            
+            // e.g. B1m
+            ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
+            
+            // e.g /.../matteo/*****/B1m/
+            path_to_ens = path_ensemble + ensemble_name + "/";
+        }
+    else
+        if(inte_analysis)
+        {
+            // e.g. /.../matteo/Nf4/
+            path_ensemble = path_folder + path_analysis[0]+"/";
+            
+            // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
+            if(strcmp(an_suffix.c_str(),"_Clover")==0)
+                path_to_beta = path_ensemble + _beta_label + "." +
+                _SeaMasses_label + "." + _volume_label + "/";
+            else
+                cout<<"Suffix '_Clover' needed!"<<endl; exit(0);
+        }
+        else
+        {
+            cout<<"Only interacting analysis implemented."<<endl; exit(0);
+        }
     
     // impose not to read mes_contr in the 2nd loop (free)
     if(recompute_basic)

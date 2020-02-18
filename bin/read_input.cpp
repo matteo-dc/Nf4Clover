@@ -24,6 +24,7 @@ vector<double> mass_val;
 string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
+vector<string> volume_label;  // volume_label[Nbeta]
 vector<string> theta_label;  // theta_label[Ntheta]
 bool free_analysis;
 bool inte_analysis;
@@ -57,6 +58,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,nbeta_tag)==0) return NBETA_TK;
     if(strcasecmp(tok,beta_tag)==0) return BETA_TK;
     if(strcasecmp(tok,beta_label_tag)==0) return BETA_LAB_TK;
+    if(strcasecmp(tok,volume_label_tag)==0) return VOLUME_LAB_TK;
     if(strcasecmp(tok,ntheta_tag)==0) return NTHETA_TK;
     if(strcasecmp(tok,theta_label_tag)==0) return THETA_LAB_TK;
     if(strcasecmp(tok,nm_Sea_tag)==0) return NM_SEA_TK;
@@ -320,6 +322,11 @@ void read_input_glb(const char path[])
                 for(int b=0;b<nbeta;b++)
                     get_value_glb(fin,beta_label[b]);
                 break;
+            case VOLUME_LAB_TK:
+                volume_label.resize(nbeta);
+                for(int b=0;b<nbeta;b++)
+                    get_value_glb(fin,volume_label[b]);
+                break;
             case NM_SEA_TK:
                 nm_Sea.resize(nbeta);
                 for(int b=0;b<nbeta;b++)
@@ -452,6 +459,7 @@ void read_input_glb(const char path[])
     check_int_par(UseEffMass,UseEffMass_tag);
     for(auto &b : beta) check_double_par(b,beta_tag);
     for(auto &bl : beta_label) check_str_par(bl.c_str(),beta_label_tag);
+    for(auto &vl : volume_label) check_str_par(vl.c_str(),volume_label_tag);
     for(auto &a : ainv) check_double_par(a,ainv_tag);
     for(auto &c : csw) check_double_par(c,csw_tag);
     for(auto &ms : nm_Sea) check_int_par(ms,nm_Sea_tag);
@@ -577,7 +585,7 @@ void read_input_glb(const char path[])
                 printf("%s%d ",beta_label[b].c_str(),SeaMasses_label[b][m]);
         else
             for(int m=0; m<nm_Sea[b]; m++)
-                printf("%s.d.%d ",beta_label[b].c_str(),SeaMasses_label[b][m]);
+                printf("%s.d.%d.%s ",beta_label[b].c_str(),SeaMasses_label[b][m],volume_label[b]);
         printf("\n");
     }
     

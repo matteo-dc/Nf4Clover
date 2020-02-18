@@ -101,8 +101,6 @@ int main(int narg,char **arg)
                     
                     basic[th][m].create_basic(b,th,m);
                     if(!load_ave)  basic[th][m].plot("");
-                    
-                    exit(0);
                                         
                     /*  average over equivalent momenta  */
                     
