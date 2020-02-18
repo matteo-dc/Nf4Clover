@@ -585,7 +585,7 @@ void read_input_glb(const char path[])
                 printf("%s%d ",beta_label[b].c_str(),SeaMasses_label[b][m]);
         else
             for(int m=0; m<nm_Sea[b]; m++)
-                printf("%s.d.%d.%s ",beta_label[b].c_str(),SeaMasses_label[b][m],volume_label[b]);
+                printf("%s.d.%d.%s ",beta_label[b].c_str(),SeaMasses_label[b][m],volume_label[b].c_str());
         printf("\n");
     }
     

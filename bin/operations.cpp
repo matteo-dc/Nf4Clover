@@ -210,6 +210,7 @@ void oper_t::create_basic(const int b, const int th, const int msea)
     _theta_label=theta_label[th];
     
     if(!clover_analysis)
+    {
         if(inte_analysis)
         {
             // e.g. /.../matteo/Nf4/
@@ -265,7 +266,9 @@ void oper_t::create_basic(const int b, const int th, const int msea)
             // e.g /.../matteo/*****/B1m/
             path_to_ens = path_ensemble + ensemble_name + "/";
         }
+    }
     else
+    {
         if(inte_analysis)
         {
             // e.g. /.../matteo/Nf4/
@@ -273,15 +276,20 @@ void oper_t::create_basic(const int b, const int th, const int msea)
             
             // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
             if(strcmp(an_suffix.c_str(),"_Clover")==0)
+            {
                 path_to_beta = path_ensemble + _beta_label + "." +
                 _SeaMasses_label + "." + _volume_label + "/";
+            }
             else
+            {
                 cout<<"Suffix '_Clover' needed!"<<endl; exit(0);
+            }
         }
         else
         {
             cout<<"Only interacting analysis implemented."<<endl; exit(0);
         }
+    }
     
     // impose not to read mes_contr in the 2nd loop (free)
     if(recompute_basic)
