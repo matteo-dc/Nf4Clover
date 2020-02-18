@@ -515,7 +515,7 @@ void read_input_glb(const char path[])
     else if(strcmp(clover.c_str(),"yes" )==0)
     {
         
-        clover_analysis==true;
+        clover_analysis=true;
         
         if(strcmp(analysis.c_str(),"inte" )==0)
         {
