@@ -298,6 +298,7 @@ void oper_t::create_basic(const int b, const int th, const int msea)
         UseEffMass=0;
     }
     
+    cout<<path_to_ens<<endl;
     read_input(path_to_ens,ensemble_name);
     path_to_moms = path_to_ens + mom_path;
     
