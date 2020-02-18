@@ -8,9 +8,9 @@ namespace zq
 {
     enum ins{LO,EM};
     int nins;
-    if(clover_analysis)
-    {nins=1;}
-    else
-    {nins=2;}
+//    if(clover_analysis)
+//    {nins=1;}
+//    else
+//    {nins=2;}
 }
 #endif
