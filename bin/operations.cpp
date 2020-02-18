@@ -277,7 +277,7 @@ void oper_t::create_basic(const int b, const int th, const int msea)
             // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
             if(strcmp(an_suffix.c_str(),"_Clover")==0)
             {
-                path_to_beta = path_ensemble + _beta_label + "." +
+                path_to_beta = path_ensemble + _beta_label + ".d." +
                 _SeaMasses_label + "." + _volume_label + "/";
             }
             else
