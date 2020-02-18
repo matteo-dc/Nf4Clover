@@ -326,14 +326,9 @@ void oper_t::create_basic(const int b, const int th, const int msea)
     
     set_moms();
     
-    cout<<"DEBUG: set_moms() done"<<endl;
-    
     set_ins();
     
-    cout<<"DEBUG: set_ins() done"<<endl;
-    
     allocate_val();
-    cout<<"DEBUG: allocate_val() done"<<endl;
     if(!load_ave) allocate();
     
     if(compute_mpcac)

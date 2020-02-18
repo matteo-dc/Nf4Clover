@@ -48,8 +48,6 @@ void oper_t::clear_all()
     jZPoverZS.clear();
     jZPoverZS.shrink_to_fit();
     
-    cout<<"DEBUG: clear_all() done"<<endl;
-
 }
 
 void oper_t::allocate_val()
@@ -90,8 +88,6 @@ void oper_t::allocate()
     // allocate pr_meslep
 //    allocate_vec(jpr_meslep,{_meslepmoms,pr_meslep::nins,nbil,nbil,njacks,_nmr,_nmr});
     
-     cout<<"DEBUG: allocated sigmas done"<<endl;
-    
     // allocate Zq
     allocate_vec(jZq,{_linmoms,njacks,_nmr});
 //    allocate_vec(jZq_EM,{_linmoms,njacks,_nmr});
@@ -101,8 +97,6 @@ void oper_t::allocate()
     // allocate Z4f
 //    allocate_vec(jZ_4f,{_meslepmoms,nbil,nbil,njacks,_nmr,_nmr});
 //    allocate_vec(jZ_4f_EM,{_meslepmoms,nbil,nbil,njacks,_nmr,_nmr});
-    
-     cout<<"DEBUG: allocated bils done"<<endl;
     
     // allocate ZV/ZA
     allocate_vec(jZVoverZA,{_bilmoms,1,njacks,_nmr,_nmr});
