@@ -20,15 +20,19 @@ void oper_t::compute_Zbil()
         
         //compute Z's according to 'riqed.pdf', one for each momentum
 #pragma omp parallel for collapse(4)
-        for(int ijack=0;ijack<njacks;ijack++)
+        for(int ibil=0;ibil<nbil;ibil++)
             for(int mr_fw=0;mr_fw<_nmr;mr_fw++)
                 for(int mr_bw=0;mr_bw<_nmr;mr_bw++)
-                    for(int ibil=0;ibil<nbil;ibil++)
+                    for(int ijack=0;ijack<njacks;ijack++)
                     {
                         // LO
                         jZ[ibilmom][ibil][ijack][mr_fw][mr_bw] =
                             sqrt(jZq[imom1][ijack][mr_fw]*jZq[imom2][ijack][mr_bw])/
                             jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
+                        
+                        
+                        if(ibilmom==0 and mr_fw==0 and mr_bw ==0)
+                            cout<<"ibil="<<ibil<<" ijack="<<ijack<<"  Z = "<<jZ[ibilmom][ibil][ijack][mr_fw][mr_bw]<<endl;
                         
 //                        jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
 //                            jZ[ibilmom][1][ijack][mr_fw][mr_bw]/ jZ[ibilmom][3][ijack][mr_fw][mr_bw];
