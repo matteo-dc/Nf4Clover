@@ -2261,13 +2261,13 @@ void oper_t::plot(const string suffix)
     ofstream Zq_p2_data
 //    , Zq_EM_p2_data;
     
-    vector<ofstream> Zbil_data(nbil)
+    vector<ofstream> Zbil_data(nbil);
 //    , Zbil_EM_data(nbil);
-    vector<ofstream> Zbil_p2_data(nbil)
+    vector<ofstream> Zbil_p2_data(nbil);
 //    , Zbil_EM_p2_data(nbil);
     
     ofstream ZVovZA_data, ZPovZS_data;
-    vector<ofstream> Z_4f_data(nbil*nbil)
+    vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
     
     vector<double> p2;
@@ -2411,18 +2411,18 @@ void oper_t::plot(const string suffix, int b)
     // this choice is relative to the twisted basis
     vector<string> bil={"S","V","P","A","T"};
     
-    ofstream Zq_data
+    ofstream Zq_data;
 //    , Zq_EM_data;
-    ofstream Zq_p2_data
+    ofstream Zq_p2_data;
 //    , Zq_EM_p2_data;
     
-    vector<ofstream> Zbil_data(nbil)
+    vector<ofstream> Zbil_data(nbil);
 //    , Zbil_EM_data(nbil);
-    vector<ofstream> Zbil_p2_data(nbil)
+    vector<ofstream> Zbil_p2_data(nbil);
 //    , Zbil_EM_p2_data(nbil);
     
     ofstream ZVovZA_data, ZPovZS_data;
-    vector<ofstream> Z_4f_data(nbil*nbil)
+    vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
     
     vector<double> p2;
