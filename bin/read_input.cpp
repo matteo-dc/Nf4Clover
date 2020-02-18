@@ -514,6 +514,9 @@ void read_input_glb(const char path[])
     }
     else if(strcmp(clover.c_str(),"yes" )==0)
     {
+        
+        clover_analysis==true;
+        
         if(strcmp(analysis.c_str(),"inte" )==0)
         {
             path_analysis={"Nf4"+an_suffix};
@@ -569,8 +572,12 @@ void read_input_glb(const char path[])
         if(clover_analysis){printf("   -  csw = %.4lf\n",csw[b]);}
         else{printf("\n");}
         printf("                  Ensembles: ");
-        for(int m=0; m<nm_Sea[b]; m++)
-            printf("%s%d ",beta_label[b].c_str(),SeaMasses_label[b][m]);
+        if(!clover_analysis)
+            for(int m=0; m<nm_Sea[b]; m++)
+                printf("%s%d ",beta_label[b].c_str(),SeaMasses_label[b][m]);
+        else
+            for(int m=0; m<nm_Sea[b]; m++)
+                printf("%s.d.%d ",beta_label[b].c_str(),SeaMasses_label[b][m]);
         printf("\n");
     }
     
