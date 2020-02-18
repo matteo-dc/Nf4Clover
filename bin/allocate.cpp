@@ -30,18 +30,18 @@ void oper_t::clear_all()
 
     jZq.clear();
     jZq.shrink_to_fit();
-    jZq_EM.clear();
-    jZq_EM.shrink_to_fit();
+//    jZq_EM.clear();
+//    jZq_EM.shrink_to_fit();
 
     jZ.clear();
     jZ.shrink_to_fit();
-    jZ_EM.clear();
-    jZ_EM.shrink_to_fit();
+//    jZ_EM.clear();
+//    jZ_EM.shrink_to_fit();
 
-    jZ_4f.clear();
-    jZ_4f.shrink_to_fit();
-    jZ_4f_EM.clear();
-    jZ_4f_EM.shrink_to_fit();
+//    jZ_4f.clear();
+//    jZ_4f.shrink_to_fit();
+//    jZ_4f_EM.clear();
+//    jZ_4f_EM.shrink_to_fit();
 
     jZVoverZA.clear();
     jZVoverZA.shrink_to_fit();
@@ -90,13 +90,13 @@ void oper_t::allocate()
     
     // allocate Zq
     allocate_vec(jZq,{_linmoms,njacks,_nmr});
-    allocate_vec(jZq_EM,{_linmoms,njacks,_nmr});
+//    allocate_vec(jZq_EM,{_linmoms,njacks,_nmr});
     // allocate Zbil
     allocate_vec(jZ,{_bilmoms,nbil,njacks,_nmr,_nmr});
-    allocate_vec(jZ_EM,{_bilmoms,nbil,njacks,_nmr,_nmr});
+//    allocate_vec(jZ_EM,{_bilmoms,nbil,njacks,_nmr,_nmr});
     // allocate Z4f
     allocate_vec(jZ_4f,{_meslepmoms,nbil,nbil,njacks,_nmr,_nmr});
-    allocate_vec(jZ_4f_EM,{_meslepmoms,nbil,nbil,njacks,_nmr,_nmr});
+//    allocate_vec(jZ_4f_EM,{_meslepmoms,nbil,nbil,njacks,_nmr,_nmr});
     
     // allocate ZV/ZA
     allocate_vec(jZVoverZA,{_bilmoms,1,njacks,_nmr,_nmr});
