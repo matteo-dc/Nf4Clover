@@ -52,6 +52,8 @@ extern int nbeta;
 extern vector<double> beta;
 // beta label
 extern vector<string> beta_label;
+// beta label
+extern vector<string> volume_label;
 // number of theta
 extern int ntheta;
 // theta label
@@ -127,6 +129,8 @@ extern int compute_mpcac;
 extern bool free_analysis;
 extern bool inte_analysis;
 extern bool eta_analysis;
+// bool for clover analysis
+extern bool clover_analysis;
 // bool for QCD factorized on the RIGHT
 extern int QCD_on_the_right;
 // bool for recomputing basic
