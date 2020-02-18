@@ -2256,9 +2256,9 @@ void oper_t::plot(const string suffix)
     // this choice is relative to the twisted basis
     vector<string> bil={"S","V","P","A","T"};
     
-    ofstream Zq_data
+    ofstream Zq_data;
 //    , Zq_EM_data;
-    ofstream Zq_p2_data
+    ofstream Zq_p2_data;
 //    , Zq_EM_p2_data;
     
     vector<ofstream> Zbil_data(nbil);
