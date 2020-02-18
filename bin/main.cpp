@@ -48,8 +48,6 @@ int main(int narg,char **arg)
     if(eta_analysis)
         nloop=2;
     
-    exit(0);
-    
     vvvvoper_t oper_for_eta(vvvoper_t(vvoper_t(voper_t(nloop),nm_Sea_max),ntheta),nbeta);
     vvvoper_t eta(vvoper_t(voper_t(nm_Sea_max),ntheta),nbeta);
     vvvoper_t etaM1(vvoper_t(voper_t(nm_Sea_max),nbeta),ntheta);
@@ -103,6 +101,8 @@ int main(int narg,char **arg)
                     
                     basic[th][m].create_basic(b,th,m);
                     if(!load_ave)  basic[th][m].plot("");
+                    
+                    exit(0);
                                         
                     /*  average over equivalent momenta  */
                     
