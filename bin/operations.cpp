@@ -369,7 +369,7 @@ void oper_t::create_basic(const int b, const int th, const int msea)
         
         // read or compute deltam
         deltam_computed=false;
-        if(ntypes!=3)
+        if(ntypes!=3 and ntypes!=1)
             compute_deltam_from_prop();
         else if(ntypes==1)
         {}
