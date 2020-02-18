@@ -275,15 +275,18 @@ void oper_t::create_basic(const int b, const int th, const int msea)
             path_ensemble = path_folder + path_analysis[0]+"/";
             
             // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
-            if(strcmp(an_suffix.c_str(),"_Clover")==0)
-            {
-                path_to_beta = path_ensemble + _beta_label + ".d." +
-                _SeaMasses_label + "." + _volume_label + "/";
-            }
-            else
+            if(!(strcmp(an_suffix.c_str(),"_Clover")==0))
             {
                 cout<<"Suffix '_Clover' needed!"<<endl; exit(0);
             }
+            
+            path_to_beta = path_ensemble;
+            
+            // e.g. B1m
+            ensemble_name = _beta_label +".d."+ _SeaMasses_label +"."+ _volume_label;
+            
+            // e.g. /.../matteo/Nf4/B_b1.95/B1m/
+            path_to_ens =  path_to_beta + ensemble_name + "/";
         }
         else
         {
