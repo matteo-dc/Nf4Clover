@@ -2221,6 +2221,8 @@ void oper_t::plot(const string suffix)
 {
     oper_t in=(*this);
     
+    cout<<"DEBUG: a"<<endl;
+    
     // Zq
     Zq_tup Zq_ave_err = ave_err_Zq(in.jZq);
 //    Zq_tup Zq_EM_ave_err = ave_err_Zq(in.jZq_EM);
@@ -2228,6 +2230,8 @@ void oper_t::plot(const string suffix)
 //    vvd_t Zq_EM_ave = get<0>(Zq_EM_ave_err);
     vvd_t Zq_err = get<1>(Zq_ave_err);        //[imom][mr]
 //    vvd_t Zq_EM_err = get<1>(Zq_EM_ave_err);
+    
+    cout<<"DEBUG: b"<<endl;
     
     // Zbil
     Zbil_tup Zbil_ave_err = ave_err_Z(in.jZ);
@@ -2237,6 +2241,8 @@ void oper_t::plot(const string suffix)
     vvvvd_t Z_err = get<1>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
 //    vvvvd_t Z_EM_err = get<1>(Zbil_EM_ave_err);
     
+    cout<<"DEBUG: c"<<endl;
+    
     // ZV/ZA and ZP/ZS
     Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZVoverZA);
     Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZPoverZS);
@@ -2245,6 +2251,8 @@ void oper_t::plot(const string suffix)
     vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
     vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
     
+    cout<<"DEBUG: d"<<endl;
+    
     // Z4f
     Z4f_tup Z_4f_ave_err = ave_err_Z4f(in.jZ_4f);
 //    Z4f_tup Z_4f_EM_ave_err = ave_err_Z4f(in.jZ_4f_EM);
@@ -2252,6 +2260,8 @@ void oper_t::plot(const string suffix)
 //    vvvvvd_t Z_4f_EM_ave=get<0>(Z_4f_EM_ave_err);
     vvvvvd_t Z_4f_err=get<1>(Z_4f_ave_err);  //[imom][iop1][iop2][mr1][mr2];
 //    vvvvvd_t Z_4f_EM_err=get<1>(Z_4f_EM_ave_err);
+    
+    cout<<"DEBUG: e"<<endl;
     
     // this choice is relative to the twisted basis
     vector<string> bil={"S","V","P","A","T"};
@@ -2273,6 +2283,8 @@ void oper_t::plot(const string suffix)
     vector<double> p2;
     vector<double> p2t;
     
+    cout<<"DEBUG: f"<<endl;
+    
     if(in._linmoms==moms)
     {
         p2.resize(in._linmoms);
@@ -2288,10 +2300,14 @@ void oper_t::plot(const string suffix)
         read_vec(p2t,path_print+"p2_tilde_eqmoms.txt");
     }
     
+    cout<<"DEBUG: g"<<endl;
+    
     Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+".txt");
 //    Zq_EM_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
     Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
 //    Zq_EM_p2_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+    
+    cout<<"DEBUG: h"<<endl;
     
     cout<<"Plotting Zq";
     for(int imom=0; imom<in._linmoms; imom++)
