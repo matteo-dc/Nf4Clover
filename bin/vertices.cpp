@@ -274,14 +274,16 @@ void oper_t::compute_bil()
             // invert propagators
             /* prop1 */
             jS1_inv[jprop::LO] = invert_jprop(jS1[jprop::LO]);
-            for(int i=1;i<jprop::nins;i++)
-                jS1_inv[i] = - jS1_inv[jprop::LO]*jS1[i]*jS1_inv[jprop::LO];
+            if(jprop::nins!=1)
+                for(int i=1;i<jprop::nins;i++)
+                    jS1_inv[i] = - jS1_inv[jprop::LO]*jS1[i]*jS1_inv[jprop::LO];
             /* prop2 */
             if(read2)
             {
                 jS2_inv[jprop::LO] = invert_jprop(jS2[jprop::LO]);
-                for(int i=1;i<jprop::nins;i++)
-                    jS2_inv[i] = - jS2_inv[jprop::LO]*jS2[i]*jS2_inv[jprop::LO];
+                if(jprop::nins!=1)
+                    for(int i=1;i<jprop::nins;i++)
+                        jS2_inv[i] = - jS2_inv[jprop::LO]*jS2[i]*jS2_inv[jprop::LO];
             }
             else
                 jS2_inv=jS1_inv;

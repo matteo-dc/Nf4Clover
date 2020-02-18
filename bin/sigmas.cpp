@@ -26,6 +26,11 @@ namespace sigma
             ins_list={LO,QED};
             ins_tag={"LO","QED"};
         }
+        if(ntypes==1)
+        {
+            ins_list={LO};
+            ins_tag={"LO"};
+        }
         
         proj_list={SIGMA1,SIGMA2,SIGMA3};
         proj_tag={"1","2","3"};
@@ -197,8 +202,9 @@ void oper_t::compute_sigmas()
             
             // invert propagator
             jS_inv[jprop::LO] = invert_jprop(jS[jprop::LO]);
-            for(int i=1;i<jprop::nins;i++)
-                jS_inv[i] = - jS_inv[jprop::LO]*jS[i]*jS_inv[jprop::LO];
+            if(jprop::nins!=1)
+                for(int i=1;i<jprop::nins;i++)
+                    jS_inv[i] = - jS_inv[jprop::LO]*jS[i]*jS_inv[jprop::LO];
             
             for(int iproj=0;iproj<nproj;iproj++)
                 sigma[ilinmom][iproj]=compute_sigma(jS_inv,iproj,ilinmom);
