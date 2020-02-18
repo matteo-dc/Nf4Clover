@@ -546,7 +546,7 @@ void read_input_glb(const char path[])
     printf("*------------------------------------------------------*\n\n");
     
     printf(" %s = %s",analysis_tag,analysis.c_str());  //free, inte, ratio
-    if(clover_analysis){printf(" with Clover\n\n")}else{printf("\n\n")}
+    if(clover_analysis){printf(" with Clover\n\n");}else{printf("\n\n");}
     
     printf(" %s = %s\n",scheme_tag,scheme.c_str());
     printf("    with BC: %s \n\n",BC.c_str());
