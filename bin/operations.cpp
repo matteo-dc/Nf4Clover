@@ -2254,12 +2254,18 @@ void oper_t::plot(const string suffix)
     cout<<"DEBUG: d"<<endl;
     
     // Z4f
+    Z4f_tup Z_4f_ave_err; /* to be eliminated when really computing 4f */
+    vvvvvd_t Z_4f_ave;    /* to be eliminated when really computing 4f */
+    vvvvvd_t Z_4f_err;    /* to be eliminated when really computing 4f */
+    if(compute_4f)
+    {
     Z4f_tup Z_4f_ave_err = ave_err_Z4f(in.jZ_4f);
 //    Z4f_tup Z_4f_EM_ave_err = ave_err_Z4f(in.jZ_4f_EM);
     vvvvvd_t Z_4f_ave=get<0>(Z_4f_ave_err);  //[imom][iop1][iop2][mr1][mr2];
 //    vvvvvd_t Z_4f_EM_ave=get<0>(Z_4f_EM_ave_err);
     vvvvvd_t Z_4f_err=get<1>(Z_4f_ave_err);  //[imom][iop1][iop2][mr1][mr2];
 //    vvvvvd_t Z_4f_EM_err=get<1>(Z_4f_EM_ave_err);
+    }
     
     cout<<"DEBUG: e"<<endl;
     
