@@ -17,16 +17,18 @@ int nm_Sea_max;
 vector<vector<int>> SeaMasses_label; // SeaMasses_label[Nbeta][NSeaMass]
 int L, T;
 vector<double> ainv;
+vector<double> csw;
 int conf_init, conf_step, nm, neq, neq2, nmr, delta_tmin, delta_tmax;
 double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref;
 vector<double> mass_val;
-string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, path_ensemble, an_suffix;
+string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
 vector<string> theta_label;  // theta_label[Ntheta]
 bool free_analysis;
 bool inte_analysis;
 bool eta_analysis;
+bool clover_analysis;
 bool recompute_basic;
 
 coords_t size;
@@ -68,6 +70,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,Nc_tag)==0) return NC_TK;
     if(strcasecmp(tok,Nf_tag)==0) return NF_TK;
     if(strcasecmp(tok,ainv_tag)==0) return AINV_TK;
+    if(strcasecmp(tok,csw_tag)==0) return CSW_TK;
     if(strcasecmp(tok,LambdaQCD_tag)==0) return LAMBDAQCD_TK;
     if(strcasecmp(tok,BC_tag)==0) return BC_TK;
     if(strcasecmp(tok,p2min_tag)==0) return P2MIN_TK;
@@ -79,6 +82,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,only_basic_tag)==0) return ONLY_BASIC_TK;
     if(strcasecmp(tok,compute_mpcac_tag)==0) return COMPUTE_MPCAC_TK;
     if(strcasecmp(tok,analysis_tag)==0) return ANALYSIS_TK;
+    if(strcasecmp(tok,clover_tag)==0) return CLOVER_TK;
     if(strcasecmp(tok,p2ref_tag)==0) return P2REF_TK;
     if(strcasecmp(tok,load_ave_tag)==0) return LOAD_AVE_TK;
     if(strcasecmp(tok,load_chir_tag)==0) return LOAD_CHIR_TK;
@@ -267,6 +271,7 @@ void read_input_glb(const char path[])
     only_basic=DEFAULT_INT_VAL;
     compute_mpcac=DEFAULT_INT_VAL;
     analysis=DEFAULT_STR_VAL;
+    clover=DEFAULT_STR_VAL;
     p2ref=DEFAULT_DOUBLE_VAL;
     load_ave=DEFAULT_INT_VAL;
     load_chir=DEFAULT_INT_VAL;
@@ -372,6 +377,11 @@ void read_input_glb(const char path[])
                 for(int b=0;b<nbeta;b++)
                     get_value_glb(fin,ainv[b]);
                 break;
+            case CSW_TK:
+                csw.resize(nbeta);
+                for(int b=0;b<nbeta;b++)
+                    get_value_glb(fin,csw[b]);
+                break;
             case LAMBDAQCD_TK:
                 get_value_glb(fin,LambdaQCD);
                 break;
@@ -401,6 +411,9 @@ void read_input_glb(const char path[])
                 break;
             case ANALYSIS_TK:
                 get_value_glb(fin,analysis);
+                break;
+            case CLOVER_TK:
+                get_value_glb(fin,clover);
                 break;
             case P2REF_TK:
                 get_value(fin,p2ref);
@@ -440,6 +453,7 @@ void read_input_glb(const char path[])
     for(auto &b : beta) check_double_par(b,beta_tag);
     for(auto &bl : beta_label) check_str_par(bl.c_str(),beta_label_tag);
     for(auto &a : ainv) check_double_par(a,ainv_tag);
+    for(auto &c : csw) check_double_par(c,csw_tag);
     for(auto &ms : nm_Sea) check_int_par(ms,nm_Sea_tag);
     for(auto &im : SeaMasses_label)
         for(auto &jm : im) check_int_par(jm,SeaMasses_label_tag);
@@ -455,6 +469,7 @@ void read_input_glb(const char path[])
     check_int_par(only_basic,only_basic_tag);
     check_int_par(compute_mpcac,compute_mpcac_tag);
     check_str_par(analysis,analysis_tag);
+    check_str_par(clover,clover_tag);
     check_double_par(p2ref,p2ref_tag);
     check_int_par(load_ave,load_ave_tag);
     check_int_par(load_chir,load_chir_tag);
@@ -463,35 +478,53 @@ void read_input_glb(const char path[])
 
     fclose(fin);
     
+    clover_analysis=false;
+    
     free_analysis=false;
     inte_analysis=false;
     eta_analysis=false;
     
-    if(strcmp(analysis.c_str(),"inte" )==0)
+    if(strcmp(clover.c_str(),"no" )==0)
     {
-        path_analysis={"Nf4"+an_suffix};
+        if(strcmp(analysis.c_str(),"inte" )==0)
+        {
+            path_analysis={"Nf4"+an_suffix};
+            
+            inte_analysis=true;
+        }
+        else if(strcmp(analysis.c_str(),"free" )==0)
+        {
+            path_analysis={"free_matching"+an_suffix};
+            
+            free_analysis=true;
+        }
+        else if(strcmp(analysis.c_str(),"eta")==0)
+        {
+            path_analysis={"Rat"+an_suffix,"Nf4"+an_suffix,"free_matching"+an_suffix};
+            
+            eta_analysis=true;
+        }
+        else {cout<<"Choose the analysis: 'inte', 'free' or 'eta'."<<endl; exit(0);}
         
-        inte_analysis=true;
+        if(strcmp(analysis.c_str(),"free")==0 and nr>1)
+        {
+            cout<<"Nr must be 1 in free theory. Setting Nr=1 instead of Nr="<<nr<<"."<<endl;
+            nr=1;
+        }
     }
-    else if(strcmp(analysis.c_str(),"free" )==0)
+    else if(strcmp(clover.c_str(),"yes" )==0)
     {
-        path_analysis={"free_matching"+an_suffix};
-        
-        free_analysis=true;
+        if(strcmp(analysis.c_str(),"inte" )==0)
+        {
+            path_analysis={"Nf4"+an_suffix};
+            
+            inte_analysis=true;
+        }
+        else
+        {cout<<"Only interacting analysis implemented."<<endl; exit(0);}
     }
-    else if(strcmp(analysis.c_str(),"eta")==0)
-    {
-        path_analysis={"Rat"+an_suffix,"Nf4"+an_suffix,"free_matching"+an_suffix};
-        
-        eta_analysis=true;
-    }
-    else {cout<<"Choose the analysis: 'inte', 'free' or 'eta'."<<endl; exit(0);}
-    
-    if(strcmp(analysis.c_str(),"free")==0 and nr>1)
-    {
-        cout<<"Nr must be 1 in free theory. Setting Nr=1 instead of Nr="<<nr<<"."<<endl;
-        nr=1;
-    }
+    else
+    {cout<<"Specify if the analysis is Clover: 'yes' or 'no'."<<endl; exit(0);}
     
     load = (load_ave or load_chir);
     
@@ -512,7 +545,8 @@ void read_input_glb(const char path[])
     printf("|                Global configuration                  |\n");
     printf("*------------------------------------------------------*\n\n");
     
-    printf(" %s = %s\n\n",analysis_tag,analysis.c_str());  //free, inte, ratio
+    printf(" %s = %s",analysis_tag,analysis.c_str());  //free, inte, ratio
+    if(clover_analysis){printf(" with Clover\n\n")}else{printf("\n\n")}
     
     printf(" %s = %s\n",scheme_tag,scheme.c_str());
     printf("    with BC: %s \n\n",BC.c_str());
@@ -531,7 +565,9 @@ void read_input_glb(const char path[])
     printf(" Working with %d beta: \n",nbeta);
     for(int b=0;b<nbeta;b++)
     {
-        printf("    beta = %.2lf : ainv = %.2lf\n",beta[b],ainv[b]);
+        printf("    beta = %.2lf : ainv = %.2lf",beta[b],ainv[b]);
+        if(clover_analysis){printf("   -  csw = %.4lf\n",csw[b]);}
+        else{printf("\n");}
         printf("                  Ensembles: ");
         for(int m=0; m<nm_Sea[b]; m++)
             printf("%s%d ",beta_label[b].c_str(),SeaMasses_label[b][m]);
