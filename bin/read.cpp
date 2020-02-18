@@ -296,7 +296,11 @@ size_t isc(size_t is,size_t ic)
 string path_to_conf(const string &string_path, const string &out, int i_conf,const string &name)
 {
     char path[1024];
-    sprintf(path,"%s%s/%04d/fft_%s",string_path.c_str(),out.c_str(),i_conf,name.c_str());
+    
+    if(!clover_analysis)
+        sprintf(path,"%s%s/%04d/fft_%s",string_path.c_str(),out.c_str(),i_conf,name.c_str());
+    else
+        sprintf(path,"%s%s/%04d/fft_%s_roman",string_path.c_str(),out.c_str(),i_conf,name.c_str());
     
     return path;
 }
