@@ -18,6 +18,7 @@ namespace jmeslep //////////
     {
         if(ntypes==6) ins_list={LO,IN,OUT,M11,M22,M12,P11,P22,S11,S22};
         if(ntypes==3) ins_list={LO,IN,OUT,M11,M22,M12};
+        if(ntypes==1) ins_list={LO};
         nins=ins_list.size();
         
         nLOampQED=2*(jprop::nins-1);
@@ -28,7 +29,8 @@ namespace pr_meslep /////////////
 {
     void set_ins()
     {
-        ins_list={LO,QED};
+        if(ntypes==1) ins_list={LO};
+        else ins_list={LO,QED};
         nins=ins_list.size();
     }
 }

@@ -11,6 +11,7 @@ namespace qprop
     {
         if(ntypes==6) ins_list={LO,F,FF,T,P,S};
         if(ntypes==3) ins_list={LO,F,QED};
+        if(ntypes==1) ins_list={LO};
         nins=ins_list.size();
     }
 }
@@ -20,6 +21,7 @@ namespace jprop
     {
         if(ntypes==6) ins_list={LO,PH,P,S};
         if(ntypes==3) ins_list={LO,QED};
+        if(ntypes==1) ins_list={LO};
         nins=ins_list.size();
     }
 }
@@ -27,7 +29,8 @@ namespace lprop
 {
     void set_ins()
     {
-        ins_list={LO,F};
+        if(ntypes==1) ins_list={LO};
+        else ins_list={LO,F};
         nins=ins_list.size();
     }
 }
@@ -50,6 +53,10 @@ void oper_t::build_prop(const vvvprop_t &prop, vvvprop_t &jprop)
             {
                 jprop[jprop::LO ][ijack][mr] += prop[ijack][qprop::LO ][mr]; // Leading order
                 jprop[jprop::QED][ijack][mr] += prop[ijack][qprop::QED][mr]; // QED correction
+            }
+            if(ntypes==1)
+            {
+                jprop[jprop::LO ][ijack][mr] += prop[ijack][qprop::LO ][mr]; // Leading order
             }
             
         }

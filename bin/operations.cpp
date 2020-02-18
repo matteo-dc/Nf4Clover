@@ -38,10 +38,10 @@ void oper_t::set_ins()
     sigma::set_ins();
     jprop::set_ins();
     qprop::set_ins();
-    lprop::set_ins();
+    //lprop::set_ins();
     gbil::set_ins();
-    jmeslep::set_ins();
-    pr_meslep::set_ins();
+    //jmeslep::set_ins();
+    //pr_meslep::set_ins();
 }
 
 void oper_t::set_moms()

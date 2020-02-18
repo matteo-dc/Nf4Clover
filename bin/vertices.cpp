@@ -30,6 +30,11 @@ namespace gbil
             ins_list={LO,QED};
             ins_tag={"LO","QED"};
         }
+        if(ntypes==1)
+        {
+            ins_list={LO};
+            ins_tag={"LO"};
+        }
         
         nins=ins_list.size();
         nGamma=16;
@@ -93,7 +98,12 @@ void build_vert(const vvvprop_t &S1,const vvvprop_t &S2,valarray<jvert_t> &jVert
                             make_vertex(S1[ijack][qprop::QED][mr_fw],S2[ijack][qprop::LO ][mr_bw],igam) +
                             make_vertex(S1[ijack][qprop::F  ][mr_fw],S1[ijack][qprop::F  ][mr_bw],igam) ;
                     }
-                    
+                    if(ntypes==1)
+                    {
+                        // LO
+                        jVert[gbil::LO][ijack][mr_fw][mr_bw][igam] +=
+                        make_vertex(S1[ijack][qprop::LO][mr_fw], S2[ijack][qprop::LO][mr_bw],igam);
+                    }
                 }
     
 }
@@ -127,6 +137,14 @@ jproj_t compute_pr_bil( vvvprop_t &jpropOUT_inv,  valarray<jvert_t> &jVert,  vvv
         i2={jprop::LO,jprop::LO,jprop::QED,jprop::LO};
         
         ip={gbil::LO,gbil::QED,gbil::QED,gbil::QED};
+    }
+    if(ntypes==1)
+    {
+        i1={jprop::LO};
+        iv={gbil::LO};
+        i2={jprop::LO};
+        
+        ip={gbil::LO};
     }
     
     jproj_t pr_bil(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmr),nmr),njacks),nbil),gbil::nins);
