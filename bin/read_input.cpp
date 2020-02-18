@@ -568,7 +568,7 @@ void read_input_glb(const char path[])
     printf(" Working with %d beta: \n",nbeta);
     for(int b=0;b<nbeta;b++)
     {
-        printf("    beta = %.2lf : ainv = %.2lf",beta[b],ainv[b]);
+        printf("    beta = %.3lf : ainv = %.2lf",beta[b],ainv[b]);
         if(clover_analysis){printf("   -  csw = %.4lf\n",csw[b]);}
         else{printf("\n");}
         printf("                  Ensembles: ");
