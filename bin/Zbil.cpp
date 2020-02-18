@@ -11,7 +11,7 @@ void oper_t::compute_Zbil()
 {
     cout<<"Computing Zbil"<<endl;
     
-    vvvvvd_t jG_EM(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,_nmr),_nmr),njacks),nbil),_bilmoms);
+//    vvvvvd_t jG_EM(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,_nmr),_nmr),njacks),nbil),_bilmoms);
     
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
     {
@@ -30,29 +30,29 @@ void oper_t::compute_Zbil()
                             sqrt(jZq[imom1][ijack][mr_fw]*jZq[imom2][ijack][mr_bw])/
                             jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
                         
-                        jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
-                            jZ[ibilmom][1][ijack][mr_fw][mr_bw]/ jZ[ibilmom][3][ijack][mr_fw][mr_bw];
-                        jZPoverZS[ibilmom][0][ijack][mr_fw][mr_bw]=
-                            jZ[ibilmom][2][ijack][mr_fw][mr_bw]/ jZ[ibilmom][0][ijack][mr_fw][mr_bw];
+//                        jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
+//                            jZ[ibilmom][1][ijack][mr_fw][mr_bw]/ jZ[ibilmom][3][ijack][mr_fw][mr_bw];
+//                        jZPoverZS[ibilmom][0][ijack][mr_fw][mr_bw]=
+//                            jZ[ibilmom][2][ijack][mr_fw][mr_bw]/ jZ[ibilmom][0][ijack][mr_fw][mr_bw];
                         
                         // EM (relative)
-                        jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] =
-                            jG[ibilmom][gbil::PH ][ibil][ijack][mr_fw][mr_bw] /
-                            jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
-
-                        if(ntypes==6)
-                        {
-                            jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] +=
-                                (jG[ibilmom][gbil::Pfw][ibil][ijack][mr_fw][mr_bw]*deltam_cr[ijack][mr_fw] +
-                                jG[ibilmom][gbil::Pbw][ibil][ijack][mr_fw][mr_bw]*deltam_cr[ijack][mr_bw] +
-                                jG[ibilmom][gbil::Sfw][ibil][ijack][mr_fw][mr_bw]*deltamu[ijack][mr_fw] +
-                                jG[ibilmom][gbil::Sbw][ibil][ijack][mr_fw][mr_bw]*deltamu[ijack][mr_bw]) /
-                                jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
-                        }
-                        
-                        jZ_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] =
-                            -jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] +
-                            0.5*(jZq_EM[imom1][ijack][mr_fw] + jZq_EM[imom2][ijack][mr_bw]);
+//                        jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] =
+//                            jG[ibilmom][gbil::PH ][ibil][ijack][mr_fw][mr_bw] /
+//                            jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
+//
+//                        if(ntypes==6)
+//                        {
+//                            jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] +=
+//                                (jG[ibilmom][gbil::Pfw][ibil][ijack][mr_fw][mr_bw]*deltam_cr[ijack][mr_fw] +
+//                                jG[ibilmom][gbil::Pbw][ibil][ijack][mr_fw][mr_bw]*deltam_cr[ijack][mr_bw] +
+//                                jG[ibilmom][gbil::Sfw][ibil][ijack][mr_fw][mr_bw]*deltamu[ijack][mr_fw] +
+//                                jG[ibilmom][gbil::Sbw][ibil][ijack][mr_fw][mr_bw]*deltamu[ijack][mr_bw]) /
+//                                jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
+//                        }
+//                        
+//                        jZ_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] =
+//                            -jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] +
+//                            0.5*(jZq_EM[imom1][ijack][mr_fw] + jZq_EM[imom2][ijack][mr_bw]);
                     }
         
     }// close mom loop

@@ -365,10 +365,14 @@ void oper_t::create_basic(const int b, const int th, const int msea)
                 break;
         }
         
+        
+        
         // read or compute deltam
         deltam_computed=false;
         if(ntypes!=3)
             compute_deltam_from_prop();
+        else if(ntypes==1)
+        {}
         
         compute_Zq();
         compute_Zbil();
