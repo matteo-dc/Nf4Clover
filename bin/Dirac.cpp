@@ -56,6 +56,10 @@ vprop_t make_gamma()
     for(int i=0;i<6;i++)
         gam[10+i]=0.5*(gam[ind1[i]]*gam[ind2[i]]-gam[ind2[i]]*gam[ind1[i]]);
     
+    gam[13]=prop_t::Zero();
+    gam[14]=prop_t::Zero();
+    gam[15]=prop_t::Zero();
+    
     return gam;
 }
 
