@@ -30,7 +30,7 @@ void oper_t::compute_Zbil()
                             sqrt(jZq[imom1][ijack][mr_fw]*jZq[imom2][ijack][mr_bw])/
                             jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
                         
-                        
+                        /* DEBUG */
                         if(ibilmom==0 and mr_fw==0 and mr_bw ==0)
                             cout<<"ibil="<<ibil<<" ijack="<<ijack<<"  Z = "<<jZ[ibilmom][ibil][ijack][mr_fw][mr_bw]<<endl;
                         
