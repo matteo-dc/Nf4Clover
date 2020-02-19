@@ -33,7 +33,7 @@ void oper_t::compute_Zbil()
                         /* DEBUG */
                         cout.precision(10);
                         if(ibilmom==9 and mr_fw==0 and mr_bw ==0)
-                            cout<<"imom"<<imom<<" ibil="<<ibil<<" ijack="<<ijack<<"  G = "<<jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw]<<endl;
+                            cout<<"imom"<<ibilmom<<" ibil="<<ibil<<" ijack="<<ijack<<"  G = "<<jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw]<<endl;
                         
 //                        jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
 //                            jZ[ibilmom][1][ijack][mr_fw][mr_bw]/ jZ[ibilmom][3][ijack][mr_fw][mr_bw];
