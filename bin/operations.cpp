@@ -74,7 +74,7 @@ void oper_t::set_moms()
     print_vec(p2,path_print+"p2.txt");
     
     for(int imom=0;imom<moms;imom++)
-        cout<<imom<<" "<<linmoms[imom]<<" "<<filt_moms[imom]<<endl;
+        cout<<imom<<" "<<linmoms[imom][0]<<" "<<filt_moms[imom]<<endl;
 }
 
 void oper_t::set_ri_mom_moms()
