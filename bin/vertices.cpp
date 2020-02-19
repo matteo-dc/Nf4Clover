@@ -224,8 +224,8 @@ void oper_t::compute_bil()
                     vvvprop_t S1=read_qprop_mom(input,v_path,i_in_clust,ihit,mom1);
                     vvvprop_t S2=(read2)?read_qprop_mom(input,v_path,i_in_clust,ihit,mom2):S1;
                     
-                    S1=rotate(S1);
-                    S2=(read2)?rotate(S2):S1;
+//                    S1=rotate(S1);
+//                    S2=(read2)?rotate(S2):S1;
                     
                     high_resolution_clock::time_point tb=high_resolution_clock::now();
                     t_span1 += (duration_cast<duration<double>>(tb-ta)).count();
