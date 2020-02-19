@@ -31,6 +31,7 @@ void oper_t::compute_Zbil()
                             jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
                         
                         /* DEBUG */
+                        cout.precision(10);
                         if(ibilmom==0 and mr_fw==0 and mr_bw ==0)
                             cout<<"ibil="<<ibil<<" ijack="<<ijack<<"  G = "<<jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw]<<endl;
                         
