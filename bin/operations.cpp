@@ -73,10 +73,9 @@ void oper_t::set_moms()
     print_vec(p2_tilde,path_print+"p2_tilde.txt");
     print_vec(p2,path_print+"p2.txt");
     
-    for(int imom=0;imom<moms;imom++)
-        if(filt_moms[imom])
-//        cout<<imom<<" {"<<linmoms[imom][0]<<"} {"<<bilmoms[imom][0]<<","<<bilmoms[imom][1]<<","<<bilmoms[imom][2]<<"}  "<<filt_moms[imom]<<endl;
-            cout<<imom<<" "<<mom_list[imom][0]<<" "<<mom_list[imom][1]<<" "<<mom_list[imom][2]<<" "<<mom_list[imom][3]<<" "<<endl;
+//    for(int imom=0;imom<moms;imom++)
+//        if(filt_moms[imom])
+//            cout<<imom<<" "<<mom_list[imom][0]<<" "<<mom_list[imom][1]<<" "<<mom_list[imom][2]<<" "<<mom_list[imom][3]<<" "<<endl;
 }
 
 void oper_t::set_ri_mom_moms()
