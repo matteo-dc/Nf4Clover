@@ -216,6 +216,9 @@ void oper_t::compute_bil()
             for(int i_in_clust=0;i_in_clust<clust_size;i_in_clust++)
                 for(int ihit=0;ihit<nhits;ihit++)
                 {
+                    /*DEBUG*/
+                    cout<<"i_in_clust = "<<i_in_clust<<endl;
+                    
                     const int mom1=linmoms[imom1][0];
                     const int mom2=linmoms[imom2][0];
                     

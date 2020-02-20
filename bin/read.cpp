@@ -440,6 +440,8 @@ vvvprop_t read_qprop_mom(FILE* input[],const vector<string> v_path,const int i_i
 #pragma omp parallel for
     for(int ilin=0;ilin<nm*nr*ntypes*njacks;ilin++)
     {
+        cout<<ilin<<endl;
+        
         int k=ilin;
         int r = k % nr;
         k/=nr;
