@@ -19,9 +19,6 @@ void oper_t::compute_Zq()
                 // LO
                 jZq[ilinmom][ijack][mr] = sigma[ilinmom][SIGMA1][LO][ijack][mr];
                 
-                
-                if(ilinmom==0 and mr==0)
-                    cout<<"ijack="<<ijack<<"  Zq = "<<jZq[ilinmom][ijack][mr]<<endl;
                 // EM (relative)
 //                jZq_EM[ilinmom][ijack][mr] =
 //                    sigma[ilinmom][SIGMA1][PH][ijack][mr] /
