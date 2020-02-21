@@ -2398,23 +2398,23 @@ void oper_t::plot(const string suffix)
     vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
     
-    vector<double> p2;
-    vector<double> p2t;
-    
-    if(in._linmoms==moms)
-    {
-        p2.resize(in._linmoms);
-        read_vec(p2,path_print+"p2.txt");
-        p2t.resize(in._linmoms);
-        read_vec(p2t,path_print+"p2_tilde.txt");
-    }
-    else
-    {
-        p2.resize(in._linmoms);
-        read_vec(p2,path_print+"p2_eqmoms.txt");
-        p2t.resize(in._linmoms);
-        read_vec(p2t,path_print+"p2_tilde_eqmoms.txt");
-    }
+//    vector<double> p2;
+//    vector<double> p2t;
+//    
+//    if(in._linmoms==moms)
+//    {
+//        p2.resize(in._linmoms);
+//        read_vec(p2,path_print+"p2.txt");
+//        p2t.resize(in._linmoms);
+//        read_vec(p2t,path_print+"p2_tilde.txt");
+//    }
+//    else
+//    {
+//        p2.resize(in._linmoms);
+//        read_vec(p2,path_print+"p2_eqmoms.txt");
+//        p2t.resize(in._linmoms);
+//        read_vec(p2t,path_print+"p2_tilde_eqmoms.txt");
+//    }
     
     Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+".txt");
 //    Zq_EM_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
@@ -2424,11 +2424,11 @@ void oper_t::plot(const string suffix)
     cout<<"Plotting Zq";
     for(int imom=0; imom<in._linmoms; imom++)
     {
-        Zq_data<<p2t[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+        Zq_data<<(in.p2_tilde)[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
 //        Zq_EM_data<<p2t[imom]<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
         
-        Zq_p2_data<<p2[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
-//        Zq_EM_p2_data<<p2[imom]<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
+        Zq_p2_data<<(in.p2)[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+//        Zq_EM_p2_data<<(in.p2)[imom]<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
     }
     
     cout<<", Zbil";
@@ -2446,11 +2446,11 @@ void oper_t::plot(const string suffix)
 //            int imomk = in.linmoms[imomq][0];
             int imomk = imom;   // NB: it works only for RIMOM!
             
-            Zbil_data[ibil]<<p2t[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+            Zbil_data[ibil]<<(in.p2_tilde)[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
 //            Zbil_EM_data[ibil]<<p2t[imomk]<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
 
-            Zbil_p2_data[ibil]<<p2[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
-//            Zbil_EM_p2_data[ibil]<<p2[imomk]<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
+            Zbil_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+//            Zbil_EM_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
         }
     }
     
@@ -2465,8 +2465,8 @@ void oper_t::plot(const string suffix)
         //            int imomk = in.linmoms[imomq][0];
         int imomk = imom;   // NB: it works only for RIMOM!
         
-        ZVovZA_data<<p2t[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
-        ZPovZS_data<<p2t[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+        ZVovZA_data<<(in.p2_tilde)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
+        ZPovZS_data<<(in.p2_tilde)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
     }
     
     if(compute_4f)
@@ -2487,7 +2487,7 @@ void oper_t::plot(const string suffix)
                 //            int imomk = in.linmoms[imomq][0];
                 int imomk = imom;   // NB: it works only for RIMOM!
                 
-                Z_4f_data[i]<<p2t[imomk]<<"\t"<<Z_4f_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_err[imom][iop1][iop2][0][0]<<endl;
+                Z_4f_data[i]<<(in.p2_tilde)[imomk]<<"\t"<<Z_4f_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_err[imom][iop1][iop2][0][0]<<endl;
 //                Z_4f_EM_data[i]<<p2t[imomk]<<"\t"<<Z_4f_EM_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_EM_err[imom][iop1][iop2][0][0]<<endl;
             }
         }
@@ -2553,25 +2553,25 @@ void oper_t::plot(const string suffix, int b)
     vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
     
-    vector<double> p2;
-    vector<double> p2t;
+//    vector<double> p2;
+//    vector<double> p2t;
     
     double ainv2 = ainv[b]*ainv[b];
     
-    if(in._linmoms==moms)
-    {
-        p2.resize(in._linmoms);
-        read_vec(p2,path_print+"p2.txt");
-        p2t.resize(in._linmoms);
-        read_vec(p2t,path_print+"p2_tilde.txt");
-    }
-    else
-    {
-        p2.resize(in._linmoms);
-        read_vec(p2,path_print+"p2_eqmoms.txt");
-        p2t.resize(in._linmoms);
-        read_vec(p2t,path_print+"p2_tilde_eqmoms.txt");
-    }
+//    if(in._linmoms==moms)
+//    {
+//        p2.resize(in._linmoms);
+//        read_vec(p2,path_print+"p2.txt");
+//        p2t.resize(in._linmoms);
+//        read_vec(p2t,path_print+"p2_tilde.txt");
+//    }
+//    else
+//    {
+//        p2.resize(in._linmoms);
+//        read_vec(p2,path_print+"p2_eqmoms.txt");
+//        p2t.resize(in._linmoms);
+//        read_vec(p2t,path_print+"p2_tilde_eqmoms.txt");
+//    }
     
     Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+".txt");
 //    Zq_EM_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
@@ -2581,11 +2581,11 @@ void oper_t::plot(const string suffix, int b)
     cout<<"Plotting Zq";
     for(int imom=0; imom<in._linmoms; imom++)
     {
-        Zq_data<<p2t[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
-//        Zq_EM_data<<p2t[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
+        Zq_data<<(in.p2_tilde)[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+//        Zq_EM_data<<(in.p2_tilde)[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
         
-        Zq_p2_data<<p2[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
-//        Zq_EM_p2_data<<p2[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
+        Zq_p2_data<<(in.p2)[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+//        Zq_EM_p2_data<<(in.p2)[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
     }
     
     cout<<", Zbil";
@@ -2603,11 +2603,11 @@ void oper_t::plot(const string suffix, int b)
             //            int imomk = in.linmoms[imomq][0];
             int imomk = imom;   // NB: it works only for RIMOM!
             
-            Zbil_data[ibil]<<p2t[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
-//            Zbil_EM_data[ibil]<<p2t[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
+            Zbil_data[ibil]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+//            Zbil_EM_data[ibil]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
             
-            Zbil_p2_data[ibil]<<p2[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
-//            Zbil_EM_p2_data[ibil]<<p2[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
+            Zbil_p2_data[ibil]<<(in.p2)[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+//            Zbil_EM_p2_data[ibil]<<(in.p2)[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
         }
     }
     
@@ -2622,8 +2622,8 @@ void oper_t::plot(const string suffix, int b)
         //            int imomk = in.linmoms[imomq][0];
         int imomk = imom;   // NB: it works only for RIMOM!
         
-        ZVovZA_data<<p2t[imomk]*ainv2<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
-        ZPovZS_data<<p2t[imomk]*ainv2<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+        ZVovZA_data<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
+        ZPovZS_data<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
     }
     
     if(compute_4f)
@@ -2644,8 +2644,8 @@ void oper_t::plot(const string suffix, int b)
                 //            int imomk = in.linmoms[imomq][0];
                 int imomk = imom;   // NB: it works only for RIMOM!
                 
-                Z_4f_data[i]<<p2t[imomk]*ainv2<<"\t"<<Z_4f_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_err[imom][iop1][iop2][0][0]<<endl;
-//                Z_4f_EM_data[i]<<p2t[imomk]*ainv2<<"\t"<<Z_4f_EM_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_EM_err[imom][iop1][iop2][0][0]<<endl;
+                Z_4f_data[i]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_4f_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_err[imom][iop1][iop2][0][0]<<endl;
+//                Z_4f_EM_data[i]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_4f_EM_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_EM_err[imom][iop1][iop2][0][0]<<endl;
             }
         }
     }
