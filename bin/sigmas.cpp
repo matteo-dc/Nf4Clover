@@ -166,7 +166,7 @@ void oper_t::compute_sigmas()
     
     if(sigma_data.good())
     {
-        cout<<"Reading Sigmas from files: \""<<path_print<<"\"sigmas"<<endl;
+        cout<<"Reading Sigmas from files: \""<<path_print<<"sigmas\""<<endl;
         read_vec_bin(sigma,path_print+"sigmas");
     }
     else
