@@ -18,6 +18,9 @@ void oper_t::compute_Zbil()
         const int imom1=bilmoms[ibilmom][1]; // p1
         const int imom2=bilmoms[ibilmom][2]; // p2
         
+        /*DEBUG*/
+        cout<<ibilmom<<endl
+        
         //compute Z's according to 'riqed.pdf', one for each momentum
 #pragma omp parallel for collapse(4)
         for(int ibil=0;ibil<nbil;ibil++)
