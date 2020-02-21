@@ -15,11 +15,13 @@ void oper_t::compute_Zbil()
     
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
     {
-        const int imom1=bilmoms[ibilmom][1]; // p1
-        const int imom2=bilmoms[ibilmom][2]; // p2
+//        const int imom1=bilmoms[ibilmom][1]; // p1
+//        const int imom2=bilmoms[ibilmom][2]; // p2
+        const int imom1=ibilmom;
+        const int imom2=ibilmom;
         
         /*DEBUG*/
-        cout<<ibilmom<<"/"<<_bilmoms<<" {"<<imom1<<","<<imom2<<"}"<<endl;
+//        cout<<ibilmom<<"/"<<in._bilmoms<<" {"<<imom1<<","<<imom2<<"}"<<endl;
         
         //compute Z's according to 'riqed.pdf', one for each momentum
 #pragma omp parallel for collapse(4)
