@@ -1276,15 +1276,17 @@ oper_t oper_t::filter_moms()
         out.compute_Zbil();
         
         if(compute_4f)
+        {
             ifilt=0;
-        for(int imom=0;imom<_linmoms;imom++)
-            if(filt_moms[imom])
-            {
-                (out.jpr_meslep)[ifilt]=jpr_meslep[imom];
-                ifilt++;
-            }
-        
-        out.compute_Z4f();
+            for(int imom=0;imom<_linmoms;imom++)
+                if(filt_moms[imom])
+                {
+                    (out.jpr_meslep)[ifilt]=jpr_meslep[imom];
+                    ifilt++;
+                }
+            
+            out.compute_Z4f();
+        }
         
     }
     return out;
