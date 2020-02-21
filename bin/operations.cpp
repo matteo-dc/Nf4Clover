@@ -84,118 +84,128 @@ void oper_t::set_ri_mom_moms()
     bilmoms.resize(moms);
     meslepmoms.resize(moms);
     
-    int count_filtered=0;
-    
     for(int imom=0;imom<moms;imom++)
-        if(filt_moms[imom])
-        {
-            count_filtered++;
-            
-            linmoms[imom]={imom};
-            bilmoms[imom]={imom,imom,imom};
-            meslepmoms[imom]=bilmoms[imom];
-        }
-    cout<<"Filtered "<<count_filtered<<" momenta."<<endl;
+    {
+        linmoms[imom]={imom};
+        bilmoms[imom]={imom,imom,imom};
+        meslepmoms[imom]=bilmoms[imom];
+    }
+    
+//    int count_filtered=0;
+//    
+//    for(int imom=0;imom<moms;imom++)
+//        if(filt_moms[imom])
+//        {
+//            count_filtered++;
+//            
+//            linmoms[imom]={imom};
+//            bilmoms[imom]={imom,imom,imom};
+//            meslepmoms[imom]=bilmoms[imom];
+//        }
+//    cout<<"Filtered "<<count_filtered<<" momenta."<<endl;
 }
 
 void oper_t::set_smom_moms()
 {
-    // http://xxx.lanl.gov/pdf/0901.2599v2 (Sturm et al.)
+    cout<<" moms not initialized for SMOM."<<endl;
+    exit(0);
     
-    linmoms.clear();
-    bilmoms.clear();
-    
-    double eps=1e-10;
-    
-    // SMOM not yet implemented for 4fermions
-    if(compute_4f)
-    {
-        cout<<" meslepmoms not initialized for SMOM."<<endl;
-        exit(0);
-    }
-    
-#pragma omp parallel for
-    for(int i=0;i<moms;i++)
-        if(filt_moms[i])
-            for(int j=0;j<moms;j++)
-                if(filt_moms[j])
-                {
-                    if(2.0*fabs(p2[i]-p2[j])<(p2[i]+p2[j])*eps)
-                    {
-                        coords_t momk;
-                        
-                        p_t k_array, k_tilde_array;
-                        double k_sqr=0.0, k_tilde_sqr=0.0;
-                        double k_4=0.0, k_tilde_4=0.0;
-                        
-                        for(size_t mu=0;mu<4;mu++)
-                        {
-                            momk[mu]=mom_list[i][mu]-mom_list[j][mu];
-                            
-                            k_array[mu]=2*M_PI*momk[mu]/size[mu];
-                            k_sqr+=k_array[mu]*k_array[mu];
-                            k_4+=k_array[mu]*k_array[mu]*k_array[mu]*k_array[mu];
-
-                            k_tilde_array[mu]=sin(k_array[mu]);
-                            k_tilde_sqr+=k_tilde_array[mu]*k_tilde_array[mu];
-                            k_tilde_4+=k_tilde_array[mu]*k_tilde_array[mu]*k_tilde_array[mu]*k_tilde_array[mu];
-                        }
-                        
-                        if(2.0*fabs(p2[i]-k_sqr)<(p2[i]+k_sqr)*eps)
-                        {
-                            //search in mom_list
-                            auto posk = find(mom_list.begin(),mom_list.end(),momk);
-                            
-                            //if not found, push into mom_list
-                            if(posk==mom_list.end())
-                            {
-                                posk=mom_list.end();
-                                
-                                mom_list.push_back(momk);
-                                p.push_back(k_array);
-                                p_tilde.push_back(k_tilde_array);
-                                p2.push_back(k_sqr);
-                                p2_tilde.push_back(k_tilde_sqr);
-                                p4.push_back(k_4);
-                                p4_tilde.push_back(k_tilde_4);
-                            }
-                            
-                            const int k=distance(mom_list.begin(),posk);
-                            
-                            vector<int> pos;
-                            
-                            //search in the linmoms: if found take the distance, otherwise add
-                            for(const int ic : {i,j})
-                            {
-                                cout<<"searching for "<<ic<<endl;
-                                auto pos_ic=find(linmoms.begin(),linmoms.end(),array<int,1>{ic});
-                                size_t d;
-                                if(pos_ic==linmoms.end())
-                                {
-                                    //the position will be the end
-                                    d=linmoms.size();
-                                    //include it
-                                    linmoms.push_back({ic});
-                                    
-                                    cout<<" not found"<<endl;
-                                }
-                                else
-                                {
-                                    d=distance(linmoms.begin(),pos_ic);
-                                    cout<<" found"<<endl;
-                                }
-                                
-                                //add to the list
-                                cout<<"Position: "<<d<<endl;
-                                pos.push_back(d);
-                            }
-                            
-                            //store
-                            bilmoms.push_back({k,pos[0],pos[1]});
-                            
-                        } else cout<<"p2-k2 != 0"<<endl;
-                    } else cout<<"p1^2-p2^2 != 0"<<endl;
-                }
+//    // http://xxx.lanl.gov/pdf/0901.2599v2 (Sturm et al.)
+//    
+//    linmoms.clear();
+//    bilmoms.clear();
+//    
+//    double eps=1e-10;
+//    
+//    // SMOM not yet implemented for 4fermions
+//    if(compute_4f)
+//    {
+//        cout<<" meslepmoms not initialized for SMOM."<<endl;
+//        exit(0);
+//    }
+//    
+//#pragma omp parallel for
+//    for(int i=0;i<moms;i++)
+//        if(filt_moms[i])
+//            for(int j=0;j<moms;j++)
+//                if(filt_moms[j])
+//                {
+//                    if(2.0*fabs(p2[i]-p2[j])<(p2[i]+p2[j])*eps)
+//                    {
+//                        coords_t momk;
+//                        
+//                        p_t k_array, k_tilde_array;
+//                        double k_sqr=0.0, k_tilde_sqr=0.0;
+//                        double k_4=0.0, k_tilde_4=0.0;
+//                        
+//                        for(size_t mu=0;mu<4;mu++)
+//                        {
+//                            momk[mu]=mom_list[i][mu]-mom_list[j][mu];
+//                            
+//                            k_array[mu]=2*M_PI*momk[mu]/size[mu];
+//                            k_sqr+=k_array[mu]*k_array[mu];
+//                            k_4+=k_array[mu]*k_array[mu]*k_array[mu]*k_array[mu];
+//
+//                            k_tilde_array[mu]=sin(k_array[mu]);
+//                            k_tilde_sqr+=k_tilde_array[mu]*k_tilde_array[mu];
+//                            k_tilde_4+=k_tilde_array[mu]*k_tilde_array[mu]*k_tilde_array[mu]*k_tilde_array[mu];
+//                        }
+//                        
+//                        if(2.0*fabs(p2[i]-k_sqr)<(p2[i]+k_sqr)*eps)
+//                        {
+//                            //search in mom_list
+//                            auto posk = find(mom_list.begin(),mom_list.end(),momk);
+//                            
+//                            //if not found, push into mom_list
+//                            if(posk==mom_list.end())
+//                            {
+//                                posk=mom_list.end();
+//                                
+//                                mom_list.push_back(momk);
+//                                p.push_back(k_array);
+//                                p_tilde.push_back(k_tilde_array);
+//                                p2.push_back(k_sqr);
+//                                p2_tilde.push_back(k_tilde_sqr);
+//                                p4.push_back(k_4);
+//                                p4_tilde.push_back(k_tilde_4);
+//                            }
+//                            
+//                            const int k=distance(mom_list.begin(),posk);
+//                            
+//                            vector<int> pos;
+//                            
+//                            //search in the linmoms: if found take the distance, otherwise add
+//                            for(const int ic : {i,j})
+//                            {
+//                                cout<<"searching for "<<ic<<endl;
+//                                auto pos_ic=find(linmoms.begin(),linmoms.end(),array<int,1>{ic});
+//                                size_t d;
+//                                if(pos_ic==linmoms.end())
+//                                {
+//                                    //the position will be the end
+//                                    d=linmoms.size();
+//                                    //include it
+//                                    linmoms.push_back({ic});
+//                                    
+//                                    cout<<" not found"<<endl;
+//                                }
+//                                else
+//                                {
+//                                    d=distance(linmoms.begin(),pos_ic);
+//                                    cout<<" found"<<endl;
+//                                }
+//                                
+//                                //add to the list
+//                                cout<<"Position: "<<d<<endl;
+//                                pos.push_back(d);
+//                            }
+//                            
+//                            //store
+//                            bilmoms.push_back({k,pos[0],pos[1]});
+//                            
+//                        } else cout<<"p2-k2 != 0"<<endl;
+//                    } else cout<<"p1^2-p2^2 != 0"<<endl;
+//                }
 }
 
 ////////
@@ -1174,6 +1184,106 @@ int mom_list_xyz(vector<coords_t> &mom_list, const size_t imom)
 {
     return abs(mom_list[imom][1])*abs(mom_list[imom][2])*abs(mom_list[imom][3]);
 }
+
+/////////
+oper_t oper_t::filter_moms()
+{
+    cout<<endl;
+    cout<<"Filtering democratic momenta -- ";
+    
+    oper_t out=(*this);
+    
+    int count_filtered=0;
+    
+    // number of filtered moms
+    for(int imom=0;imom<_linmoms;imom++)
+        if(filt_moms[imom])
+            count_filtered++;
+    cout<<"found: "<<count_filtered<<" filtered linmoms."<<endl;
+    
+    out._linmoms=count_filtered;
+    (out.linmoms).resize(out._linmoms);
+    out._bilmoms=count_filtered;
+    (out.bilmoms).resize(out._bilmoms);
+    out._meslepmoms=count_filtered;
+    (out.meslepmoms).resize(out._meslepmoms);
+    
+    (out.p2).resize(out._linmoms);
+    (out.p2_tilde).resize(out._linmoms);
+    (out.p4).resize(out._linmoms);
+    (out.p4_tilde).resize(out._linmoms);
+    
+    // fill the new linmoms, p2(tilde), p4(tilde)
+    int ifilt=0;
+    for(int imom=0;imom<_linmoms;imom++)
+        if(filt_moms[imom])
+        {
+            out.linmoms[ifilt]=linmoms[imom];
+            out.bilmoms[ifilt]=bilmoms[imom];
+//            out.meslepmoms[ifilt]=meslepmoms[imom];
+            
+            out.p2[ifilt]=p2[imom];
+            out.p2_tilde[ifilt]=p2_tilde[imom];
+            out.p4[ifilt]=p4[imom];
+            out.p4_tilde[ifilt]=p4_tilde[imom];
+            
+            ifilt++;
+        }
+    
+    print_vec(out.p2,path_print+"p2_filtmoms.txt");
+    print_vec(out.p2_tilde,path_print+"p2_tilde_filtmoms.txt");
+    
+    out.allocate_val();
+    
+    out.eff_mass = eff_mass;
+    out.eff_mass_sea = eff_mass_sea;
+    
+    if(!load_ave)
+    {
+        out.allocate();
+        
+        ifilt=0;
+        for(int imom=0;imom<_linmoms;imom++)
+            if(filt_moms[imom])
+            {
+                (out.sigma)[ifilt]=sigma[imom];
+                ifilt++;
+            }
+        
+        if(ntypes!=3 and ntypes!=1)
+        {
+            out.deltam_computed=true;
+            out.compute_deltam_from_prop();
+        }
+        
+        out.compute_Zq();
+        
+        ifilt=0;
+        for(int imom=0;imom<_linmoms;imom++)
+            if(filt_moms[imom])
+            {
+                (out.jG)[ifilt]=jG[imom];
+                ifilt++;
+            }
+        
+        
+        out.compute_Zbil();
+        
+        if(compute_4f)
+            ifilt=0;
+        for(int imom=0;imom<_linmoms;imom++)
+            if(filt_moms[imom])
+            {
+                (out.jpr_meslep)[ifilt]=jpr_meslep[imom];
+                ifilt++;
+            }
+        
+        out.compute_Z4f();
+        
+    }
+    return out;
+}
+////////////
 
 oper_t oper_t::average_equiv_moms()
 {

@@ -82,6 +82,7 @@ int main(int narg,char **arg)
         for(int b=0; b<nbeta; b++)
         {
             vvoper_t basic(voper_t(nm_Sea[b]),ntheta);
+            vvoper_t filt(voper_t(nm_Sea[b]),ntheta);
             vvoper_t ave(voper_t(nm_Sea[b]),ntheta);
             
             vvoper_t rave(voper_t(nm_Sea[b]),ntheta);
@@ -102,23 +103,34 @@ int main(int narg,char **arg)
                     basic[th][m].create_basic(b,th,m);
                     if(!load_ave)  basic[th][m].plot("");
                     
-                    exit(0);
-                                        
-                    /*  average over equivalent momenta  */
+                    /*  democratic filter on momenta  */
                     
-                    ave[th][m] = basic[th][m].average_equiv_moms();
-                    if(!load_ave) ave[th][m].plot("ave");
+                    filt[th][m].filter_moms();
+                    if(!load_ave)  filt[th][m].plot("filt");
                     
                     /*  average r  */
                     
-                    rave[th][m] = ave[th][m].average_r();
+                    rave[th][m] = filt[th][m].average_r();
                     if(!load_ave) rave[th][m].plot("rave");
                     
                     /* store averaged ingredients */
                     if(!load_ave) rave[th][m].print("rave");
                     
+                    exit(0);
+                    
                     if(!only_basic)
                     {
+                        /*  perturbative subtraction of O(a2)  */
+
+                        sub[th][m] = rave[th][m].subOa2(b);
+                        sub[th][m].plot("sub");
+                        
+                        /*  average over equivalent momenta  */
+                        
+                        ave[th][m] = basic[th][m].average_equiv_moms();
+                        if(!load_ave) ave[th][m].plot("ave");
+                        
+                        
                         /* load averaged ingredients if needed */
                         if(load_ave) rave[th][m].load("rave");
                         
@@ -147,8 +159,8 @@ int main(int narg,char **arg)
                         {
                             evo[th][m] = val_chir[th][m].evolveToAinv(ainv[b]);
                             evo[th][m].plot("evo");
-                            sub[th][m] = evo[th][m].subOa2(b);
-                            sub[th][m].plot("sub");
+//                            sub[th][m] = evo[th][m].subOa2(b);
+//                            sub[th][m].plot("sub");
                             
                             M1[th][b][m] = sub[th][m].a2p2_extr();
                             M1[th][b][m].plot("M1");
