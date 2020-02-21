@@ -70,6 +70,12 @@ void oper_t::set_moms()
     _meslepmoms=meslepmoms.size();
 //    moms=_linmoms;
     
+    cout<<_linmoms<<" linmoms, "<<_bilmoms<<" bilmoms";
+    if(compute_4f)
+        cout<<", "<<_meslepmoms<<" meslepmoms."<<endl;
+    else
+        cout<<"."<<endl;
+    
     print_vec(p2_tilde,path_print+"p2_tilde.txt");
     print_vec(p2,path_print+"p2.txt");
     
