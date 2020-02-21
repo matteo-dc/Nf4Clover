@@ -2341,6 +2341,8 @@ void oper_t::plot_meslep_chir_extr(int mom, int i_ins, int iop1, int iop2, vd_t 
 
 void oper_t::plot(const string suffix)
 {
+    cout<<"a"<<endl;
+    
     oper_t in=(*this);
     
     // Zq
@@ -2351,6 +2353,8 @@ void oper_t::plot(const string suffix)
     vvd_t Zq_err = get<1>(Zq_ave_err);        //[imom][mr]
 //    vvd_t Zq_EM_err = get<1>(Zq_EM_ave_err);
     
+     cout<<"a"<<endl;
+    
     // Zbil
     Zbil_tup Zbil_ave_err = ave_err_Z(in.jZ);
 //    Zbil_tup Zbil_EM_ave_err = ave_err_Z(in.jZ_EM);
@@ -2359,6 +2363,8 @@ void oper_t::plot(const string suffix)
     vvvvd_t Z_err = get<1>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
 //    vvvvd_t Z_EM_err = get<1>(Zbil_EM_ave_err);
     
+    cout<<"b"<<endl;
+    
     // ZV/ZA and ZP/ZS
     Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZVoverZA);
     Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZPoverZS);
@@ -2366,6 +2372,8 @@ void oper_t::plot(const string suffix)
     vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
     vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
     vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
+    
+    cout<<"c"<<endl;
     
     // Z4f
 //    Z4f_tup Z_4f_ave_err; /* to be eliminated when really computing 4f */
@@ -2398,6 +2406,8 @@ void oper_t::plot(const string suffix)
 //    vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
     
+    cout<<"d"<<endl;
+    
 //    vector<double> p2;
 //    vector<double> p2t;
 //    
@@ -2420,6 +2430,8 @@ void oper_t::plot(const string suffix)
 //    Zq_EM_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
     Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
 //    Zq_EM_p2_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+    
+    cout<<"e"<<endl;
     
     cout<<"Plotting Zq";
     for(int imom=0; imom<in._linmoms; imom++)
