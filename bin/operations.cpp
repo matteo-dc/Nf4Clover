@@ -1203,11 +1203,8 @@ oper_t oper_t::filter_moms()
     
     // number of filtered moms
     for(int imom=0;imom<_linmoms;imom++)
-    {
-        cout<<imom<<"  "<<filt_moms[imom]<<endl;
         if(filt_moms[imom])
             count_filtered++;
-    }
     cout<<"found: "<<count_filtered<<" filtered linmoms."<<endl;
     
     out._linmoms=count_filtered;

@@ -105,7 +105,7 @@ int main(int narg,char **arg)
                     
                     /*  democratic filter on momenta  */
                     
-                    filt[th][m].filter_moms();
+                    filt[th][m]=basic[th][m].filter_moms();
                     if(!load_ave)  filt[th][m].plot("filt");
                     
                     /*  average r  */
