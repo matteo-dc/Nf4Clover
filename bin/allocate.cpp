@@ -25,8 +25,8 @@ void oper_t::clear_all()
     jG.clear();
     jG.shrink_to_fit();
 
-    jpr_meslep.clear();
-    jpr_meslep.shrink_to_fit();
+//    jpr_meslep.clear();
+//    jpr_meslep.shrink_to_fit();
 
     jZq.clear();
     jZq.shrink_to_fit();
@@ -63,6 +63,9 @@ void oper_t::allocate_val()
 
 void oper_t::check_allocation()
 {
+    /*DEBUG*/
+    cout<<_linmoms<<endl;
+    
     printf("\n --- Allocated memory --- \n");
     printf("sigma: \t\t %zu/%d %zu/%d %zu/%d %zu/%d %zu/%d \n",
            sigma.size(),_linmoms,sigma[0].size(),sigma::nproj,
