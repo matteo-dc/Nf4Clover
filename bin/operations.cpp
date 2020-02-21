@@ -1708,7 +1708,8 @@ void oper_t::load(const string suffix)
     
     (*this).compute_Zq();
     (*this).compute_Zbil();
-    (*this).compute_Z4f();
+    if(compute_4f)
+        (*this).compute_Z4f();
 }
 
 //voper_t a2p2_extr_combined_on_betas(voper_t in /*, const int LO_or_EM*/)  // M1 method
