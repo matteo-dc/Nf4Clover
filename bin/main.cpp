@@ -103,35 +103,40 @@ int main(int narg,char **arg)
                     basic[th][m].create_basic(b,th,m);
                     if(!load_ave)  basic[th][m].plot("");
                     
-                    /*  democratic filter on momenta  */
-                    
-                    filt[th][m]=basic[th][m].filter_moms();
-                    if(!load_ave)  filt[th][m].plot("filt");
-                    
-                    /*  average r  */
-                    
-                    rave[th][m] = filt[th][m].average_r();
-                    if(!load_ave) rave[th][m].plot("rave");
-                    
-                    /* store averaged ingredients */
-                    if(!load_ave) rave[th][m].print("rave");
-                    
-                    /* load averaged ingredients if needed */
-                    if(load_ave) rave[th][m].load("rave");
-                    
-                    exit(0);
-                    
                     if(!only_basic)
                     {
+                        
+                        
+                        /*  democratic filter on momenta  */
+                        
+                        filt[th][m]=basic[th][m].filter_moms();
+                        if(!load_ave)  filt[th][m].plot("filt");
+                        
+                        /*  average r  */
+                        
+                        rave[th][m] = filt[th][m].average_r();
+                        if(!load_ave) rave[th][m].plot("rave");
+                        
+                        /* store averaged ingredients */
+                        
+                        if(!load_ave) rave[th][m].print("rave");
+                        
+                        /* load averaged ingredients if needed */
+                        
+                        if(load_ave) rave[th][m].load("rave");
+                        
                         /*  perturbative subtraction of O(a2)  */
-
+                        
                         sub[th][m] = rave[th][m].subOa2(b);
                         sub[th][m].plot("sub");
                         
                         /*  average over equivalent momenta  */
                         
-                        ave[th][m] = basic[th][m].average_equiv_moms();
-                        if(!load_ave) ave[th][m].plot("ave");
+                        ave[th][m] = sub[th][m].average_equiv_moms();
+                        ave[th][m].plot("ave");
+                        
+                        exit(0);
+                        
                         
                         
                         
