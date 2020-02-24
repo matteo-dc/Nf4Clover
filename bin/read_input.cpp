@@ -589,6 +589,10 @@ void read_input_glb(const char path[])
         printf("\n");
     }
     
+    printf(" Using Zq according to ");
+    if(UseSigma1) printf("RI'-MOM variant (eq.33 of 1004.1115). \n");
+    else printf("RI'-MOM prescription. \n");
+    
     printf(" Using Z^{QCD} factorized on the ");
     if(QCD_on_the_right) printf("RIGHT. \n");
     else printf("LEFT. \n");
