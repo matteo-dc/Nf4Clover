@@ -614,7 +614,7 @@ void read_input_glb(const char path[])
     else printf("g0^2 = 6/beta ");
     printf("and using ");
     if(sub_ptilde) printf("p2tilde.\n");
-    else printf("p2.\n")
+    else printf("p2.\n");
     
     printf("\n");
     
