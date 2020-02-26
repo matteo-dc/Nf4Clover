@@ -54,12 +54,8 @@ vvvd_t oper_t::compute_sigma(vvvprop_t &jprop_inv, const int iproj, const int im
         case SIGMA1:
         {
             prop_t p_slash(prop_t::Zero());
-            int count=0;
             for(int igam=1;igam<5;igam++)
-            {
                 p_slash+=GAMMA[igam]*p_tilde[imom][igam%4];
-                if(p_tilde[imom][igam%4]!=0.) count++;
-            }
             
             if(UseSigma1==0) // using RI'-MOM definition
             {
@@ -84,7 +80,7 @@ vvvd_t oper_t::compute_sigma(vvvprop_t &jprop_inv, const int iproj, const int im
                                 {
                                     sig_tmp+=GAMMA[igam]*jprop_inv[i][ijack][mr]/p_tilde[imom][igam%4];
                                 }
-                            sig_tmp/=(double)count;
+                            sig_tmp/=Np[imom];
                             sig[i][ijack][mr]=sig_tmp.trace().imag()/(12.0*V);
                         }
             }
