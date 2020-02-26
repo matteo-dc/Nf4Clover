@@ -605,7 +605,7 @@ void read_input_glb(const char path[])
     
     printf(" Perturbative subtraction done with ");
     if(sub_boosted) printf("g^2[boosted] = g0^2/<Plaq>  (g0^2 = 6/beta). \n");
-    else printf("g0^2 = . \n");
+    else printf("g0^2 = 6/beta. \n");
     
     printf("\n");
     
