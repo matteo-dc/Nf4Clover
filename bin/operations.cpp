@@ -228,6 +228,7 @@ void oper_t::create_basic(const int b, const int th, const int msea)
     _nm_Sea=nm_Sea[b];
     _SeaMasses_label=to_string(SeaMasses_label[b][msea]);
     _theta_label=theta_label[th];
+    _csw=csw[b];
     
     if(!clover_analysis)
     {

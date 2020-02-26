@@ -46,6 +46,7 @@ struct oper_t
     string _volume_label;
     double g2;
     double g2_tilde;
+    double _csw;
     
     // paths
     string ensemble_name;
@@ -60,6 +61,7 @@ struct oper_t
     vector<double> p2, p2_tilde;//, p2_tilde_eqmoms;
     vector<double> p4, p4_tilde;
     vector<bool> filt_moms;
+    vector<double> Np;
 
     // number of momenta
     int moms;
