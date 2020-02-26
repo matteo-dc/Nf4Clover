@@ -74,6 +74,8 @@ extern vector<double> mass_val;
 extern double plaquette;
 // inverse lattice spacing (Gev)
 extern vector<double> ainv;
+// clover coefficient
+extern vector<double> csw;
 // Lambda QCD
 extern double LambdaQCD;
 // path to upper folder
@@ -133,6 +135,8 @@ extern bool eta_analysis;
 extern bool clover_analysis;
 // bool for QCD factorized on the RIGHT
 extern int QCD_on_the_right;
+// bool for subtraction with g2 boosted
+extern int sub_boosted;
 // bool for recomputing basic
 extern bool recompute_basic;
 // reference p2

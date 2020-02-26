@@ -9,7 +9,7 @@
 #define DEFAULT_DOUBLE_VAL 1.2345
 
 // define global variables
-int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta, ntheta, compute_4f,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right;
+int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta, ntheta, compute_4f,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted;
 int clust_size, nbil, combo, combo_lep, ntypes_lep;
 vector<double> beta;
 vector<int> nm_Sea;
@@ -90,6 +90,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,load_chir_tag)==0) return LOAD_CHIR_TK;
     if(strcasecmp(tok,an_suffix_tag)==0) return SUFFIX_TK;
     if(strcasecmp(tok,QCD_on_the_right_tag)==0) return QCDONTHERIGHT_TK;
+    if(strcasecmp(tok,sub_boosted_tag)==0) return SUB_BOOSTED_TK;
 
     return VALUE_GLB_TK;
 }
@@ -279,6 +280,7 @@ void read_input_glb(const char path[])
     load_chir=DEFAULT_INT_VAL;
     an_suffix=DEFAULT_STR_VAL;
     QCD_on_the_right=DEFAULT_INT_VAL;
+    sub_boosted=DEFAULT_INT_VAL;
 
     
 //    for(auto &bl : beta_label) bl=DEFAULT_STR_VAL;
@@ -437,6 +439,9 @@ void read_input_glb(const char path[])
             case QCDONTHERIGHT_TK:
                 get_value(fin,QCD_on_the_right);
                 break;
+            case SUB_BOOSTED_TK:
+                get_value(fin,sub_boosted);
+                break;
                 
             case FEOF_GLB_TK:
                 break;
@@ -483,6 +488,7 @@ void read_input_glb(const char path[])
     check_int_par(load_chir,load_chir_tag);
     check_str_par(an_suffix,an_suffix_tag);
     check_int_par(QCD_on_the_right,QCD_on_the_right_tag);
+    check_int_par(sub_boosted,sub_boosted_tag);
 
     fclose(fin);
     
@@ -596,6 +602,12 @@ void read_input_glb(const char path[])
     printf(" Using Z^{QCD} factorized on the ");
     if(QCD_on_the_right) printf("RIGHT. \n");
     else printf("LEFT. \n");
+    
+    printf(" Perturbative subtraction done with ");
+    if(sub_boosted) printf("g^2[boosted] = g0^2/<Plaq>  (g0^2 = 6/beta). \n");
+    else printf("g0^2 = . \n");
+    
+    printf("\n");
     
     if(only_basic)
         printf(" Computing only basic quantities. \n");
