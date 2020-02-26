@@ -3,6 +3,7 @@
 #include "operations.hpp"
 #include "sigmas.hpp"
 #include "vertices.hpp"
+#include <omp.h>
 
 //debug
 #include <iostream>
@@ -469,6 +470,7 @@ oper_t oper_t::subOa2(const int b)
     {P2=p2; P4=p4;}
     
     // Zq
+#pragma omp parallel for collapse(3)
     for(int imom=0;imom<out._linmoms;imom++)
         for(int ijack=0;ijack<njacks;ijack++)
             for(int mr=0;mr<out._nmr;mr++)
@@ -480,14 +482,13 @@ oper_t oper_t::subOa2(const int b)
     out.compute_Zq();
     
     // Zbil
+#pragma omp parallel for collapse(5)
     for(int imom=0;imom<out._bilmoms;imom++)
         for(int ibil=0;ibil<nbil;ibil++)
             for(int ijack=0;ijack<njacks;ijack++)
                 for(int mr1=0;mr1<out._nmr;mr1++)
                     for(int mr2=0;mr2<out._nmr;mr2++)
                     {
-                        if(ijack==0 and mr1==0 and mr2==0)
-                            cout<<"imom "<<imom<<" - ibil "<<ibil<<endl;
                         (out.jG)[imom][gbil::LO][ibil][ijack][mr1][mr2] -= CF*g2*subG(imom,CSW,P2,P4,ibil,0);
 //                        (out.jG)[imom][gbil::QED][ibil][ijack][mr1][mr2] -= subG(imom,CSW,P2,P4,ibil,1);
                     }

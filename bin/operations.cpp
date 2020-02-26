@@ -1208,6 +1208,10 @@ oper_t oper_t::filter_moms()
             count_filtered++;
     cout<<"found: "<<count_filtered<<" filtered linmoms."<<endl;
     
+    (out.mom_list).resize(count_filtered);
+    (out.p).resize(count_filtered);
+    (out.p_tilde).resize(count_filtered);
+    
     out._linmoms=count_filtered;
     (out.linmoms).resize(out._linmoms);
     out._bilmoms=count_filtered;
@@ -1225,6 +1229,10 @@ oper_t oper_t::filter_moms()
     for(int imom=0;imom<_linmoms;imom++)
         if(filt_moms[imom])
         {
+            out.mom_list[ifilt]=mom_list[imom];
+            out.p[ifilt]=p[imom];
+            out.p_tilde[ifilt]=p_tilde[imom];
+            
             out.linmoms[ifilt]=linmoms[imom];
             out.bilmoms[ifilt]=bilmoms[imom];
 //            out.meslepmoms[ifilt]=meslepmoms[imom];
@@ -1336,15 +1344,16 @@ oper_t oper_t::average_equiv_moms()
     // number of equivalent linmoms
     int neq_lin_moms = tag+1;
     
+    (out.mom_list).resize(neq_lin_moms);
+    (out.p).resize(neq_lin_moms);
+    (out.p_tilde).resize(neq_lin_moms);
+    
     out._linmoms=neq_lin_moms;
-    cout<<"found: "<<out._linmoms<<" equivalent linmoms ";
     (out.linmoms).resize(out._linmoms);
     
-    vector<double> p2_eqmoms(out._linmoms,0.0);
-    vector<double> p2_tilde_eqmoms(out._linmoms,0.0);
-    vector<double> p4_eqmoms(out._linmoms,0.0);
-    vector<double> p4_tilde_eqmoms(out._linmoms,0.0);
-
+    cout<<"found: "<<out._linmoms<<" equivalent linmoms ";
+    
+    
     // count the different tags
     vector<int> count_tag_lin_vector(out._linmoms);
     int count=0;
@@ -1362,20 +1371,16 @@ oper_t oper_t::average_equiv_moms()
             if(tag_lin_vector[imom]==tag)
             {
                 // fill the new linmoms and p2tilde
-                out.linmoms[tag] = {tag};
-                p2_eqmoms[tag] = p2[imom];
-                p2_tilde_eqmoms[tag] = p2_tilde[imom];
-                p4_eqmoms[tag] = p4[imom];
-                p4_tilde_eqmoms[tag] = p4_tilde[imom];
+//                out.linmoms[tag] = {tag};
+                out.linmoms[tag] = linmoms[imom];
+                out.p2[tag] = p2[imom];
+                out.p2_tilde[tag] = p2_tilde[imom];
+                out.p4[tag] = p4[imom];
+                out.p4_tilde[tag] = p4_tilde[imom];
             }
     
-    out.p2=p2_eqmoms;
-    out.p2_tilde=p2_tilde_eqmoms;
-    out.p4=p4_eqmoms;
-    out.p4_tilde=p4_tilde_eqmoms;
-    
-    print_vec(p2_eqmoms,path_print+"p2_eqmoms.txt");
-    print_vec(p2_tilde_eqmoms,path_print+"p2_tilde_eqmoms.txt");
+    print_vec(out.p2,path_print+"p2_eqmoms.txt");
+    print_vec(out.p2_tilde,path_print+"p2_tilde_eqmoms.txt");
     
     // Find equivalent bilmoms
     tag=0, tag_aux=0;
