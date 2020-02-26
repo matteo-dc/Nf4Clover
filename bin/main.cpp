@@ -127,11 +127,11 @@ int main(int narg,char **arg)
                         rave[th][m] = filt[th][m].average_r();
                         if(!load_ave) rave[th][m].plot("rave");
                         
-                        /* store averaged ingredients */
+                        /* store r-averaged ingredients */
                         
                         if(!load_ave) rave[th][m].print("rave");
                         
-                        /* load averaged ingredients if needed */
+                        /* load r-averaged ingredients if needed */
                         
                         if(load_ave) rave[th][m].load("rave");
                         
@@ -146,7 +146,6 @@ int main(int narg,char **arg)
                         ave[th][m].plot("ave");
                         
                         exit(0);
-                        
                         
                         
                         
