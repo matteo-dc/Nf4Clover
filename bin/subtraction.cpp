@@ -486,6 +486,8 @@ oper_t oper_t::subOa2(const int b)
                 for(int mr1=0;mr1<out._nmr;mr1++)
                     for(int mr2=0;mr2<out._nmr;mr2++)
                     {
+                        if(imom==0 and ijack==0 and mr1==0 and mr2==0)
+                            cout<<"ibil "<<ibil<<endl;
                         (out.jG)[imom][gbil::LO][ibil][ijack][mr1][mr2] -= CF*g2*subG(imom,CSW,P2,P4,ibil,0);
 //                        (out.jG)[imom][gbil::QED][ibil][ijack][mr1][mr2] -= subG(imom,CSW,P2,P4,ibil,1);
                     }
