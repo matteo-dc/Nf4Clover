@@ -1229,18 +1229,18 @@ oper_t oper_t::filter_moms()
     for(int imom=0;imom<_linmoms;imom++)
         if(filt_moms[imom])
         {
-            out.mom_list[ifilt]=mom_list[imom];
-            out.p[ifilt]=p[imom];
-            out.p_tilde[ifilt]=p_tilde[imom];
+            (out.mom_list)[ifilt]=mom_list[imom];
+            (out.p)[ifilt]=p[imom];
+            (out.p_tilde)[ifilt]=p_tilde[imom];
             
-            out.linmoms[ifilt]=linmoms[imom];
-            out.bilmoms[ifilt]=bilmoms[imom];
+            (out.linmoms)[ifilt]=linmoms[imom];
+            (out.bilmoms)[ifilt]=bilmoms[imom];
 //            out.meslepmoms[ifilt]=meslepmoms[imom];
             
-            out.p2[ifilt]=p2[imom];
-            out.p2_tilde[ifilt]=p2_tilde[imom];
-            out.p4[ifilt]=p4[imom];
-            out.p4_tilde[ifilt]=p4_tilde[imom];
+            (out.p2)[ifilt]=p2[imom];
+            (out.p2_tilde)[ifilt]=p2_tilde[imom];
+            (out.p4)[ifilt]=p4[imom];
+            (out.p4_tilde)[ifilt]=p4_tilde[imom];
             
             ifilt++;
         }
@@ -1354,7 +1354,7 @@ oper_t oper_t::average_equiv_moms()
     cout<<"found: "<<out._linmoms<<" equivalent linmoms ";
     
     
-    // count the different tags
+    // count the number of momenta for each tag
     vector<int> count_tag_lin_vector(out._linmoms);
     int count=0;
     for(int tag=0;tag<out._linmoms;tag++)
@@ -1372,6 +1372,10 @@ oper_t oper_t::average_equiv_moms()
             {
                 // fill the new linmoms and p2tilde
 //                out.linmoms[tag] = {tag};
+                (out.mom_list)[tag] = mom_list[imom];
+                (out.p)[tag] = p[imom];
+                (out.p_tilde)[tag] = p_tilde[imom];
+                
                 out.linmoms[tag] = linmoms[imom];
                 out.p2[tag] = p2[imom];
                 out.p2_tilde[tag] = p2_tilde[imom];
