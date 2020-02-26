@@ -1471,7 +1471,7 @@ oper_t oper_t::average_equiv_moms()
     out.eff_mass_sea = eff_mass_sea;
     
     if(!load_ave)
-    {
+    { 
         out.allocate();
         
         for(int tag=0;tag<neq_lin_moms;tag++)
