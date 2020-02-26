@@ -29,8 +29,5 @@ void oper_t::compute_Zq()
 //                         sigma[ilinmom][SIGMA1][S ][ijack][mr]*deltamu[ijack][mr]) /
 //                        sigma[ilinmom][SIGMA1][LO][ijack][mr];
                 
-                
-                if(ijack==0 and mr==0)
-                    cout<<ilinmom<<"  "<<jZq[ilinmom][ijack][mr]<<endl;
             }
 }
