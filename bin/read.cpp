@@ -27,6 +27,7 @@ void oper_t::read_mom_list(const string &path)
         p_t p_array, p_tilde_array;
         double p_sqr=0.0, p_tilde_sqr=0.0;
         double p_4=0.0, p_tilde_4=0.0;
+        double np=0.0;
         p_t shift;
         if(BC.compare("Periodic")==0) shift={0.0,0.0,0.0,0.0};
         if(BC.compare("Antiperiodic")==0) shift={0.5,0.0,0.0,0.0};
@@ -41,6 +42,8 @@ void oper_t::read_mom_list(const string &path)
             p_tilde_array[mu]=sin(p_array[mu]);
             p_tilde_sqr+=p_tilde_array[mu]*p_tilde_array[mu];
             p_tilde_4+=p_tilde_array[mu]*p_tilde_array[mu]*p_tilde_array[mu]*p_tilde_array[mu];
+            
+            if(p_array[mu]!=0.) np++;
         }
         if(input.good())
         {
@@ -51,6 +54,7 @@ void oper_t::read_mom_list(const string &path)
             p2_tilde.push_back(p_tilde_sqr);
             p4.push_back(p_4);
             p4_tilde.push_back(p_tilde_4);
+            Np.push_back(np);
             
             const double D4=p_tilde_4/(p_tilde_sqr*p_tilde_sqr);
             const bool filt=(D4<thresh);
