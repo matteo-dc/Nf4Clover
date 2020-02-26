@@ -1343,7 +1343,7 @@ oper_t oper_t::average_equiv_moms()
     
     for(int imom=0;imom<_linmoms;imom++)
     {
-        cout<<imom<<" {"<<mom_list[imom][0]<<","<<mom_list[imom][1]<<","<<mom_list[imom][2]<<","<<mom_list[imom][3]<<"} "<<p2_tilde[imom]<<" "<<tag_lin_vector[imom]<<endl
+        cout<<imom<<" {"<<mom_list[imom][0]<<","<<mom_list[imom][1]<<","<<mom_list[imom][2]<<","<<mom_list[imom][3]<<"} "<<p2_tilde[imom]<<" "<<tag_lin_vector[imom]<<endl;
     }
     
     // number of equivalent linmoms
