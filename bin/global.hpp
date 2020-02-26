@@ -137,6 +137,8 @@ extern bool clover_analysis;
 extern int QCD_on_the_right;
 // bool for subtraction with g2 boosted
 extern int sub_boosted;
+// bool for subtraction with p2tilde
+extern int sub_ptilde;
 // bool for recomputing basic
 extern bool recompute_basic;
 // reference p2
