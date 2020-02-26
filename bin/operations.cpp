@@ -1347,6 +1347,10 @@ oper_t oper_t::average_equiv_moms()
     (out.mom_list).resize(neq_lin_moms);
     (out.p).resize(neq_lin_moms);
     (out.p_tilde).resize(neq_lin_moms);
+    (out.p2).resize(neq_lin_moms);
+    (out.p2_tilde).resize(neq_lin_moms);
+    (out.p4).resize(neq_lin_moms);
+    (out.p4_tilde).resize(neq_lin_moms);
     
     out._linmoms=neq_lin_moms;
     (out.linmoms).resize(out._linmoms);
@@ -1376,11 +1380,11 @@ oper_t oper_t::average_equiv_moms()
                 (out.p)[tag] = p[imom];
                 (out.p_tilde)[tag] = p_tilde[imom];
                 
-                out.linmoms[tag] = linmoms[imom];
-                out.p2[tag] = p2[imom];
-                out.p2_tilde[tag] = p2_tilde[imom];
-                out.p4[tag] = p4[imom];
-                out.p4_tilde[tag] = p4_tilde[imom];
+                (out.linmoms)[tag] = linmoms[imom];
+                (out.p2)[tag] = p2[imom];
+                (out.p2_tilde)[tag] = p2_tilde[imom];
+                (out.p4)[tag] = p4[imom];
+                (out.p4_tilde)[tag] = p4_tilde[imom];
             }
     
     print_vec(out.p2,path_print+"p2_eqmoms.txt");
