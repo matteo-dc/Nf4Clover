@@ -1341,6 +1341,7 @@ oper_t oper_t::average_equiv_moms()
         }
     }
     
+    /* DEBUG */
     for(int imom=0;imom<_linmoms;imom++)
     {
         cout<<imom<<" {"<<mom_list[imom][0]<<","<<mom_list[imom][1]<<","<<mom_list[imom][2]<<","<<mom_list[imom][3]<<"} "<<p2_tilde[imom]<<" "<<tag_lin_vector[imom]<<endl;
@@ -1359,6 +1360,11 @@ oper_t oper_t::average_equiv_moms()
     
     out._linmoms=neq_lin_moms;
     (out.linmoms).resize(out._linmoms);
+    
+    /*DEBUG*/
+    cout<<(out.mom_list).size()<<" "<<(out.p).size()<<" "<<(out.p_tilde).size()<<" "<<(out.p2).size()<<" "<<(out.p2_tilde).size()<<" "<<(out.p4).size()<<" "<<(out.p4_tilde).size()<<" "<<(out.linmoms).size()<<endl;
+    cout<<"linmoms: "<<_linmoms<<" -> "<<out._linmoms<<endl;
+    /***/
     
     cout<<"found: "<<out._linmoms<<" equivalent linmoms ";
     
