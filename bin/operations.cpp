@@ -1342,6 +1342,8 @@ oper_t oper_t::average_equiv_moms()
     
     vector<double> p2_eqmoms(out._linmoms,0.0);
     vector<double> p2_tilde_eqmoms(out._linmoms,0.0);
+    vector<double> p4_eqmoms(out._linmoms,0.0);
+    vector<double> p4_tilde_eqmoms(out._linmoms,0.0);
 
     // count the different tags
     vector<int> count_tag_lin_vector(out._linmoms);
@@ -1363,10 +1365,14 @@ oper_t oper_t::average_equiv_moms()
                 out.linmoms[tag] = {tag};
                 p2_eqmoms[tag] = p2[imom];
                 p2_tilde_eqmoms[tag] = p2_tilde[imom];
+                p4_eqmoms[tag] = p4[imom];
+                p4_tilde_eqmoms[tag] = p4_tilde[imom];
             }
     
     out.p2=p2_eqmoms;
     out.p2_tilde=p2_tilde_eqmoms;
+    out.p4=p4_eqmoms;
+    out.p4_tilde=p4_tilde_eqmoms;
     
     print_vec(p2_eqmoms,path_print+"p2_eqmoms.txt");
     print_vec(p2_tilde_eqmoms,path_print+"p2_tilde_eqmoms.txt");
