@@ -1350,6 +1350,9 @@ oper_t oper_t::average_equiv_moms()
     (out.mom_list).resize(neq_lin_moms);
     (out.p).resize(neq_lin_moms);
     (out.p_tilde).resize(neq_lin_moms);
+    (out.filt_moms).resize(neq_lin_moms);
+    (out.Np).resize(neq_lin_moms);
+    
     (out.p2).resize(neq_lin_moms);
     (out.p2_tilde).resize(neq_lin_moms);
     (out.p4).resize(neq_lin_moms);
@@ -1381,6 +1384,9 @@ oper_t oper_t::average_equiv_moms()
                 (out.mom_list)[tag] = mom_list[imom];
                 (out.p)[tag] = p[imom];
                 (out.p_tilde)[tag] = p_tilde[imom];
+                
+                (out.filt_moms)[tag] = filt_moms[imom];
+                (out.Np)[tag] = Np[imom];
                 
                 (out.linmoms)[tag] = {tag};
                 (out.p2)[tag] = p2[imom];
