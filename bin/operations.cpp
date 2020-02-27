@@ -1433,6 +1433,12 @@ oper_t oper_t::average_equiv_moms()
         }
     }
     
+    /**DEBUG**/
+    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
+    {
+        cout<<ibilmom<<" {"<<bilmoms[ibilmom][0]<<","<<bilmoms[ibilmom][1]<<","<<bilmoms[ibilmom][2]<<"} "<<tag_bil_vector[ibilmom]<<endl;
+    }
+    
     // number of equivalent bilmoms
     int neq_bil_moms = tag+1;
     
