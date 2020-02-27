@@ -1375,12 +1375,11 @@ oper_t oper_t::average_equiv_moms()
             if(tag_lin_vector[imom]==tag)
             {
                 // fill the new linmoms and p2tilde
-//                out.linmoms[tag] = {tag};
                 (out.mom_list)[tag] = mom_list[imom];
                 (out.p)[tag] = p[imom];
                 (out.p_tilde)[tag] = p_tilde[imom];
                 
-                (out.linmoms)[tag] = linmoms[imom];
+                (out.linmoms)[tag] = {tag};
                 (out.p2)[tag] = p2[imom];
                 (out.p2_tilde)[tag] = p2_tilde[imom];
                 (out.p4)[tag] = p4[imom];
@@ -1508,7 +1507,7 @@ oper_t oper_t::average_equiv_moms()
                                         jG[imom][ins][ibil][ijack][mr1][mr2]/count_tag_bil_vector[tag];
         
         
-        out.compute_Zbil();
+//        out.compute_Zbil();
         
         if(compute_4f)
         {
