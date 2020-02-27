@@ -1237,7 +1237,7 @@ oper_t oper_t::filter_moms()
 //            (out.bilmoms)[ifilt]=bilmoms[imom];
             (out.linmoms)[ifilt]={ifilt};
             (out.bilmoms)[ifilt]={ifilt,ifilt,ifilt};
-            if(scheme=="SMOM"){cout<<"Filter non implemented in SMOM."<<endl;}
+            if(scheme=="SMOM"){cout<<"Filter not implemented in SMOM."<<endl;exit(0);}
 //            out.meslepmoms[ifilt]=meslepmoms[imom];
             
             (out.p2)[ifilt]=p2[imom];
@@ -1436,12 +1436,6 @@ oper_t oper_t::average_equiv_moms()
         }
     }
     
-    /**DEBUG**/
-    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-    {
-        cout<<ibilmom<<" {"<<bilmoms[ibilmom][0]<<","<<bilmoms[ibilmom][1]<<","<<bilmoms[ibilmom][2]<<"} "<<tag_lin_vector[ibilmom]<<" "<<tag_bil_vector[ibilmom]<<endl;
-    }
-    
     // number of equivalent bilmoms
     int neq_bil_moms = tag+1;
     
@@ -1470,11 +1464,13 @@ oper_t oper_t::average_equiv_moms()
             if(tag_bil_vector[ibilmom]==tag)
             {
                 // fill the new bilmoms
-                const int imom0=bilmoms[tag][0]; // k
-                const int imom1=bilmoms[tag][1]; // p1
-                const int imom2=bilmoms[tag][2]; // p2
+//                const int imom0=bilmoms[tag][0]; // k
+//                const int imom1=bilmoms[tag][1]; // p1
+//                const int imom2=bilmoms[tag][2]; // p2
+                if(scheme=="SMOM"){cout<<"Average not implemented in SMOM."<<endl;exit(0);}
                 
-                out.bilmoms[tag] = {imom0,imom1,imom2};
+//                out.bilmoms[tag] = {imom0,imom1,imom2};
+                out.bilmoms[tag] = {tag,tag,tag};
             }
     
     out.allocate_val();
@@ -1516,7 +1512,7 @@ oper_t oper_t::average_equiv_moms()
                                         jG[imom][ins][ibil][ijack][mr1][mr2]/count_tag_bil_vector[tag];
         
         
-//        out.compute_Zbil();
+        out.compute_Zbil();
         
         if(compute_4f)
         {
