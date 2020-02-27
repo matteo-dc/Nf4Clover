@@ -1526,6 +1526,7 @@ oper_t oper_t::average_equiv_moms()
         out.compute_Zbil();
         
         if(compute_4f)
+        {
             for(int tag=0;tag<neq_bil_moms;tag++)
                 for(int imom=0;imom<_bilmoms;imom++)
                     if(tag_bil_vector[imom]==tag)
@@ -1537,8 +1538,9 @@ oper_t oper_t::average_equiv_moms()
                                             for(int mr2=0; mr2<_nmr; mr2++)
                                                 (out.jpr_meslep)[tag][ins][iop1][iop2][ijack][mr1][mr2]+=
                                                 jpr_meslep[imom][ins][iop1][iop2][ijack][mr1][mr2]/count_tag_bil_vector[tag];
-        
-        out.compute_Z4f();
+            
+            out.compute_Z4f();
+        }
         
 
     }
