@@ -1233,8 +1233,11 @@ oper_t oper_t::filter_moms()
             (out.p)[ifilt]=p[imom];
             (out.p_tilde)[ifilt]=p_tilde[imom];
             
-            (out.linmoms)[ifilt]=linmoms[imom];
-            (out.bilmoms)[ifilt]=bilmoms[imom];
+//            (out.linmoms)[ifilt]=linmoms[imom];
+//            (out.bilmoms)[ifilt]=bilmoms[imom];
+            (out.linmoms)[ifilt]={ifilt};
+            (out.bilmoms)[ifilt]={ifilt,ifilt,ifilt};
+            if(scheme=="SMOM"){cout<<"Filter non implemented in SMOM."<<endl;}
 //            out.meslepmoms[ifilt]=meslepmoms[imom];
             
             (out.p2)[ifilt]=p2[imom];
@@ -1436,7 +1439,7 @@ oper_t oper_t::average_equiv_moms()
     /**DEBUG**/
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
     {
-        cout<<ibilmom<<" {"<<bilmoms[ibilmom][0]<<","<<bilmoms[ibilmom][1]<<","<<bilmoms[ibilmom][2]<<"} "<<tag_bil_vector[ibilmom]<<endl;
+        cout<<ibilmom<<" {"<<bilmoms[ibilmom][0]<<","<<bilmoms[ibilmom][1]<<","<<bilmoms[ibilmom][2]<<"} "<<tag_lin_vector[ibilmom]<<" "<<tag_bil_vector[ibilmom]<<endl;
     }
     
     // number of equivalent bilmoms
