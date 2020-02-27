@@ -117,9 +117,42 @@ int main(int narg,char **arg)
                     {
                         
                         
+//                        /*  democratic filter on momenta  */
+//                        
+//                        filt[th][m]=basic[th][m].filter_moms();
+//                        if(!load_ave)  filt[th][m].plot("filt");
+//                        
+//                        /*  average r  */
+//                        
+//                        rave[th][m] = filt[th][m].average_r();
+//                        if(!load_ave) rave[th][m].plot("rave");
+//                        
+//                        /*  perturbative subtraction of O(a2)  */
+//                        
+//                        sub[th][m] = rave[th][m].subOa2(b);
+//                        if(!load_ave) sub[th][m].plot("sub");
+//                        
+//                        /*  average over equivalent momenta  */
+//                        
+//                        ave[th][m] = sub[th][m].average_equiv_moms();
+//                        if(!load_ave) ave[th][m].plot("ave");
+//                        
+//                        /* store averaged ingredients */
+//                        
+//                        if(!load_ave) ave[th][m].print("ave");
+//                        
+//                        /* load averaged ingredients if needed */
+//                        
+//                        if(load_ave) ave[th][m].load("ave");
+                        
+                        /*  average over equivalent momenta  */
+                        
+                        ave[th][m] = basic[th][m].average_equiv_moms();
+                        if(!load_ave) ave[th][m].plot("ave");
+
                         /*  democratic filter on momenta  */
                         
-                        filt[th][m]=basic[th][m].filter_moms();
+                        filt[th][m]=ave[th][m].filter_moms();
                         if(!load_ave)  filt[th][m].plot("filt");
                         
                         /*  average r  */
@@ -132,10 +165,7 @@ int main(int narg,char **arg)
                         sub[th][m] = rave[th][m].subOa2(b);
                         if(!load_ave) sub[th][m].plot("sub");
                         
-                        /*  average over equivalent momenta  */
-                        
-                        ave[th][m] = sub[th][m].average_equiv_moms();
-                        if(!load_ave) ave[th][m].plot("ave");
+                        exit(0);
                         
                         /* store averaged ingredients */
                         
@@ -144,6 +174,7 @@ int main(int narg,char **arg)
                         /* load averaged ingredients if needed */
                         
                         if(load_ave) ave[th][m].load("ave");
+
                         
                         exit(0);
                         
