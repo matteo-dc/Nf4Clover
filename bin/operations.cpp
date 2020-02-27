@@ -1379,6 +1379,10 @@ oper_t oper_t::average_equiv_moms()
             if(tag_lin_vector[imom]==tag) count++;
         
         count_tag_lin_vector[tag]=count;
+        
+        /*DEBUG*/
+        cout<<tag<<" "<<count<<endl;
+        
     }
     
     for(int tag=0;tag<out._linmoms;tag++)
