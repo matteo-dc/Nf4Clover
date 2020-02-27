@@ -127,23 +127,23 @@ int main(int narg,char **arg)
                         rave[th][m] = filt[th][m].average_r();
                         if(!load_ave) rave[th][m].plot("rave");
                         
-                        /* store r-averaged ingredients */
-                        
-                        if(!load_ave) rave[th][m].print("rave");
-                        
-                        /* load r-averaged ingredients if needed */
-                        
-                        if(load_ave) rave[th][m].load("rave");
-                        
                         /*  perturbative subtraction of O(a2)  */
                         
                         sub[th][m] = rave[th][m].subOa2(b);
-                        sub[th][m].plot("sub");
+                        if(!load_ave) sub[th][m].plot("sub");
                         
                         /*  average over equivalent momenta  */
                         
                         ave[th][m] = sub[th][m].average_equiv_moms();
-                        ave[th][m].plot("ave");
+                        if(!load_ave) ave[th][m].plot("ave");
+                        
+                        /* store averaged ingredients */
+                        
+                        if(!load_ave) ave[th][m].print("ave");
+                        
+                        /* load averaged ingredients if needed */
+                        
+                        if(load_ave) ave[th][m].load("ave");
                         
                         exit(0);
                         
