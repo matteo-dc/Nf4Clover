@@ -628,9 +628,6 @@ oper_t oper_t::chiral_extr()
                 for(int ibil=0;ibil<nbil;ibil++)
                     for(int ins=0; ins<gbil::nins; ins++) // not collapsed
                     {
-                        /*DEBUG*/
-                        cout<<ibilmom<<" "<<r1<<" "<<r2<<" "<<ibil<<" "<<ins<<endl;
-                        
                         vvd_t coord_bil(vd_t(0.0,_nm*(_nm+1)/2),npar_bil_max);
                         
                         vvd_t jG_r1_r2(vd_t(0.0,_nm*(_nm+1)/2),njacks);
@@ -692,12 +689,7 @@ oper_t oper_t::chiral_extr()
                                 ieq++;
                             }
                         
-                        /*DEBUG*/
-                        cout<<"-A-"<<endl;
-                        
                         vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min,x_max);
-                        
-                        cout<<"-B-"<<endl;
                         
                         //save fit parameters to be used to subtract dM
                         if(ins==gbil::LO)
@@ -713,8 +705,6 @@ oper_t oper_t::chiral_extr()
                                 
                             }
                         
-                        cout<<"-C-"<<endl;
-                        
                         for(int ijack=0;ijack<njacks;ijack++)
                             (out.jG)[ibilmom][ins][ibil][ijack][r1][r2] = jG_pars[ijack][0];
                     
@@ -722,8 +712,6 @@ oper_t oper_t::chiral_extr()
                         {
                             plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars);   /* (mom,ins,bil,x,y,dy,jpars) */
                         }
-                        cout<<"-D-"<<endl;
-                        
                     }
     
     out.compute_Zbil();
@@ -2325,8 +2313,11 @@ void oper_t::plot_bil_chir_extr(int mom, int i_ins, int ibil, vd_t x, vd_t y, vd
     vector<string> bil={"S","V","P","A","T"};
     vector<string> ins_str={"LO","EM"}; /* valid only if ntypes=3 */
     
-    if(ntypes!=3)
+    if(ntypes!=3 and ntypes!=1)
+    {
+        cout<<"plot of chiral extrapolation not implemented for ntypes="<<ntypes<<"!"<<endl;
         exit(0);
+    }
     
     ofstream plot_data;
     ofstream pars_data;
