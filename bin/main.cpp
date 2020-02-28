@@ -83,7 +83,7 @@ int main(int narg,char **arg)
         
         vvoper_t sea_chir(voper_t(ntheta),nbeta);
         voper_t  theta_ave(nbeta);
-        voper_t  p2extr(nbeta);
+//        voper_t  p2extr(nbeta);
         
         if(loop>0) recompute_basic=true;
 
@@ -206,7 +206,7 @@ int main(int narg,char **arg)
                             oper_for_eta[b][th][m][loop] = val_chir[th][m];
                         else
                         {
-                            evo[th][m] = val_chir[th][m].evolveToAinv(ainv[b]);
+                            evo[th][m] = val_chir[th][m].evolve(ainv[b],p2ref);
                             evo[th][m].plot("evo");
 //                            sub[th][m] = evo[th][m].subOa2(b);
 //                            sub[th][m].plot("sub");
