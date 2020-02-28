@@ -1145,7 +1145,6 @@ voper_t theta_average(vvoper_t in) // in[th][b]
 //    return out;
 //}
 
-
 //oper_t oper_t::evolve(const int b)
 //{
 //    cout<<endl;
@@ -1953,6 +1952,7 @@ void oper_t::load(const string suffix)
 
 oper_t oper_t::a2p2_extr()
 {
+#warning aggiustare pmin/pmax in unita fisiche/lattice
     cout<<endl;
     cout<<"----- extrapolation to p2 = 0 -----"<<endl<<endl;
     
