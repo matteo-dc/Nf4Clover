@@ -199,7 +199,7 @@ struct oper_t
 
 
     // evolution to 1/a scale
-//    oper_t evolve(const int b);
+    oper_t evolve(const int b, const p2_evol);
     oper_t evolveToAinv(const double ainv);
     
     // evolution to 1/a scale of mixed eta
@@ -216,12 +216,14 @@ struct oper_t
     pair<double,double> get_a2p2_range(const int size,const double a2p2_ref,const size_t n=5) const;
     
     // interpolate to p2ref
+    oper_t interpolate_to_p2ref_near_neighour(int b);
     oper_t interpolate_to_p2ref(int b);
-    vector<jZq_t> interpolate_to_p2ref_Zq(const double a2p2_ref,const int LO_or_EM);
-    vector<jZbil_t> interpolate_to_p2ref_Zbil(const double a2p2_ref,const int LO_or_EM);
-    vector<jZ4f_t> interpolate_to_p2ref_Z4f(const double a2p2_ref,const int LO_or_EM);
+//    vector<jZq_t> interpolate_to_p2ref_Zq(const double a2p2_ref,const int LO_or_EM);
+//    vector<jZbil_t> interpolate_to_p2ref_Zbil(const double a2p2_ref,const int LO_or_EM);
+//    vector<jZ4f_t> interpolate_to_p2ref_Z4f(const double a2p2_ref,const int LO_or_EM);
     
     // interpolate to p2=1/a2
+    oper_t interpolate_to_ainv_near_neighour(int b);
     oper_t interpolate_to_ainv(int b);
     
     // plot Zq and Z
