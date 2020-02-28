@@ -144,6 +144,15 @@ int main(int narg,char **arg)
 //                        /* load averaged ingredients if needed */
 //                        
 //                        if(load_ave) ave[th][m].load("ave");
+//                        
+//                        /* store averaged ingredients */
+//                        
+//                        if(!load_ave) ave[th][m].print("ave_A1");
+//                        
+//                        /* load averaged ingredients if needed */
+//                        
+//                        if(load_ave) ave[th][m].load("ave_A1");
+
                         
                         /*  average over equivalent momenta  */
                         
@@ -165,26 +174,19 @@ int main(int narg,char **arg)
                         sub[th][m] = rave[th][m].subOa2(b);
                         if(!load_ave) sub[th][m].plot("sub");
                         
-                        exit(0);
-                        
                         /* store averaged ingredients */
                         
-                        if(!load_ave) ave[th][m].print("ave");
+                        if(!load_ave) sub[th][m].print("ave_A3");
                         
                         /* load averaged ingredients if needed */
                         
-                        if(load_ave) ave[th][m].load("ave");
-
-                        
-                        exit(0);
-                        
-                        
+                        if(load_ave) sub[th][m].load("ave_A3");
                         
                         
                         /*  valence chiral extr  */
                         if(free_analysis or recompute_basic)
                         {
-                            val_chir[th][m] = rave[th][m];
+                            val_chir[th][m] = sub[th][m];
                             val_chir[th][m].plot("chir");
                             
                             /* store extrapolated ingredients */
@@ -192,12 +194,14 @@ int main(int narg,char **arg)
                         }
                         else
                         {
-                            val_chir[th][m] = rave[th][m].chiral_extr();
+                            val_chir[th][m] = sub[th][m].chiral_extr();
                             val_chir[th][m].plot("chir");
                             
                             /* store extrapolated ingredients */
                             if(!load_chir) val_chir[th][m].printZ("chir");
                         }
+                        
+                        exit(0);
                         
                         
                         if(eta_analysis)
