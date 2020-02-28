@@ -269,6 +269,7 @@ double q_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     double mu0_2= p2ref;         // p2ref
     
     /*DEBUG*/
+    cout<<"a2p2 = "<<a2p2<<" ainv = "<<ainv<<endl;
     cout<<"mu2 = "<<mu_2<<" mu02 = "<<mu0_2<<endl;
     
     // alphas @ NNLO
