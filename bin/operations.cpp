@@ -628,6 +628,9 @@ oper_t oper_t::chiral_extr()
                 for(int ibil=0;ibil<nbil;ibil++)
                     for(int ins=0; ins<gbil::nins; ins++) // not collapsed
                     {
+                        /*DEBUG*/
+                        cout<<ibilmom<<" "<<r1<<" "<<r2<<" "<<ibil<<" "<<ins<<endl;
+                        
                         vvd_t coord_bil(vd_t(0.0,_nm*(_nm+1)/2),npar_bil_max);
                         
                         vvd_t jG_r1_r2(vd_t(0.0,_nm*(_nm+1)/2),njacks);
