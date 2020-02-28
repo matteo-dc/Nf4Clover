@@ -692,7 +692,12 @@ oper_t oper_t::chiral_extr()
                                 ieq++;
                             }
                         
+                        /*DEBUG*/
+                        cout<<"-A-"<<endl;
+                        
                         vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min,x_max);
+                        
+                        cout<<"-B-"<<endl;
                         
                         //save fit parameters to be used to subtract dM
                         if(ins==gbil::LO)
@@ -708,6 +713,8 @@ oper_t oper_t::chiral_extr()
                                 
                             }
                         
+                        cout<<"-C-"<<endl;
+                        
                         for(int ijack=0;ijack<njacks;ijack++)
                             (out.jG)[ibilmom][ins][ibil][ijack][r1][r2] = jG_pars[ijack][0];
                     
@@ -715,6 +722,7 @@ oper_t oper_t::chiral_extr()
                         {
                             plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars);   /* (mom,ins,bil,x,y,dy,jpars) */
                         }
+                        cout<<"-D-"<<endl;
                         
                     }
     
