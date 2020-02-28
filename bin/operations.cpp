@@ -498,24 +498,32 @@ oper_t oper_t::chiral_extr()
     out.eff_mass_sea = eff_mass_sea;
 
     // average of eff_mass
-    vvd_t M_eff = get<0>(ave_err(eff_mass));
-    vvd_t dM_eff = get<0>(ave_err(eff_mass_corr));
-    for(int m=0; m<_nm; m++)
-        printf("m: %d \t M_eff: %lg \t dM_eff: %lg\n",m,M_eff[m][m],dM_eff[m][m]);
-    
-    // printing the squared mass
-    vvvd_t eff_mass_sqr(vvd_t(vd_t(0.0,_nm),_nm),njacks);
-    
-    for(int ijack=0;ijack<njacks;ijack++)
-        for(int m1=0; m1<_nm; m1++)
-            for(int m2=0; m2<_nm; m2++)
-                eff_mass_sqr[ijack][m1][m2]=eff_mass[ijack][m1][m2]*eff_mass[ijack][m1][m2];
-    
-    vvd_t M2_eff = get<0>(ave_err(eff_mass_sqr));
-    vvd_t M2_eff_err = get<1>(ave_err(eff_mass_sqr));
-    
-    for(int m=0; m<_nm; m++)
-        printf("m: %d \t M2_eff: %lg +- %lg\n",m,M2_eff[m][m],M2_eff_err[m][m]);
+#warning Da cancellare quando si useranno davvero le eff_mass
+    vvd_t M_eff;
+    vvd_t dM_eff;
+    vvd_t M2_eff;
+    vvd_t M2_eff_err;
+    if(UseEffMass)
+    {
+        vvd_t M_eff = get<0>(ave_err(eff_mass));
+        vvd_t dM_eff = get<0>(ave_err(eff_mass_corr));
+        for(int m=0; m<_nm; m++)
+            printf("m: %d \t M_eff: %lg \t dM_eff: %lg\n",m,M_eff[m][m],dM_eff[m][m]);
+        
+        // printing the squared mass
+        vvvd_t eff_mass_sqr(vvd_t(vd_t(0.0,_nm),_nm),njacks);
+        
+        for(int ijack=0;ijack<njacks;ijack++)
+            for(int m1=0; m1<_nm; m1++)
+                for(int m2=0; m2<_nm; m2++)
+                    eff_mass_sqr[ijack][m1][m2]=eff_mass[ijack][m1][m2]*eff_mass[ijack][m1][m2];
+        
+        vvd_t M2_eff = get<0>(ave_err(eff_mass_sqr));
+        vvd_t M2_eff_err = get<1>(ave_err(eff_mass_sqr));
+        
+        for(int m=0; m<_nm; m++)
+            printf("m: %d \t M2_eff: %lg +- %lg\n",m,M2_eff[m][m],M2_eff_err[m][m]);
+    }
     
     //range for fit Zq
     int x_min_q=0;
@@ -534,7 +542,7 @@ oper_t oper_t::chiral_extr()
     int npar_meslep[5]={2,2,3,3,2};
     int npar_meslep_max=3;
     
-#warning Goldstone: forse va solo quando iproj=2,3 e non iop!
+
     
     //extrapolate sigma
     
@@ -600,7 +608,7 @@ oper_t oper_t::chiral_extr()
                 
                 }
     
-    if(ntypes!=3)
+    if(ntypes!=3 and ntypes!=1)
     {
         out.deltam_computed=true;
         out.compute_deltam_from_prop();
@@ -709,7 +717,7 @@ oper_t oper_t::chiral_extr()
     
     out.compute_Zbil();
     
-    
+#warning Goldstone: forse va solo quando iproj=2,3 e non iop!
     if(compute_4f)
     {
         //extrapolate pr_meslep
@@ -1211,7 +1219,7 @@ oper_t oper_t::filter_moms()
     (out.mom_list).resize(count_filtered);
     (out.p).resize(count_filtered);
     (out.p_tilde).resize(count_filtered);
-    (out.Np).resize(neq_lin_moms);
+    (out.Np).resize(count_filtered);
     
     out._linmoms=count_filtered;
     (out.linmoms).resize(out._linmoms);
