@@ -252,6 +252,218 @@ double P_evolution_to_RIp_two_GeV(int Nf,double ainv,double a2p2)
     return cmu/cmu0;
 }
 
+///////////////////////////////////
+// evolution from mu=p to mu0
+// Z(mu0)=Z(mu) c(mu0)/c(mu)
+// def: c=c(mu)/c(mu0)
+// -> Z(mu0) = Z(mu) /c
+//////////////////////////////////
+
+double q_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
+{
+    double cmu=0.0, cmu0=0.0; // c=cmu/cmu0
+    //mu_2=(a2p2)*(1/a^2) (dimensional quantity)
+    //mu0_2=(p2ref)
+    
+    double mu_2 = a2p2*pow(ainv,2.0);    // p2
+    double mu0_2= p2ref;         // p2ref
+    
+    // alphas @ NNLO
+    double alm, al0;
+    alm=alphas(Nf,mu_2)/(4*M_PI);
+    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    
+    ////////////////////////////////
+    // N3LO FORMULA
+    // Assuming landau gauge
+    ///////////////////////////////////
+    if(Nf==2){
+        cmu = 1. + 2.03448 * alm + 35.9579 * pow(alm,2) + 1199.16 * pow(alm,3);
+        cmu0 = 1. + 2.03448 * al0 + 35.9579 * pow(al0,2) + 1199.16 * pow(al0,3);
+    }if(Nf==0){
+        cmu = 1. + 2.0303 * alm + 42.1268 * pow(alm,2) + 1728.43 * pow(alm,3);
+        cmu0 = 1. + 2.0303 * al0 + 42.1268 * pow(al0,2) + 1728.43 * pow(al0,3);
+    }if(Nf==4){
+        cmu = 1. + 2.4000 * alm + 29.6724 * pow(alm,2) + 719.141 * pow(alm,3);
+        cmu0 = 1. + 2.4000 * al0 + 29.6724 * pow(al0,2) + 719.141 * pow(al0,3);
+    }
+    
+    return cmu/cmu0;
+}
+double S_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
+{
+    double cmu=0.0, cmu0=0.0; // c=cmu/cmu0
+    //mu_2=(a2p2)*(1/a^2) (dimensional quantity)
+    //mu0_2=(p2ref)
+    
+    double mu_2 = a2p2*pow(ainv,2.0);    // p2
+    double mu0_2= p2ref;         // p2ref
+    
+    // alphas @ NNLO
+    double alm, al0;
+    alm=alphas(Nf,mu_2)/(4*M_PI);
+    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    
+    ////////////////////////////////
+    // N3LO FORMULA
+    // Assuming landau gauge
+    ///////////////////////////////////
+    
+    if(Nf==2){
+        cmu = pow(alm,-12./29) * (1. - 8.55727 * alm - 125.423 * pow(alm,2) -
+                                  3797.71 * pow(alm,3));
+        
+        cmu0 = pow(al0,-12./29) * (1. - 8.55727 * al0 - 125.423 * pow(al0,2) -
+                                   3797.71 * pow(al0,3));
+    }if(Nf==0){
+        cmu = pow(alm,-4./11) * (1. - 8.08264 * alm - 151.012 * pow(alm,2) -
+                                 5247.93 * pow(alm,3));
+        
+        cmu0 = pow(al0,-4./11) * (1. - 8.08264 * al0 - 151.012 * pow(al0,2) -
+                                  5247.93 * pow(al0,3));
+    }if(Nf==4){
+        cmu = pow(alm,-12./25) * (1. - 9.38987 * alm - 96.2883 * pow(alm,2) -
+                                  2403.82 * pow(alm,3));
+        
+        cmu0 = pow(al0,-12./25) * (1. - 9.38987 * al0 - 96.2883 * pow(al0,2) -
+                                   2403.82 * pow(al0,3));
+    }
+    
+    return cmu/cmu0;
+}
+
+double P_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
+{
+    double cmu=0.0, cmu0=0.0; // c=cmu/cmu0
+    //mu_2=(a2p2)*(1/a^2) (dimensional quantity)
+    //mu0_2=(p2ref)
+    
+    double mu_2 = a2p2*pow(ainv,2.0);    // p2
+    double mu0_2= p2ref;         // p2ref
+    
+    // alphas @ NNLO
+    double alm, al0;
+    alm=alphas(Nf,mu_2)/(4*M_PI);
+    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    
+    ////////////////////////////////
+    // N3LO FORMULA
+    // Assuming landau gauge
+    ///////////////////////////////////
+    if(Nf==2){
+        cmu = pow(alm,-12./29) * (1. - 8.55727 * alm - 125.423 * pow(alm,2) -
+                                  3797.71 * pow(alm,3));
+        
+        cmu0 = pow(al0,-12./29) * (1. - 8.55727 * al0 - 125.423 * pow(al0,2) -
+                                   3797.71 * pow(al0,3));
+    }if(Nf==0){
+        cmu = pow(alm,-4./11) * (1. - 8.08264 * alm - 151.012 * pow(alm,2) -
+                                 5247.93 * pow(alm,3));
+        
+        cmu0 = pow(al0,-4./11) * (1. - 8.08264 * al0 - 151.012 * pow(al0,2) -
+                                  5247.93 * pow(al0,3));
+    }if(Nf==4){
+        cmu = pow(alm,-12./25) * (1. - 9.38987 * alm - 96.2883 * pow(alm,2) -
+                                  2403.82 * pow(alm,3));
+        
+        cmu0 = pow(al0,-12./25) * (1. - 9.38987 * al0 - 96.2883 * pow(al0,2) -
+                                   2403.82 * pow(al0,3));
+    }
+    
+    return cmu/cmu0;
+}
+
+double T_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
+{
+    double cmu=0.0, cmu0=0.0; // c=cmu/cmu0
+    //mu_2=(a2p2)*(1/a^2) (dimensional quantity)
+    //mu0_2=(p2ref)
+    
+    double mu_2 = a2p2*pow(ainv,2.0);    // p2
+    double mu0_2= p2ref;         // p2ref
+    
+    // alphas @ NNLO
+    double alm, al0;
+    alm=alphas(Nf,mu_2)/(4*M_PI);
+    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    
+    ////////////////////////////////
+    // N2LO FORMULA
+    // Assuming landau gauge
+    ///////////////////////////////////
+    
+    if(Nf==2){
+        cmu = pow(alm,4./29) * (1. + 2.66852 * alm + 47.9701 * pow(alm,2));
+        
+        cmu0 = pow(al0,4./29) * (1. + 2.66852 * al0 + 47.9701 * pow(al0,2));
+    }if(Nf==0){
+        cmu = pow(alm,4./33) * (1. + 2.53260 * alm + 57.8740 * pow(alm,2));
+        
+        cmu0 = pow(al0,4./33) * (1. + 2.53260 * al0 + 57.8740 * pow(al0,2));
+    }if(Nf==4){
+        cmu = pow(alm,4./25) * (1. + 2.91662 * alm + 37.9471 * pow(alm,2));
+        
+        cmu0 = pow(al0,4./25) * (1. + 2.91662 * al0 + 37.9471 * pow(al0,2));
+    }
+    
+    return cmu/cmu0;
+}
+
+oper_t oper_t::evolve(const int b, const double p2_evol)
+{
+    if(!inte_analysis)
+    {
+        cout<<"Function 'evolve' only works in 'inte' mode."<<endl;
+        exit(0);
+    }
+    
+    cout<<endl;
+    cout<<"----- evolution to the scale p2 = "<<p2_evol<<" GeV^2 -----"<<endl<<endl;
+    
+    oper_t out=(*this);
+    
+    double cq=0.0;
+    vd_t cO(0.0,5);
+    
+    double _ainv=ainv[b];
+    
+    for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
+    {
+        cq=q_evolution_to_RIp(Nf,_ainv,p2[ilinmom],p2_evol);
+        
+        for(int ijack=0;ijack<njacks;ijack++)
+            for(int mr1=0; mr1<_nmr; mr1++)
+            {
+                (out.jZq)[ilinmom][ijack][mr1] = jZq[ilinmom][ijack][mr1]/cq;
+                //                (out.jZq_EM)[ilinmom][ijack][mr1] = jZq_EM[ilinmom][ijack][mr1]/cq;
+            }
+    }
+    
+    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
+    {
+        // Note that ZV  ZA are RGI because they're protected by the WIs
+        cO[0]=S_evolution_to_RIp(Nf,_ainv,p2[ibilmom],p2_evol); //S
+        cO[1]=1.0;                                       //A
+        cO[2]=P_evolution_to_RIp(Nf,_ainv,p2[ibilmom],p2_evol); //P
+        cO[3]=1.0;                                       //V
+        cO[4]=T_evolution_to_RIp(Nf,_ainv,p2[ibilmom],p2_evol); //T
+        
+        for(int ibil=0;ibil<5;ibil++)
+            for(int ijack=0;ijack<njacks;ijack++)
+                for(int mr1=0; mr1<_nmr; mr1++)
+                    for(int mr2=0; mr2<_nmr; mr2++)
+                    {
+                        (out.jZ)[ibilmom][ibil][ijack][mr1][mr2] = jZ[ibilmom][ibil][ijack][mr1][mr2]/cO[ibil];
+                        //                        (out.jZ_EM)[ibilmom][ibil][ijack][mr1][mr2] = jZ_EM[ibilmom][ibil][ijack][mr1][mr2]/cO[ibil];
+                    }
+    }
+    
+#warning missing evolution for 4f
+    
+    return out;
+    
+    
+}
 
 oper_t oper_t::evolveToAinv(const double ainv)
 {
