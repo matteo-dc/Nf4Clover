@@ -269,7 +269,7 @@ double q_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     double mu0_2= p2ref;         // p2ref
     
     /*DEBUG*/
-    cout<<"mu2 = "<<mu_2<<" mu02 = "<<mu02<<endl;
+    cout<<"mu2 = "<<mu_2<<" mu02 = "<<mu0_2<<endl;
     
     // alphas @ NNLO
     double alm, al0;
@@ -439,7 +439,7 @@ oper_t oper_t::evolve(const int b, const double p2_evol)
         cq=q_evolution_to_RIp(Nf,_ainv,p2[ilinmom],p2_evol);
         
         /*DEBUG*/
-        if(ilinmom=0 and ilinmom=100)
+        if(ilinmom==0 and ilinmom==100)
             cout<<ilinmom<<" "<<cq<<endl;
         
         for(int ijack=0;ijack<njacks;ijack++)
