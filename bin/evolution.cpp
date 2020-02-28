@@ -7,7 +7,7 @@
 
 #define Z3 1.2020569031595942
 
-double alphas(int Nf,double mu2) // mu2 is in physical units (dimensional quantity)
+double alphas(int Nf,double mu2,int nloop) // mu2 is in physical units (dimensional quantity)
 {
     
     double CF = (Nc*Nc-1.)/(2.*Nc);
@@ -47,8 +47,11 @@ double alphas(int Nf,double mu2) // mu2 is in physical units (dimensional quanti
     als0 = 4.*M_PI/beta_0/L2;
     als1 = als0 - pow(als0,2)*b1*LL2;
     als2 = als1 + pow(als0,3)*(pow(b1,2)*(pow(LL2,2) - LL2 -1.) + b2);
-    als3 = als2 + pow(als0,4)*(pow(b1,3)*(-pow(LL2,3)+5./2.*pow(LL2,2)+2*LL2-1./2.)-
-                               3.*b1*b2*LL2 + b3/2.);
+    if(nloop==3)
+        als3 = als2 + pow(als0,4)*(pow(b1,3)*(-pow(LL2,3)+5./2.*pow(LL2,2)+2*LL2-1./2.)-
+                                   3.*b1*b2*LL2 + b3/2.);
+    else
+        als3 = als2;
     
     return als3;
 }
@@ -72,8 +75,8 @@ double q_evolution_to_RIp_ainv(int Nf,double ainv,double a2p2)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,3)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,3)/(4*M_PI);
     
     ////////////////////////////////
     // N3LO FORMULA
@@ -103,8 +106,8 @@ double S_evolution_to_RIp_ainv(int Nf,double ainv,double a2p2)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,3)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,3)/(4*M_PI);
     
     ////////////////////////////////
     // N3LO FORMULA
@@ -145,8 +148,8 @@ double P_evolution_to_RIp_ainv(int Nf,double ainv,double a2p2)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,3)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,3)/(4*M_PI);
     
     ////////////////////////////////
     // N3LO FORMULA
@@ -186,8 +189,8 @@ double T_evolution_to_RIp_ainv(int Nf,double ainv,double a2p2)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,2)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,2)/(4*M_PI);
     
     ////////////////////////////////
     // N2LO FORMULA
@@ -222,8 +225,8 @@ double P_evolution_to_RIp_two_GeV(int Nf,double ainv,double a2p2)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,3)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,3)/(4*M_PI);
     
     ////////////////////////////////
     // N3LO FORMULA
@@ -270,8 +273,8 @@ double q_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,3)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,3)/(4*M_PI);
     
     ////////////////////////////////
     // N3LO FORMULA
@@ -301,8 +304,8 @@ double S_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,3)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,3)/(4*M_PI);
     
     ////////////////////////////////
     // N3LO FORMULA
@@ -343,8 +346,8 @@ double P_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,3)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,3)/(4*M_PI);
     
     ////////////////////////////////
     // N3LO FORMULA
@@ -384,8 +387,8 @@ double T_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     
     // alphas @ NNLO
     double alm, al0;
-    alm=alphas(Nf,mu_2)/(4*M_PI);
-    al0=alphas(Nf,mu0_2)/(4*M_PI);
+    alm=alphas(Nf,mu_2,2)/(4*M_PI);
+    al0=alphas(Nf,mu0_2,2)/(4*M_PI);
     
     ////////////////////////////////
     // N2LO FORMULA
@@ -647,13 +650,15 @@ oper_t oper_t::evolve_mixed(double ainv)
     {
         // eta_q
 
-        double al0 = alphas(Nf,pow(ainv,2.0)*p2[imom])/(4.0*M_PI);
+        double al0;
         
         double UQCD_q    = 1.0/q_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
         double UQCDinv_q = 1.0/UQCD_q;
         double UQED1_q = 0.5*gamma_q_e0*log(p2[imom])/pow(4.0*M_PI,2.0);
         double UQED2_q = 0.5*gamma_q_se1*log(p2[imom])/pow(4.0*M_PI,2.0) +
                          0.25*pow(log(p2[imom]),2.0)*gamma_q_e0*gamma_q_s0/pow(4.0*M_PI,2.0);
+        
+        al0=alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
         
         for(int ijack=0;ijack<njacks;ijack++)
             for(int mr=0;mr<out._nmr;mr++)
@@ -680,7 +685,11 @@ oper_t oper_t::evolve_mixed(double ainv)
 //            double UQED1_bil = 0.5*gamma_bil_e0[ibil]*log(p2[imom]*pow(ainv,2.0)/4.0)/pow(4.0*M_PI,2.0);
 //            double UQED2_bil = 0.5*gamma_bil_se1[ibil]*log(p2[imom]*pow(ainv,2.0)/4.0)/pow(4.0*M_PI,2.0) +
 //                               0.25*pow(log(p2[imom]*pow(ainv,2.0)/4.0),2.0)*gamma_bil_e0[ibil]*gamma_bil_s0[ibil]/pow(4.0*M_PI,2.0);
-
+            
+            if(ibil==4)
+                al0=alphas(Nf,pow(ainv,2.0)*p2[imom],2)/(4.0*M_PI);
+            else
+                al0=alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
             
             for(int ijack=0;ijack<njacks;ijack++)
                 for(int mr1=0;mr1<out._nmr;mr1++)
@@ -733,7 +742,8 @@ oper_t oper_t::evolve_mixed(double ainv)
         
         ZQEDan = evaluate_Carrasco(p2[imom]);
         
-        double al0 = alphas(Nf,pow(ainv,2.0)*p2[imom])/(4.0*M_PI);
+#warning al0 da aggiustare: per ZT deve essere calcolato a 2 loop!
+        double al0 = alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
         
         for(int ijack=0;ijack<njacks;ijack++)
             for(int mr1=0;mr1<out._nmr;mr1++)

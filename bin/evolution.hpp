@@ -9,6 +9,6 @@
 //
 //double T_evolution_to_RIp_ainv(int Nf,double ainv,double a2p2);
 
-double alphas(int Nf,double mu2);
+double alphas(int Nf,double mu2,int nloop);
 
 #endif 
