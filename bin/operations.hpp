@@ -199,7 +199,7 @@ struct oper_t
 
 
     // evolution to 1/a scale
-    oper_t evolve(const int b, const double p2_evol);
+    oper_t evolve(const double ainv, const double p2_evol);
     oper_t evolveToAinv(const double ainv);
     
     // evolution to 1/a scale of mixed eta
