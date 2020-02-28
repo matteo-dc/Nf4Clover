@@ -1211,6 +1211,7 @@ oper_t oper_t::filter_moms()
     (out.mom_list).resize(count_filtered);
     (out.p).resize(count_filtered);
     (out.p_tilde).resize(count_filtered);
+    (out.Np).resize(neq_lin_moms);
     
     out._linmoms=count_filtered;
     (out.linmoms).resize(out._linmoms);
@@ -1232,6 +1233,7 @@ oper_t oper_t::filter_moms()
             (out.mom_list)[ifilt]=mom_list[imom];
             (out.p)[ifilt]=p[imom];
             (out.p_tilde)[ifilt]=p_tilde[imom];
+            (out.Np)[ifilt]=Np[imom];
             
 //            (out.linmoms)[ifilt]=linmoms[imom];
 //            (out.bilmoms)[ifilt]=bilmoms[imom];
