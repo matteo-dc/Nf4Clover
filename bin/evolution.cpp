@@ -435,6 +435,9 @@ oper_t oper_t::evolve(const int b, const double p2_evol)
     
     double _ainv=ainv[b];
     
+    /*DEBUG*/
+    cout<<"from 'evolve': ainv = "<<_ainv<<endl;
+    
     for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
     {
         cq=q_evolution_to_RIp(Nf,_ainv,p2[ilinmom],p2_evol);
