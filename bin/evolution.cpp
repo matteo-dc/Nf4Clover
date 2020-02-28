@@ -268,10 +268,6 @@ double q_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     double mu_2 = a2p2*pow(ainv,2.0);    // p2
     double mu0_2= p2ref;         // p2ref
     
-    /*DEBUG*/
-    cout<<"a2p2 = "<<a2p2<<" ainv = "<<ainv<<endl;
-    cout<<"mu2 = "<<mu_2<<" mu02 = "<<mu0_2<<endl;
-    
     // alphas @ NNLO
     double alm, al0;
     alm=alphas(Nf,mu_2)/(4*M_PI);
@@ -291,10 +287,6 @@ double q_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
         cmu = 1. + 2.4000 * alm + 29.6724 * pow(alm,2) + 719.141 * pow(alm,3);
         cmu0 = 1. + 2.4000 * al0 + 29.6724 * pow(al0,2) + 719.141 * pow(al0,3);
     }
-    
-    /*DEBUG*/
-    cout<<cmu<<endl;
-    cout<<cmu0<<endl;
     
     return cmu/cmu0;
 }
@@ -417,7 +409,7 @@ double T_evolution_to_RIp(int Nf,double ainv,double a2p2,double p2ref)
     return cmu/cmu0;
 }
 
-oper_t oper_t::evolve(const int b, const double p2_evol)
+oper_t oper_t::evolve(const double _ainv, const double p2_evol)
 {
     if(!inte_analysis)
     {
@@ -433,18 +425,10 @@ oper_t oper_t::evolve(const int b, const double p2_evol)
     double cq=0.0;
     vd_t cO(0.0,5);
     
-    double _ainv=ainv[b];
-    
-    /*DEBUG*/
-    cout<<"from 'evolve': ainv = "<<_ainv<<endl;
     
     for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
     {
         cq=q_evolution_to_RIp(Nf,_ainv,p2[ilinmom],p2_evol);
-        
-        /*DEBUG*/
-        if(ilinmom==0 and ilinmom==100)
-            cout<<ilinmom<<" "<<cq<<endl;
         
         for(int ijack=0;ijack<njacks;ijack++)
             for(int mr1=0; mr1<_nmr; mr1++)
