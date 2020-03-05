@@ -94,7 +94,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,QCD_on_the_right_tag)==0) return QCDONTHERIGHT_TK;
     if(strcasecmp(tok,sub_boosted_tag)==0) return SUB_BOOSTED_TK;
     if(strcasecmp(tok,sub_ptilde_tag)==0) return SUB_PTILDE_TK;
-    if(strcasecmp(tok,sub_ptilde_tag)==0) return CHIR_ANSATZ_TK;
+    if(strcasecmp(tok,chir_ansatz_tag)==0) return CHIR_ANSATZ_TK;
 
     return VALUE_GLB_TK;
 }
