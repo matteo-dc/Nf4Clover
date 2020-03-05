@@ -66,7 +66,9 @@ extern vector<int> nm_Sea;
 extern int nm_Sea_max;
 // sea masses label
 extern vector<vector<int>> SeaMasses_label;
-// sea masses label
+// sea masses vector
+extern vector<vector<double>> SeaMasses;
+// sea mass for given ensemble
 extern double mu_sea;
 // valence masses
 extern vector<double> mass_val;
@@ -147,4 +149,6 @@ extern double p2ref;
 extern int load_ave;
 // load chiral extrapolated quantities
 extern int load_chir;
+// chiral fit ansatz
+extern string chir_ansatz;
 #endif
