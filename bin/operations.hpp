@@ -42,6 +42,7 @@ struct oper_t
     string _beta_label;
     int _nm_Sea;
     string _SeaMasses_label;
+    double _mu_sea;
     string _theta_label;
     string _volume_label;
     double g2;
@@ -230,7 +231,7 @@ struct oper_t
     void plot(const string suffix);
     void plot(const string suffix, int b);
     // plot chiral extrapolations
-    void plot_bil_chir_extr(int mom, int ins, int ibil, vd_t x, vd_t y, vd_t dy, vvd_t jpars);
+    void plot_bil_chir_extr(int mom, int ins, int ibil, vd_t x, vd_t y, vd_t dy, vvd_t jpars, string suffix);
     void plot_meslep_chir_extr(int mom, int ins, int iop1, int iop2, vd_t x, vd_t y, vd_t dy, vvd_t jpars);
     
     // plot sigmas

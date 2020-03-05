@@ -227,6 +227,7 @@ void oper_t::create_basic(const int b, const int th, const int msea)
     _volume_label=volume_label[b];
     _nm_Sea=nm_Sea[b];
     _SeaMasses_label=to_string(SeaMasses_label[b][msea]);
+    _mu_sea=SeaMasses[b][msea];
     _theta_label=theta_label[th];
     _csw=csw[b];
     
@@ -503,6 +504,7 @@ oper_t oper_t::chiral_extr()
     vvd_t dM_eff;
     vvd_t M2_eff;
     vvd_t M2_eff_err;
+    
     if(UseEffMass)
     {
         vvd_t M_eff = get<0>(ave_err(eff_mass));
@@ -537,13 +539,44 @@ oper_t oper_t::chiral_extr()
     int npar_sigma=2;
     // number of fit parameters for bilinears
     int npar_bil[5]={3,2,3,2,2};
-    int npar_bil_max=3;
+    int npar_bil_max=*max_element(npar_bil,npar_bil + sizeof(npar_bil)/sizeof(npar_bil[0]));
     // number of fit parameters for meslep
     int npar_meslep[5]={2,2,3,3,2};
-    int npar_meslep_max=3;
+    int npar_meslep_max=*max_element(npar_meslep,npar_meslep + sizeof(npar_meslep)/sizeof(npar_meslep[0]));
     
-
+    bool linear=true, constant=false, quadratic=false;
     
+    if(strcmp(chir_ansatz.c_str(),"constant")==0)
+    {
+        linear=false;
+        constant=true;
+        
+        npar_sigma--;
+        
+        for(int ibil=0;ibil<nbil;ibil++)
+            npar_bil[ibil]--;
+        npar_bil_max--;
+        
+        for(int i=0;i<nbil;i++)
+            npar_meslep[i]--;
+        npar_meslep_max--;
+    }
+    else if(strcmp(chir_ansatz.c_str(),"quadratic")==0)
+    {
+        linear=false;
+        quadratic=true;
+        
+        npar_sigma++;
+        
+        for(int ibil=0;ibil<nbil;ibil++)
+            npar_bil[ibil]++;
+        npar_bil_max++;
+        
+        for(int i=0;i<nbil;i++)
+            npar_meslep[i]++;
+        npar_meslep_max++;
+    }
+        
     //extrapolate sigma
     
     vvd_t sigma_pars_QCD(vd_t(0.0,npar_sigma),njacks);
@@ -565,11 +598,31 @@ oper_t oper_t::chiral_extr()
                         
                         if(!UseEffMass)
                         {
-                            coord_sigma[0][m] = 1.0;
-                            coord_sigma[1][m] = mass_val[m];
+                            if(constant)
+                            {
+                                coord_sigma[0][m] = 1.0;
+                            }
+                            else if(linear)
+                            {
+                                coord_sigma[0][m] = 1.0;
+                                coord_sigma[1][m] = mass_val[m];
+                            }
+                            else if(quadratic)
+                            {
+                                coord_sigma[0][m] = 1.0;
+                                coord_sigma[1][m] = mass_val[m];
+                                coord_sigma[2][m] = mass_val[m]*mass_val[m];
+                            }
+                            
                         }
                         else if(UseEffMass)
                         {
+                            if(!linear)
+                            {
+                                cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                                exit(0);
+                            }
+                            
                             coord_sigma[0][m] = 1.0;
                             coord_sigma[1][m] = pow(M_eff[m][m],2.0);
                         }
@@ -646,14 +699,34 @@ oper_t oper_t::chiral_extr()
                                 
                                 if(!UseEffMass)
                                 {
-                                    coord_bil[0][ieq] = 1.0;
-                                    // (am1+am2)
-                                    coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];
-                                    // 1/(am1+am2)
-                                    coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];
+                                    if(constant)
+                                    {
+                                        coord_bil[0][ieq] = 1.0;                              // 1
+                                        coord_bil[1][ieq] = 1.0/(mass_val[m1]+mass_val[m2]);  // 1/(am1+am2)
+                                    }
+                                    else if(linear)
+                                    {
+                                        coord_bil[0][ieq] = 1.0;                        // 1
+                                        coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];  // (am1+am2)
+                                        coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];      // 1/(am1+am2)
+                                    }
+                                    else if(quadratic)
+                                    {
+                                        coord_bil[0][ieq] = 1.0;                                 // 1
+                                        coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];           // (am1+am2)
+                                        coord_bil[2][ieq] = coord_bil[1][ieq]*coord_bil[1][ieq]; // (am1+am2)^2
+                                        coord_bil[3][ieq] = 1.0/coord_bil[1][ieq];               // 1/(am1+am2)
+                                        
+                                    }
                                 }
                                 else if(UseEffMass)
                                 {
+                                    if(!linear)
+                                    {
+                                        cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                                        exit(0);
+                                    }
+                                    
                                     coord_bil[0][ieq] = 1.0;
                                     // M^2 (averaged over equivalent combinations)
                                     coord_bil[1][ieq] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
@@ -710,7 +783,7 @@ oper_t oper_t::chiral_extr()
                     
                         if(ibilmom%20==0 and r1==0 and r2==0)
                         {
-                            plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars);   /* (mom,ins,bil,x,y,dy,jpars) */
+                            plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                         }
                     }
     
@@ -719,6 +792,12 @@ oper_t oper_t::chiral_extr()
 #warning Goldstone: forse va solo quando iproj=2,3 e non iop!
     if(compute_4f)
     {
+        if(!linear)
+        {
+            cout<<"Only linear fit implemented when using EffMass!"<<endl;
+            exit(0);
+        }
+        
         //extrapolate pr_meslep
         
         vvd_t pr_meslep_pars_QCD(vd_t(0.0,npar_meslep_max),njacks);
@@ -833,44 +912,6 @@ oper_t oper_t::chiral_extr()
     return out;
 }
 
-//oper_t oper_t::subtract()
-//{
-//    cout<<endl;
-//    cout<<"----- subtraction of O(a2) effects -----"<<endl<<endl;
-//
-//    oper_t out=(*this);
-//
-////    resize_output(out);
-//    out.allocate();
-//    
-//#pragma omp parallel for collapse(3)
-//    for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
-//        for(int ijack=0;ijack<njacks;ijack++)
-//            for(int mr1=0; mr1<_nmr; mr1++)
-//            {
-//                (out.jZq)[ilinmom][ijack][mr1] = jZq[ilinmom][ijack][mr1] - subtraction_q(ilinmom,LO);
-//                (out.jZq_EM)[ilinmom][ijack][mr1] = jZq_EM[ilinmom][ijack][mr1] + /*(!)*/ subtraction_q(ilinmom,EM)/**jZq[ilinmom][ijack][mr1]*/;
-//                // N.B.: the subtraction gets an extra minus sign due to the definition of the e.m. expansion!
-//            }
-//    
-//#pragma omp parallel for collapse(5)
-//    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-//        for(int ibil=0;ibil<5;ibil++)
-//            for(int ijack=0;ijack<njacks;ijack++)
-//                for(int mr1=0; mr1<_nmr; mr1++)
-//                    for(int mr2=0; mr2<_nmr; mr2++)
-//                    {
-//                        (out.jG_LO)[ibilmom][ibil][ijack][mr1][mr2] = jG_LO[ibilmom][ibil][ijack][mr1][mr2] - subtraction(ibilmom,ibil,LO);
-//                        (out.jG_EM)[ibilmom][ibil][ijack][mr1][mr2] = jG_EM[ibilmom][ibil][ijack][mr1][mr2] - subtraction(ibilmom,ibil,EM)*jG_LO[ibilmom][ibil][ijack][mr1][mr2];
-//                    }
-//    
-//    out.compute_Zbil();
-//    
-//#warning missing subtraction for 4f
-//    
-//    return out;
-//}
-
 
 oper_t chiral_sea_extr(voper_t in)
 {
@@ -891,13 +932,14 @@ oper_t chiral_sea_extr(voper_t in)
 
     vd_t x(0.0,nmSea);
     
-    vvvvd_t dy_sigma(vvvd_t(vvd_t(vd_t(0.0,nmSea),sigma::nins),sigma::nproj),_linmoms);
-    vvvvd_t dy_G(vvvd_t(vvd_t(vd_t(0.0,nmSea),nbil),gbil::nins),_bilmoms);
-    vvvvvd_t dy_meslep(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),nbil),nbil),pr_meslep::nins),_meslepmoms);
-
-    vvvvvd_t y_sigma(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),njacks),sigma::nins),sigma::nproj),_linmoms);
-    vvvvvd_t y_G(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),njacks),nbil),gbil::nins),_bilmoms);
-    vvvvvvd_t y_meslep(vvvvvd_t(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),njacks),nbil),nbil),pr_meslep::nins),_meslepmoms);
+//    vvvvd_t dy_sigma(vvvd_t(vvd_t(vd_t(0.0,nmSea),sigma::nins),sigma::nproj),_linmoms);
+//    vvvvd_t dy_G(vvvd_t(vvd_t(vd_t(0.0,nmSea),nbil),gbil::nins),_bilmoms);
+//    vvvvvd_t dy_meslep(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),nbil),nbil),pr_meslep::nins),_meslepmoms);
+//
+//    vvvvvd_t y_sigma(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),njacks),sigma::nins),sigma::nproj),_linmoms);
+//    vvvvvd_t y_G(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),njacks),nbil),gbil::nins),_bilmoms);
+//    vvvvd_t y_G_ave(vvvd_t(vvd_t(vd_t(0.0,nmSea),nbil),gbil::nins),_bilmoms);
+//    vvvvvvd_t y_meslep(vvvvvd_t(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmSea),njacks),nbil),nbil),pr_meslep::nins),_meslepmoms);
 
     
     // range for fit
@@ -905,7 +947,55 @@ oper_t chiral_sea_extr(voper_t in)
     int x_max=nmSea-1;
     
     for(int msea=0; msea<nmSea; msea++)
-        x[msea] = get<0>(ave_err(in[msea].eff_mass_sea));
+    {
+        if(UseEffMass)
+            x[msea] = get<0>(ave_err(in[msea].eff_mass_sea));
+        else
+            x[msea] = in[msea]._mu_sea;
+    }
+    
+    // number of fit parameters for sigma
+    int npar_sigma=2;
+    // number of fit parameters for bilinears
+    int npar_bil[5]={2,2,2,2,2};
+    int npar_bil_max=*max_element(npar_bil,npar_bil + sizeof(npar_bil)/sizeof(npar_bil[0]));
+    // number of fit parameters for meslep
+    int npar_meslep[5]={2,2,2,2,2};
+    int npar_meslep_max=*max_element(npar_meslep,npar_meslep + sizeof(npar_meslep)/sizeof(npar_meslep[0]));
+    
+    bool linear=true, constant=false, quadratic=false;
+    
+    if(strcmp(chir_ansatz.c_str(),"constant")==0)
+    {
+        linear=false;
+        constant=true;
+        
+        npar_sigma--;
+        
+        for(int ibil=0;ibil<nbil;ibil++)
+            npar_bil[ibil]--;
+        npar_bil_max--;
+        
+        for(int i=0;i<nbil;i++)
+            npar_meslep[i]--;
+        npar_meslep_max--;
+    }
+    else if(strcmp(chir_ansatz.c_str(),"quadratic")==0)
+    {
+        linear=false;
+        quadratic=true;
+        
+        npar_sigma++;
+        
+        for(int ibil=0;ibil<nbil;ibil++)
+            npar_bil[ibil]++;
+        npar_bil_max++;
+        
+        for(int i=0;i<nbil;i++)
+            npar_meslep[i]++;
+        npar_meslep_max++;
+    }
+    
     
     // extrapolate sigma
 #pragma omp parallel for collapse(3)
@@ -913,22 +1003,44 @@ oper_t chiral_sea_extr(voper_t in)
         for(int iproj=0; iproj<sigma::nproj; iproj++)
             for(int ins=0; ins<sigma::nins; ins++)
             {
-                vvd_t coord_q(vd_t(0.0,nmSea),2); // coords at fixed r
+                vvd_t coord_sigma(vd_t(0.0,nmSea),npar_sigma); // coords at fixed r
                 
                 vvd_t y_sigma(vd_t(0.0,nmSea),njacks);
                 vd_t dy_sigma(0.0,nmSea);
+            
                 
                 for(int msea=0; msea<nmSea; msea++)
                 {
-                    coord_q[0][msea] = 1.0;
+                    coord_sigma[0][msea] = 1.0;
+                    
                     if(!UseEffMass)
                     {
-                        cout<<" Impossible to extrapolate without using the effective mass. "<<endl;
-                        exit(0);
-                        //      coord_q[1][m]= mass_val[m];
+                        if(constant)
+                        {
+                            coord_sigma[0][msea] = 1.0;
+                        }
+                        else if(linear)
+                        {
+                            coord_sigma[0][msea] = 1.0;
+                            coord_sigma[1][msea] = x[msea];
+                        }
+                        else if(quadratic)
+                        {
+                            coord_sigma[0][msea] = 1.0;
+                            coord_sigma[1][msea] = x[msea];
+                            coord_sigma[2][msea] = x[msea]*x[msea];
+                        }
                     }
                     else if(UseEffMass)
-                        coord_q[1][msea] = pow(x[msea],2.0);
+                    {
+                        if(!linear)
+                        {
+                            cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                            exit(0);
+                        }
+                        
+                        coord_sigma[1][msea] = pow(x[msea],2.0);
+                    }
                     
                     for(int ijack=0;ijack<njacks;ijack++)
                         y_sigma[ijack][msea] = in[msea].sigma[ilinmom][iproj][ins][ijack][0];
@@ -936,13 +1048,13 @@ oper_t chiral_sea_extr(voper_t in)
                     dy_sigma[msea] = (get<1>(ave_err(in[msea].sigma)))[ilinmom][iproj][ins][0];
                 }
                 
-                vvd_t sigma_pars = polyfit(coord_q,2,dy_sigma,y_sigma,x_min,x_max);
+                vvd_t sigma_pars = polyfit(coord_sigma,npar_sigma,dy_sigma,y_sigma,x_min,x_max);
                 
                 for(int ijack=0; ijack<njacks; ijack++)
                     (out.sigma)[ilinmom][iproj][ins][ijack][0]=sigma_pars[ijack][0];
             }
     
-    if(ntypes!=3)
+    if(ntypes!=3 and ntypes!=1)
     {
         out.deltam_computed=true;
         out.compute_deltam_from_prop();
@@ -956,40 +1068,74 @@ oper_t chiral_sea_extr(voper_t in)
         for(int ins=0; ins<gbil::nins; ins++)
             for(int ibil=0;ibil<nbil;ibil++)
             {
-                vvd_t coord_bil(vd_t(0.0,nmSea),2); // linear fit in sea extrapolation
+                vvd_t coord_bil(vd_t(0.0,nmSea),npar_bil_max);
                 
                 vvd_t y_G(vd_t(0.0,nmSea),njacks);
                 vd_t dy_G(0.0,nmSea);
+                vd_t y_G_ave(0.0,nmSea);
                 
                 for(int msea=0; msea<nmSea; msea++)
                 {
                     coord_bil[0][msea] = 1.0;
                     if(!UseEffMass)
                     {
-                        cout<<" Impossible to extrapolate without using the effective mass. "<<endl;
-                        exit(0);
-                        //                coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];  // (am1+am2)
-                        //                coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];    // 1/(am1+am2)
+                        if(constant)
+                        {
+                            coord_bil[0][msea] = 1.0;      // 1
+                        }
+                        else if(linear)
+                        {
+                            coord_bil[0][msea] = 1.0;      // 1
+                            coord_bil[1][msea] = x[msea];  // (amsea)
+                        }
+                        else if(quadratic)
+                        {
+                            coord_bil[0][msea] = 1.0;               // 1
+                            coord_bil[1][msea] = x[msea];           // (amsea)
+                            coord_bil[2][msea] = x[msea]*x[msea];   // (amsea)^2
+                        }
+
                     }
                     else if(UseEffMass)
+                    {
+                        if(!linear)
+                        {
+                            cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                            exit(0);
+                        }
+                        
                         coord_bil[1][msea] = pow(x[msea],2.0);
+                    }
 
                     for(int ijack=0;ijack<njacks;ijack++)
                         y_G[ijack][msea] = in[msea].jG[ibilmom][ins][ibil][ijack][0][0];
                     
+                    y_G_ave[msea] = (get<0>(ave_err(in[msea].jG)))[ibilmom][ins][ibil][0][0];
                     dy_G[msea] = (get<1>(ave_err(in[msea].jG)))[ibilmom][ins][ibil][0][0];
                 }
                 
-                vvd_t jG_pars = polyfit(coord_bil,2,dy_G,y_G,x_min,x_max);
+                vvd_t jG_pars = polyfit(coord_bil,npar_bil_max,dy_G,y_G,x_min,x_max);
                 
                 for(int ijack=0;ijack<njacks;ijack++)
                     (out.jG)[ibilmom][ins][ibil][ijack][0][0] = jG_pars[ijack][0];
+                
+//                if(ibilmom%20==0)
+//                {
+//                    plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],y_G_ave,dy_G,jG_pars,"sea");   /* (mom,ins,bil,x,y,dy,jpars) */
+//                }
+                
             }
     
     out.compute_Zbil();
     
     if(compute_4f)
     {
+        if(!linear)
+        {
+            cout<<"Only linear fit implemented when using EffMass!"<<endl;
+            exit(0);
+        }
+        
         // extrapolate meslep
 #pragma omp parallel for collapse(4)
         for(int imom=0;imom<_meslepmoms;imom++)
@@ -2307,7 +2453,7 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
     return out;
 }
 
-void oper_t::plot_bil_chir_extr(int mom, int i_ins, int ibil, vd_t x, vd_t y, vd_t dy, vvd_t jpars)
+void oper_t::plot_bil_chir_extr(int mom, int i_ins, int ibil, vd_t x, vd_t y, vd_t dy, vvd_t jpars,  string suffix)
 {
     // this choice is relative to the twisted basis
     vector<string> bil={"S","V","P","A","T"};
@@ -2322,8 +2468,8 @@ void oper_t::plot_bil_chir_extr(int mom, int i_ins, int ibil, vd_t x, vd_t y, vd
     ofstream plot_data;
     ofstream pars_data;
     
-    plot_data.open(path_to_ens+"plots/chir_extr_Gbil_"+bil[ibil]+"_"+ins_str[i_ins]+"_mom_"+to_string(mom)+".txt");
-    pars_data.open(path_to_ens+"plots/chir_extr_Gbil_"+bil[ibil]+"_"+ins_str[i_ins]+"_mom_"+to_string(mom)+"_pars.txt");
+    plot_data.open(path_to_ens+"plots/chir_extr_Gbil_"+bil[ibil]+"_"+ins_str[i_ins]+"_mom_"+to_string(mom)+(suffix!=""?("_"+suffix):string(""))+".txt");
+    pars_data.open(path_to_ens+"plots/chir_extr_Gbil_"+bil[ibil]+"_"+ins_str[i_ins]+"_mom_"+to_string(mom)+"_pars"+(suffix!=""?("_"+suffix):string(""))+".txt");
     
     int npar=(int)jpars[0].size();
     
