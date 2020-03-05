@@ -101,6 +101,8 @@ int main(int narg,char **arg)
             vvoper_t evo(voper_t(nm_Sea[b]),ntheta);
             vvoper_t sub(voper_t(nm_Sea[b]),ntheta);
             
+            voper_t sea_chir(ntheta);
+            
             for(int th=0; th<ntheta; th++)
             {
                 M1[th][b].resize(nm_Sea[b]);
@@ -211,18 +213,27 @@ int main(int narg,char **arg)
 //                            sub[th][m] = evo[th][m].subOa2(b);
 //                            sub[th][m].plot("sub");
                             
-                            exit(0);
                             
-                            M1[th][b][m] = sub[th][m].a2p2_extr();
-                            M1[th][b][m].plot("M1");
-                            M2[th][b][m] = sub[th][m].interpolate_to_p2ref(b);
-//                            M2[th][b][m] = sub[th][m].interpolate_to_ainv(b);
-                            M2[th][b][m].plot("M2");
+//                            M1[th][b][m] = sub[th][m].a2p2_extr();
+//                            M1[th][b][m].plot("M1");
+//                            M2[th][b][m] = sub[th][m].interpolate_to_p2ref(b);
+//                           /* M2[th][b][m] = sub[th][m].interpolate_to_ainv(b); */
+//                            M2[th][b][m].plot("M2");
                         }
                         
                     } //close if(!only_basic)
                     
                 } //close nm_sea
+                
+                if(eta_analysis)
+                    exit(0);
+                else
+                {
+                    sea_chir[th] = chiral_sea_extr(evo[th]);
+                    sea_chir[th].plot("sea");
+                    
+                    exit(0);
+                }
                 
             } //close ntheta
          
@@ -230,6 +241,9 @@ int main(int narg,char **arg)
         
     } //close nloop
     
+    
+    
+    /*   DA MODIFICARE DA QUI IN POI  */
     
     if(eta_analysis and !only_basic)
     {
