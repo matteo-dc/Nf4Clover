@@ -15,13 +15,14 @@ vector<double> beta;
 vector<int> nm_Sea;
 int nm_Sea_max;
 vector<vector<int>> SeaMasses_label; // SeaMasses_label[Nbeta][NSeaMass]
+vector<vector<double>> SeaMasses;    // SeaMasses[Nbeta][NSeaMass]
 int L, T;
 vector<double> ainv;
 vector<double> csw;
 int conf_init, conf_step, nm, neq, neq2, nmr, delta_tmin, delta_tmax;
 double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref;
 vector<double> mass_val;
-string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix;
+string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
 vector<string> volume_label;  // volume_label[Nbeta]
@@ -63,6 +64,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,theta_label_tag)==0) return THETA_LAB_TK;
     if(strcasecmp(tok,nm_Sea_tag)==0) return NM_SEA_TK;
     if(strcasecmp(tok,SeaMasses_label_tag)==0) return SEAMASSES_LAB_TK;
+    if(strcasecmp(tok,SeaMasses_tag)==0) return SEAMASSES_TK;
     if(strcasecmp(tok,nr_tag)==0) return NR_TK;
     if(strcasecmp(tok,ntypes_tag)==0) return NTYPES_TK;
     if(strcasecmp(tok,nhits_tag)==0) return NHITS_TK;
@@ -92,6 +94,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,QCD_on_the_right_tag)==0) return QCDONTHERIGHT_TK;
     if(strcasecmp(tok,sub_boosted_tag)==0) return SUB_BOOSTED_TK;
     if(strcasecmp(tok,sub_ptilde_tag)==0) return SUB_PTILDE_TK;
+    if(strcasecmp(tok,sub_ptilde_tag)==0) return CHIR_ANSATZ_TK;
 
     return VALUE_GLB_TK;
 }
@@ -283,6 +286,7 @@ void read_input_glb(const char path[])
     QCD_on_the_right=DEFAULT_INT_VAL;
     sub_boosted=DEFAULT_INT_VAL;
     sub_ptilde=DEFAULT_INT_VAL;
+    chir_ansatz=DEFAULT_STR_VAL;
 
     
 //    for(auto &bl : beta_label) bl=DEFAULT_STR_VAL;
@@ -343,6 +347,15 @@ void read_input_glb(const char path[])
                     SeaMasses_label[b].resize(nm_Sea[b]);
                     for(int m=0;m<nm_Sea[b];m++)
                         get_value_glb(fin,SeaMasses_label[b][m]);
+                }
+                break;
+            case SEAMASSES_TK:
+                SeaMasses.resize(nbeta);
+                for(int b=0;b<nbeta;b++)
+                {
+                    SeaMasses[b].resize(nm_Sea[b]);
+                    for(int m=0;m<nm_Sea[b];m++)
+                        get_value_glb(fin,SeaMasses[b][m]);
                 }
                 break;
             case NTHETA_TK:
@@ -427,25 +440,28 @@ void read_input_glb(const char path[])
                 get_value_glb(fin,clover);
                 break;
             case P2REF_TK:
-                get_value(fin,p2ref);
+                get_value_glb(fin,p2ref);
                 break;
             case LOAD_AVE_TK:
-                get_value(fin,load_ave);
+                get_value_glb(fin,load_ave);
                 break;
             case LOAD_CHIR_TK:
-                get_value(fin,load_chir);
+                get_value_glb(fin,load_chir);
                 break;
             case SUFFIX_TK:
-                get_value(fin,an_suffix);
+                get_value_glb(fin,an_suffix);
                 break;
             case QCDONTHERIGHT_TK:
-                get_value(fin,QCD_on_the_right);
+                get_value_glb(fin,QCD_on_the_right);
                 break;
             case SUB_BOOSTED_TK:
-                get_value(fin,sub_boosted);
+                get_value_glb(fin,sub_boosted);
                 break;
             case SUB_PTILDE_TK:
-                get_value(fin,sub_ptilde);
+                get_value_glb(fin,sub_ptilde);
+                break;
+            case CHIR_ANSATZ_TK:
+                get_value_glb(fin,chir_ansatz);
                 break;
                 
             case FEOF_GLB_TK:
@@ -475,6 +491,8 @@ void read_input_glb(const char path[])
     for(auto &ms : nm_Sea) check_int_par(ms,nm_Sea_tag);
     for(auto &im : SeaMasses_label)
         for(auto &jm : im) check_int_par(jm,SeaMasses_label_tag);
+    for(auto &im : SeaMasses)
+        for(auto &jm : im) check_double_par(jm,SeaMasses_tag);
     check_int_par(ntheta,ntheta_tag);
     for(auto &t : theta_label) check_str_par(t.c_str(),theta_label_tag);
     check_double_par(LambdaQCD,LambdaQCD_tag);
@@ -495,6 +513,7 @@ void read_input_glb(const char path[])
     check_int_par(QCD_on_the_right,QCD_on_the_right_tag);
     check_int_par(sub_boosted,sub_boosted_tag);
     check_int_par(sub_ptilde,sub_ptilde_tag);
+    check_str_par(chir_ansatz,chir_ansatz_tag);
 
     fclose(fin);
     
@@ -557,6 +576,14 @@ void read_input_glb(const char path[])
         exit(0);
     }
     
+    if(strcmp(chir_ansatz.c_str(),"linear" )!=0 and
+       strcmp(chir_ansatz.c_str(),"constant" )!=0 and
+       strcmp(chir_ansatz.c_str(),"quadratic" )!=0)
+    {
+        cout<<"Choose the chiral fit Ansatz among: \"linear/constant/quadratic\"."<<endl;
+        exit(0);
+    }
+    
     // this is the path to the directory which contains 'print', 'plots', ecc.
     string full_path = path_folder+path_analysis[0]+"/";
     
@@ -615,6 +642,9 @@ void read_input_glb(const char path[])
     printf("and using ");
     if(sub_ptilde) printf("p2tilde.\n");
     else printf("p2.\n");
+    
+    printf(" Using [%s] Ansatz for chiral extrapolation.\n",chir_ansatz.c_str());
+    
     
     printf("\n");
     
