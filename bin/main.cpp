@@ -231,9 +231,9 @@ int main(int narg,char **arg)
                 {
                     sea_chir[th] = chiral_sea_extr(evo[th]);
                     sea_chir[th].plot("sea");
-                    
-                    exit(0);
                 }
+                
+                exit(0);
                 
             } //close ntheta
          
