@@ -1480,9 +1480,12 @@ oper_t oper_t::average_equiv_moms()
         
         for(int j=0;j<imom;j++)
         {
-            bool cond{2.0*abs(p2_tilde[j]-p2_tilde[imom])<eps*(p2_tilde[j]+p2_tilde[imom]) &&
-                      mom_list_xyz(mom_list,j)==mom_list_xyz(mom_list,imom) &&
-                      2.0*abs(abs(p[j][0])-abs(p[imom][0]))<eps*(abs(p[j][0])+abs(p[imom][0]))};
+//            bool cond{2.0*abs(p2_tilde[j]-p2_tilde[imom])<eps*(p2_tilde[j]+p2_tilde[imom]) &&
+//                      mom_list_xyz(mom_list,j)==mom_list_xyz(mom_list,imom) &&
+//                      2.0*abs(abs(p[j][0])-abs(p[imom][0]))<eps*(abs(p[j][0])+abs(p[imom][0]))};
+
+            bool cond{2.0*abs(p2[j]-p2[imom])<eps*(p2[j]+p2[imom])};
+
             if(cond)
                 tag_aux = tag_lin_vector[j];
             else
