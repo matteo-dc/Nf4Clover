@@ -1574,13 +1574,12 @@ oper_t oper_t::average_equiv_moms()
             const int imomA=bilmoms[j][1]; // p1
             const int imomB=bilmoms[j][2]; // p2
             
-            const bool cond{(tag_lin_vector[imom1]==tag_lin_vector[imomA] and
-                             tag_lin_vector[imom2]==tag_lin_vector[imomB]) or
-                            (tag_lin_vector[imom1]==tag_lin_vector[imomB] and
-                             tag_lin_vector[imom2]==tag_lin_vector[imomA])};
+//            const bool cond{(tag_lin_vector[imom1]==tag_lin_vector[imomA] and
+//                             tag_lin_vector[imom2]==tag_lin_vector[imomB]) or
+//                            (tag_lin_vector[imom1]==tag_lin_vector[imomB] and
+//                             tag_lin_vector[imom2]==tag_lin_vector[imomA])};
             
-//            const bool cond{tag_lin_vector[imom1]+tag_lin_vector[imom2]==tag_lin_vector[imomA]+tag_lin_vector[imomB] and
-//                            tag_lin_vector[imom1]*tag_lin_vector[imom2]==tag_lin_vector[imomA]*tag_lin_vector[imomB]};
+            bool cond{2.0*abs(p2[j]-p2[ibilmom])<eps*(p2[j]+p2[ibilmom])};
             
             if(cond)
                 tag_aux=tag_bil_vector[j];
