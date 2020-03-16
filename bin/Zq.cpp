@@ -11,6 +11,15 @@ void oper_t::compute_Zq()
 {
     cout<<"Computing Zq"<<endl;
     
+    cout<<"Sigma1[imom=1][mr=0] "<<endl;
+    for(int ijack=0;ijack<njacks;ijack++)
+        cout<<sigma[1][SIGMA1][LO][ijack][0]<<endl;
+    cout<<endl;
+    cout<<"Sigma1[imom="<<_linmoms-1<<"][mr=0] "<<endl;
+    for(int ijack=0;ijack<njacks;ijack++)
+        cout<<sigma[_linmoms-1][SIGMA1][LO][ijack][0]<<endl;
+    cout<<endl;
+    
 #pragma omp parallel for collapse(3)
     for(int ilinmom=0; ilinmom<_linmoms; ilinmom++)
         for(int ijack=0;ijack<njacks;ijack++)

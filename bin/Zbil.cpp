@@ -13,6 +13,20 @@ void oper_t::compute_Zbil()
     
 //    vvvvvd_t jG_EM(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,_nmr),_nmr),njacks),nbil),_bilmoms);
     
+    for(int ibil=0;ibil<nbil;ibil++)
+    {
+        cout<<"jG[imom=1][mr=0][ibil="<<ibil<<"] "<<endl;
+        for(int ijack=0;ijack<njacks;ijack++)
+            cout<<jG[1][gbil::LO][ibil][ijack][0][0]<<endl;
+        cout<<endl;
+        cout<<"jG[imom="<<_bilmoms-1<<"][mr=0][ibil="<<ibil<<"] "<<endl;
+        for(int ijack=0;ijack<njacks;ijack++)
+            cout<<jG[_bilmoms-1][gbil::LO][ibil][ijack][0][0]<<endl;
+        cout<<endl;
+    }
+
+    
+    
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
     {
 //        const int imom1=bilmoms[ibilmom][1]; // p1
@@ -61,6 +75,19 @@ void oper_t::compute_Zbil()
                     }
         
     }// close mom loop
+    
+    for(int ibil=0;ibil<nbil;ibil++)
+    {
+        cout<<"jZ[imom=1][mr=0][ibil="<<ibil<<"] "<<endl;
+        for(int ijack=0;ijack<njacks;ijack++)
+            cout<<jZ[1][ibil][ijack][0][0]<<endl;
+        cout<<endl;
+        cout<<"jZ[imom="<<_bilmoms-1<<"][mr=0][ibil="<<ibil<<"] "<<endl;
+        for(int ijack=0;ijack<njacks;ijack++)
+            cout<<jZ[_bilmoms-1][ibil][ijack][0][0]<<endl;
+        cout<<endl;
+    }
+    
 }
 
 
