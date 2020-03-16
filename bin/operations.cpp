@@ -1555,51 +1555,53 @@ oper_t oper_t::average_equiv_moms()
     print_vec(out.p2,path_print+"p2_eqmoms.txt");
     print_vec(out.p2_tilde,path_print+"p2_tilde_eqmoms.txt");
     
-    // Find equivalent bilmoms
-    tag=0, tag_aux=0;
-    
-    vector<int> tag_bil_vector;
-    tag_bil_vector.push_back(0);
-    
-    //Tag assignment to bilmoms
-    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-    {
-        int count_no=0;
-        
-        const int imom1=bilmoms[ibilmom][1]; // p1
-        const int imom2=bilmoms[ibilmom][2]; // p2
-        
-        for(int j=0;j<ibilmom;j++)
-        {
-            const int imomA=bilmoms[j][1]; // p1
-            const int imomB=bilmoms[j][2]; // p2
-            
+//    // Find equivalent bilmoms
+//    tag=0, tag_aux=0;
+//    
+//    vector<int> tag_bil_vector;
+//    tag_bil_vector.push_back(0);
+//    
+//    //Tag assignment to bilmoms
+//    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
+//    {
+//        int count_no=0;
+//        
+//        const int imom1=bilmoms[ibilmom][1]; // p1
+//        const int imom2=bilmoms[ibilmom][2]; // p2
+//        
+//        for(int j=0;j<ibilmom;j++)
+//        {
+//            const int imomA=bilmoms[j][1]; // p1
+//            const int imomB=bilmoms[j][2]; // p2
+//            
 //            const bool cond{(tag_lin_vector[imom1]==tag_lin_vector[imomA] and
 //                             tag_lin_vector[imom2]==tag_lin_vector[imomB]) or
 //                            (tag_lin_vector[imom1]==tag_lin_vector[imomB] and
 //                             tag_lin_vector[imom2]==tag_lin_vector[imomA])};
-            
-            bool cond{2.0*abs(p2[j]-p2[ibilmom])<eps*(p2[j]+p2[ibilmom])};
-            
-            if(cond)
-                tag_aux=tag_bil_vector[j];
-            else
-                count_no++;
-            
-            if(count_no==ibilmom)
-            {
-                tag++;
-                tag_bil_vector.push_back(tag);
-            }
-            else if(j==ibilmom-1)
-            {
-                tag_bil_vector.push_back(tag_aux);
-            }
-        }
-    }
-    
-    // number of equivalent bilmoms
-    int neq_bil_moms = tag+1;
+//
+//            
+//            if(cond)
+//                tag_aux=tag_bil_vector[j];
+//            else
+//                count_no++;
+//            
+//            if(count_no==ibilmom)
+//            {
+//                tag++;
+//                tag_bil_vector.push_back(tag);
+//            }
+//            else if(j==ibilmom-1)
+//            {
+//                tag_bil_vector.push_back(tag_aux);
+//            }
+//        }
+//    }
+//    
+//    // number of equivalent bilmoms
+//    int neq_bil_moms = tag+1;
+
+    vector<int> tag_bil_vector=tag_lin_vector;
+    int neq_bil_moms = neq_lin_moms;
     
     out._bilmoms=neq_bil_moms;
     cout<<"and "<<neq_bil_moms<<" equivalent bilmoms "<<endl<<endl;
