@@ -160,41 +160,19 @@ int main(int narg,char **arg)
                         /* ///////  A3  /////// */
                         
                         
-//                        /*  average over equivalent momenta  */
-//                        
-//                        ave[th][m] = basic[th][m].average_equiv_moms();
-//                        if(!load_ave) ave[th][m].plot("ave");
-//
-//                        /*  democratic filter on momenta  */
-//                        
-//                        filt[th][m]=ave[th][m].filter_moms();
-//                        if(!load_ave)  filt[th][m].plot("filt");
-//                        
-//                        /*  average r  */
-//                        
-//                        rave[th][m] = filt[th][m].average_r();
-//                        if(!load_ave) rave[th][m].plot("rave");
-//                        
-//                        /*  perturbative subtraction of O(a2)  */
-//                        
-//                        sub[th][m] = rave[th][m].subOa2(b);
-//                        if(!load_ave) sub[th][m].plot("sub");
-//                        
-//                        /* store averaged ingredients */
-//                        
-//                        if(!load_ave) sub[th][m].print("ave_A3");
-//                        
-//                        /* load averaged ingredients if needed */
-//                        
-//                        if(load_ave) sub[th][m].load("ave_A3");
-
+                        /*  average over equivalent momenta  */
                         
-                        /* ///////  ENRICO  /////// */
+                        ave[th][m] = basic[th][m].average_equiv_moms();
+                        if(!load_ave) ave[th][m].plot("ave");
 
+                        /*  democratic filter on momenta  */
+                        
+                        filt[th][m]=ave[th][m].filter_moms();
+                        if(!load_ave)  filt[th][m].plot("filt");
                         
                         /*  average r  */
                         
-                        rave[th][m] = basic[th][m].average_r();
+                        rave[th][m] = filt[th][m].average_r();
                         if(!load_ave) rave[th][m].plot("rave");
                         
                         /*  perturbative subtraction of O(a2)  */
@@ -202,39 +180,64 @@ int main(int narg,char **arg)
                         sub[th][m] = rave[th][m].subOa2(b);
                         if(!load_ave) sub[th][m].plot("sub");
                         
-                        /*  democratic filter on momenta  */
-                        
-                        filt[th][m] = sub[th][m].filter_moms();
-                        if(!load_ave)  filt[th][m].plot("filt");
-                        
-                        /*  average over equivalent momenta  */
-                        
-                        ave[th][m] = filt[th][m].average_equiv_moms();
-                        if(!load_ave) ave[th][m].plot("ave");
-                        
-//                        /* store averaged ingredients */
-//                        
-//                        if(!load_ave) ave[th][m].print("ave");
-//                        
-//                        /* load averaged ingredients if needed */
-//                        
-//                        if(load_ave) ave[th][m].load("ave");
-                        
                         /* store averaged ingredients */
                         
-                        if(!load_ave) ave[th][m].print("ave_Enr");
+                        if(!load_ave) sub[th][m].print("ave_A3");
                         
                         /* load averaged ingredients if needed */
                         
-                        if(load_ave) ave[th][m].load("ave_Enr");
+                        if(load_ave) sub[th][m].load("ave_A3");
 
+                        
+                        /* ///////  ENRICO  /////// */
+
+//                        
+//                        /*  average r  */
+//                        
+//                        rave[th][m] = basic[th][m].average_r();
+//                        if(!load_ave) rave[th][m].plot("rave");
+//                        
+//                        /*  perturbative subtraction of O(a2)  */
+//                        
+//                        sub[th][m] = rave[th][m].subOa2(b);
+//                        if(!load_ave) sub[th][m].plot("sub");
+//                        
+//                        
+//                        /*  democratic filter on momenta  */
+//                        
+//                        filt[th][m] = sub[th][m].filter_moms();
+//                        if(!load_ave)  filt[th][m].plot("filt");
+//                        
+//                        /*  average over equivalent momenta  */
+//                        
+//                        ave[th][m] = filt[th][m].average_equiv_moms();
+//                        if(!load_ave) ave[th][m].plot("ave");
+//                        
+////                        /* store averaged ingredients */
+////                        
+////                        if(!load_ave) ave[th][m].print("ave");
+////                        
+////                        /* load averaged ingredients if needed */
+////                        
+////                        if(load_ave) ave[th][m].load("ave");
+//                        
+//                        /* store averaged ingredients */
+//                        
+//                        if(!load_ave) ave[th][m].print("ave_Enr");
+//                        
+//                        /* load averaged ingredients if needed */
+//                        
+//                        if(load_ave) ave[th][m].load("ave_Enr");
+
+                        /////////////////////////////////////////////////////
                         
                         /*  valence chiral extr  */
                         if(free_analysis or recompute_basic)
                         {
 //                            val_chir[th][m] = sub[th][m];
                             
-                            val_chir[th][m] = ave[th][m];  /*ENRICO*/
+//                            val_chir[th][m] = ave[th][m];  /*ENRICO*/
+                            val_chir[th][m] = sub[th][m];   /*A3*/
                             val_chir[th][m].plot("chir");
                             
                             /* store extrapolated ingredients */
@@ -244,7 +247,8 @@ int main(int narg,char **arg)
                         {
 //                            val_chir[th][m] = sub[th][m].chiral_extr();
                             
-                            val_chir[th][m] = ave[th][m].chiral_extr();  /*ENRICO*/
+//                            val_chir[th][m] = ave[th][m].chiral_extr();  /*ENRICO*/
+                            val_chir[th][m] = sub[th][m].chiral_extr();  /*A3*/
                             val_chir[th][m].plot("chir");
                             
                             /* store extrapolated ingredients */
