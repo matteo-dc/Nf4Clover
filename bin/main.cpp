@@ -277,12 +277,15 @@ int main(int narg,char **arg)
                     
                 } //close nm_sea
                 
-                if(eta_analysis)
-                    exit(0);
-                else
+                if(!only_basic)
                 {
-                    sea_chir[th] = chiral_sea_extr(evo[th]);
-                    sea_chir[th].plot("sea");
+                    if(eta_analysis)
+                        exit(0);
+                    else
+                    {
+                        sea_chir[th] = chiral_sea_extr(evo[th]);
+                        sea_chir[th].plot("sea");
+                    }
                 }
                 
                 exit(0);
