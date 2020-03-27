@@ -928,7 +928,7 @@ oper_t chiral_sea_extr(voper_t in)
     out.allocate_val();
     out.allocate();
     
-    out.path_to_ens = in[0].path_to_beta;
+    out.path_to_ens = in[0].path_to_beta+in[0]._beta_label;
 
     vd_t x(0.0,nmSea);
     
