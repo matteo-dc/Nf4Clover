@@ -1000,57 +1000,57 @@ oper_t chiral_sea_extr(voper_t in)
     // extrapolate Zq
 #pragma omp parallel for
     for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
-            {
-                vvd_t coord_Zq(vd_t(0.0,nmSea),npar_sigma); // coords at fixed r
-                
-                vvd_t y_Zq(vd_t(0.0,nmSea),njacks);
-                vd_t dy_Zq(0.0,nmSea);
+    {
+        vvd_t coord_Zq(vd_t(0.0,nmSea),npar_sigma); // coords at fixed r
+        
+        vvd_t y_Zq(vd_t(0.0,nmSea),njacks);
+        vd_t dy_Zq(0.0,nmSea);
+        
+        
+        for(int msea=0; msea<nmSea; msea++)
+        {
+            coord_Zq[0][msea] = 1.0;
             
-                
-                for(int msea=0; msea<nmSea; msea++)
+            if(!UseEffMass)
+            {
+                if(constant)
                 {
                     coord_Zq[0][msea] = 1.0;
-                    
-                    if(!UseEffMass)
-                    {
-                        if(constant)
-                        {
-                            coord_Zq[0][msea] = 1.0;
-                        }
-                        else if(linear)
-                        {
-                            coord_Zq[0][msea] = 1.0;
-                            coord_Zq[1][msea] = x[msea];
-                        }
-                        else if(quadratic)
-                        {
-                            coord_Zq[0][msea] = 1.0;
-                            coord_Zq[1][msea] = x[msea];
-                            coord_Zq[2][msea] = x[msea]*x[msea];
-                        }
-                    }
-                    else if(UseEffMass)
-                    {
-                        if(!linear)
-                        {
-                            cout<<"Only linear fit implemented when using EffMass!"<<endl;
-                            exit(0);
-                        }
-                        
-                        coord_Zq[1][msea] = pow(x[msea],2.0);
-                    }
-                    
-                    for(int ijack=0;ijack<njacks;ijack++)
-                        y_Zq[ijack][msea] = in[msea].jZq[ilinmom][ijack][0];
-                    
-                    dy_Zq[msea] = (get<1>(ave_err(in[msea].jZq)))[ilinmom][0];
+                }
+                else if(linear)
+                {
+                    coord_Zq[0][msea] = 1.0;
+                    coord_Zq[1][msea] = x[msea];
+                }
+                else if(quadratic)
+                {
+                    coord_Zq[0][msea] = 1.0;
+                    coord_Zq[1][msea] = x[msea];
+                    coord_Zq[2][msea] = x[msea]*x[msea];
+                }
+            }
+            else if(UseEffMass)
+            {
+                if(!linear)
+                {
+                    cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                    exit(0);
                 }
                 
-                vvd_t Zq_pars = polyfit(coord_Zq,npar_sigma,dy_Zq,y_Zq,x_min,x_max);
-                
-                for(int ijack=0; ijack<njacks; ijack++)
-                    (out.jZq)[ilinmom][ijack][0] = Zq_pars[ijack][0];
+                coord_Zq[1][msea] = pow(x[msea],2.0);
             }
+            
+            for(int ijack=0;ijack<njacks;ijack++)
+                y_Zq[ijack][msea] = in[msea].jZq[ilinmom][ijack][0];
+            
+            dy_Zq[msea] = (get<1>(ave_err_Zq(in[msea].jZq)))[ilinmom][0];
+        }
+        
+        vvd_t Zq_pars = polyfit(coord_Zq,npar_sigma,dy_Zq,y_Zq,x_min,x_max);
+        
+        for(int ijack=0; ijack<njacks; ijack++)
+            (out.jZq)[ilinmom][ijack][0] = Zq_pars[ijack][0];
+    }
     
     if(ntypes!=3 and ntypes!=1)
     {
@@ -1069,7 +1069,7 @@ oper_t chiral_sea_extr(voper_t in)
                 
                 vvd_t y_Z(vd_t(0.0,nmSea),njacks);
                 vd_t dy_Z(0.0,nmSea);
-                vd_t y_Z_ave(0.0,nmSea);
+                //vd_t y_Z_ave(0.0,nmSea);
                 
                 for(int msea=0; msea<nmSea; msea++)
                 {
@@ -1108,8 +1108,8 @@ oper_t chiral_sea_extr(voper_t in)
                         y_Z[ijack][msea] = in[msea].jZ[ibilmom][ibil][ijack][0][0];
                     
                     
-                    y_Z_ave[msea] = (get<0>(ave_err(in[msea].jZ)))[ibilmom][ibil][0][0];
-                    dy_Z[msea] = (get<1>(ave_err(in[msea].jZ)))[ibilmom][ibil][0][0];
+                    //y_Z_ave[msea] = (get<0>(ave_err_Z(in[msea].jZ)))[ibilmom][ibil][0][0];
+                    dy_Z[msea] = (get<1>(ave_err_Z(in[msea].jZ)))[ibilmom][ibil][0][0];
                 }
                 
                 vvd_t jZ_pars = polyfit(coord_bil,npar_bil_max,dy_Z,y_Z,x_min,x_max);
