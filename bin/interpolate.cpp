@@ -588,7 +588,7 @@ oper_t oper_t::interpolate_to_p2ref(int b)
     {
         // parabolic fit in physical units
         coord[0][j] = 1.0;
-        coord[1][j] = p2[j];
+        coord[1][j] = p2[j]*ainv2;
 //        coord[1][j] = p2_tilde[j]*ainv2;
 //        coord[2][j] = coord[1][j]*coord[1][j];
     }
