@@ -2098,9 +2098,8 @@ void oper_t::load(const string suffix)
 //    return out;
 //}
 
-oper_t oper_t::a2p2_extr()
+oper_t oper_t::a2p2_extr(double _ainv)
 {
-#warning aggiustare pmin/pmax in unita fisiche/lattice
     cout<<endl;
     cout<<"----- extrapolation to p2 = 0 -----"<<endl<<endl;
     
@@ -2120,15 +2119,15 @@ oper_t oper_t::a2p2_extr()
     out.eff_mass=(*this).eff_mass;
     out.eff_mass_sea=(*this).eff_mass_sea;
     
-    cout<<"p2 range (lattice units):   "<<p2min<<" - "<<p2max<<endl;
+    cout<<"p2 range (physical units):   "<<p2min<<" - "<<p2max<<endl;
     
     int npar=2;
     vvd_t coord(vd_t(0.0,_linmoms),npar);
     for(int j=0; j<_linmoms; j++)
     {
-        // linear fit in lattice units
+        // linear fit in physical units
         coord[0][j] = 1.0;
-        coord[1][j] = p2_tilde[j];
+        coord[1][j] = p2[j]*_ainv*_ainv; //Gev^2
     }
     
     // Interpolating Zq

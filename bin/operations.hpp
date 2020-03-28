@@ -238,7 +238,7 @@ struct oper_t
     void plot_sigmas();
     
     // a2p2->0 extrapolation
-    oper_t a2p2_extr();
+    oper_t a2p2_extr(double _ainv);
 };
 
 // valarray of oper_t struct;

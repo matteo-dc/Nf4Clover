@@ -602,7 +602,7 @@ void read_input_glb(const char path[])
     printf("    with BC: %s \n\n",BC.c_str());
     
     printf(" %s = %.2lf\n",thresh_tag,thresh);
-    printf(" Continuum limit range: a2p2 = [%.1lf,%.1lf]\n\n",p2min,p2max);
+    printf(" Continuum limit range: p2 = [%.1lf,%.1lf]\n\n",p2min,p2max);
     
     printf(" %s = %s  --  %s = %d  -- %s = %d -- %s = %.3lf \n",act_tag,action.c_str(),Nf_tag,Nf,Nc_tag,Nc,LambdaQCD_tag,LambdaQCD);
     printf(" %s = %d  (%d njacks) \n",nconfs_tag,nconfs,njacks);
