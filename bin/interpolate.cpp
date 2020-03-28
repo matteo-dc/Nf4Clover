@@ -699,7 +699,7 @@ oper_t oper_t::interpolate_to_p2ref(int b)
 //        jZVovZA_pars[ijack][1]*p2ref +
 //        jZVovZA_pars[ijack][2]*p2ref*p2ref;
         
-        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0]
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
 //        +
 //        jZPovZS_pars[ijack][1]*p2ref +
 //        jZPovZS_pars[ijack][2]*p2ref*p2ref;
