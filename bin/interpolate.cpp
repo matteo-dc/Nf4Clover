@@ -582,12 +582,13 @@ oper_t oper_t::interpolate_to_p2ref(int b)
     cout<<"a2p2 range (physical units):   "<<p2min<<" - "<<p2max<<" GeV^2"<<endl;
     
 //    int npar=3;  // parabolic interpolation
-    int npar=1;  // constant interpolation
+    int npar=2;  // constant interpolation
     vvd_t coord(vd_t(0.0,_linmoms),npar);
     for(int j=0; j<_linmoms; j++)
     {
         // parabolic fit in physical units
         coord[0][j] = 1.0;
+        coord[1][j] = p2[j];
 //        coord[1][j] = p2_tilde[j]*ainv2;
 //        coord[2][j] = coord[1][j]*coord[1][j];
     }
@@ -613,7 +614,7 @@ oper_t oper_t::interpolate_to_p2ref(int b)
 //        dy_Zq_EM[imom] = dy_Zq_EM_tmp[imom][0];
     }
     
-    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,p2_min,p2_max); // [ijack][ipar]
+    vvd_t jZq_pars = polyfit(coord,npar-1,dy_Zq,y_Zq,p2min,p2max); // [ijack][ipar]
 //    vvd_t jZq_EM_pars = polyfit(coord,npar,dy_Zq_EM,y_Zq_EM,p2_min,p2_max); // [ijack][ipar]
     
     for(int ijack=0;ijack<njacks;ijack++)
@@ -652,7 +653,7 @@ oper_t oper_t::interpolate_to_p2ref(int b)
 //            dy_Zbil_EM[imom] = dy_Zbil_EM_tmp[imom][ibil][0][0];
         }
         
-        vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,p2_min,p2_max); // [ijack][ipar]
+        vvd_t jZ_pars = polyfit(coord,npar-1,dy_Zbil,y_Zbil,p2min,p2max); // [ijack][ipar]
 //        vvd_t jZ_EM_pars = polyfit(coord,npar,dy_Zbil_EM,y_Zbil_EM,p2_min,p2_max); // [ijack][ipar]
         
         for(int ijack=0;ijack<njacks;ijack++)
@@ -688,8 +689,8 @@ oper_t oper_t::interpolate_to_p2ref(int b)
         dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
     }
     
-    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,p2_min,p2_max); // [ijack][ipar]
-    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,p2_min,p2_max); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar-1,dy_ZVovZA,y_ZVovZA,p2min,p2max); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar-1,dy_ZPovZS,y_ZPovZS,p2min,p2max); // [ijack][ipar]
     
     for(int ijack=0;ijack<njacks;ijack++)
     {
