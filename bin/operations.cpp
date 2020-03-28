@@ -1049,7 +1049,7 @@ oper_t chiral_sea_extr(voper_t in)
                 vvd_t Zq_pars = polyfit(coord_Zq,npar_sigma,dy_Zq,y_Zq,x_min,x_max);
                 
                 for(int ijack=0; ijack<njacks; ijack++)
-                    (out.Zq)[ilinmom][ijack][0] = Zq_pars[ijack][0];
+                    (out.jZq)[ilinmom][ijack][0] = Zq_pars[ijack][0];
             }
     
     if(ntypes!=3 and ntypes!=1)
