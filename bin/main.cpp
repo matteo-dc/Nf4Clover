@@ -103,6 +103,7 @@ int main(int narg,char **arg)
             
             voper_t sea_chir(ntheta);
             voper_t M1(ntheta);
+            voper_t M2(ntheta);
             
             for(int th=0; th<ntheta; th++)
             {
@@ -292,6 +293,10 @@ int main(int narg,char **arg)
                         
                         M1[th] = sea_chir[th].a2p2_extr(ainv[b]);
                         M1[th].plot("M1");
+
+                        M2[th] = sea_chir[th].interpolate_to_p2ref(b);
+                        M2[th].plot("M2");
+
                     }
                 }
                 
