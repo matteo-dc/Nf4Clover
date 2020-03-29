@@ -538,7 +538,8 @@ oper_t oper_t::chiral_extr()
     // number of fit parameters for sigma
     int npar_sigma=2;
     // number of fit parameters for bilinears
-    int npar_bil[5]={3,2,3,2,2};
+    //int npar_bil[5]={3,2,3,2,2};
+    int npar_bil[5]={2,2,3,2,2};
     int npar_bil_max=*max_element(npar_bil,npar_bil + sizeof(npar_bil)/sizeof(npar_bil[0]));
     // number of fit parameters for meslep
     int npar_meslep[5]={2,2,3,3,2};
