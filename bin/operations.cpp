@@ -684,7 +684,7 @@ oper_t oper_t::chiral_extr()
                 for(int ibil=0;ibil<nbil;ibil++)
                     for(int ins=0; ins<gbil::nins; ins++) // not collapsed
                     {
-                        if(ibil!=2)  /* not for P */
+                        if(ibil!=2 and !quadratic)  /* not for P and only if not quadratic */
                         {
                             vd_t x_bil(0.0,_nm*(_nm+1)/2);
                             
@@ -797,7 +797,7 @@ oper_t oper_t::chiral_extr()
                                     plot_bil_chir_extr(ibilmom,ins,ibil,x_bil,G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                             }
                         }
-                        else  /* for P */
+                        else  /* for P of if quadratic */
                         {
                             vd_t x_bil(0.0,_nm);
                             
