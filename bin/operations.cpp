@@ -534,6 +534,8 @@ oper_t oper_t::chiral_extr()
     // range for fit bilinears
     int x_min=0;
     int x_max=_nm*(_nm+1)/2-1;
+    int x_min_P=0;
+    int x_max_P=_nm-1;
     
     // number of fit parameters for sigma
     int npar_sigma=2;
@@ -870,7 +872,7 @@ oper_t oper_t::chiral_extr()
                                 G_err_r1_r2[m1] = sqrt((double)(njacks-1))*sqrt(fabs(sqr_G_ave_r1_r2[m1]-G_ave_r1_r2[m1]*G_ave_r1_r2[m1]));
                             } //masses loop
                             
-                            vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min,x_max);
+                            vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min_P,x_max_P);
                             
                             //save fit parameters to be used to subtract dM
                             if(ins==gbil::LO)
