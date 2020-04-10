@@ -451,83 +451,88 @@ oper_t oper_t::subOa2(const int b)
     
     oper_t out=(*this);
     
-    double CF = 4.0/3.0;
-    double g2 = 6.0/beta[b];
-    if(sub_boosted)
-        g2 /= plaquette;
-    
-    double CSW;
-    if(csw[b]==0.0)
-        CSW=0.0;
-    else
-        CSW=1.0; //tree-level value
-    
-    vector<double> P2(out._linmoms,0.0);
-    vector<double> P4(out._linmoms,0.0);
-    if(sub_ptilde)
-    {P2=p2_tilde; P4=p4_tilde;}
-    else
-    {P2=p2; P4=p4;}
-    
-    // Zq
-    for(int imom=0;imom<out._linmoms;imom++)
+    if(!load_ave)
     {
-        double sub = CF*g2*subSigma1(imom,Np,CSW,P2,P4,0);
         
-        #pragma omp parallel for collapse(2)
-        for(int ijack=0;ijack<njacks;ijack++)
-            for(int mr=0;mr<out._nmr;mr++)
-            {
-                (out.sigma)[imom][sigma::SIGMA1][sigma::LO][ijack][mr] -= sub;
-//                (out.sigma)[imom][sigma::SIGMA1][sigma::QED][ijack][mr] -= subSigma1(imom,Np,CSW,P2,P4,1);
-            }
-    }
-    
-    out.compute_Zq();
-    
-    // Zbil
-    for(int imom=0;imom<out._bilmoms;imom++)
-        for(int ibil=0;ibil<nbil;ibil++)
+        double CF = 4.0/3.0;
+        double g2 = 6.0/beta[b];
+        if(sub_boosted)
+            g2 /= plaquette;
+        
+        double CSW;
+        if(csw[b]==0.0)
+            CSW=0.0;
+        else
+            CSW=1.0; //tree-level value
+        
+        vector<double> P2(out._linmoms,0.0);
+        vector<double> P4(out._linmoms,0.0);
+        if(sub_ptilde)
+        {P2=p2_tilde; P4=p4_tilde;}
+        else
+        {P2=p2; P4=p4;}
+        
+        // Zq
+        for(int imom=0;imom<out._linmoms;imom++)
         {
-            double sub = CF*g2*subG(imom,CSW,P2,P4,ibil,0);
+            double sub = CF*g2*subSigma1(imom,Np,CSW,P2,P4,0);
             
-            #pragma omp parallel for collapse(3)
+            #pragma omp parallel for collapse(2)
             for(int ijack=0;ijack<njacks;ijack++)
-                for(int mr1=0;mr1<out._nmr;mr1++)
-                    for(int mr2=0;mr2<out._nmr;mr2++)
-                    {
-                        (out.jG)[imom][gbil::LO][ibil][ijack][mr1][mr2] -= sub;
-//                        (out.jG)[imom][gbil::QED][ibil][ijack][mr1][mr2] -= subG(imom,CSW,P2,P4,ibil,1);
-                    }
+                for(int mr=0;mr<out._nmr;mr++)
+                {
+                    (out.sigma)[imom][sigma::SIGMA1][sigma::LO][ijack][mr] -= sub;
+                    //                (out.sigma)[imom][sigma::SIGMA1][sigma::QED][ijack][mr] -= subSigma1(imom,Np,CSW,P2,P4,1);
+                }
         }
-    
-    out.compute_Zbil();
-    
-//    // ZV/ZA and ZP/ZS
-//    for(int imom=0;imom<out._bilmoms;imom++)
-//        for(int ijack=0;ijack<njacks;ijack++)
-//            for(int mr1=0;mr1<out._nmr;mr1++)
-//                for(int mr2=0;mr2<out._nmr;mr2++)
-//                {
-//                    //                    (out.jZVoverZA)[imom][0][ijack][mr1][mr2] = jZVoverZA[imom][0][ijack][mr1][mr2];
-//                    //                    (out.jZPoverZS)[imom][0][ijack][mr1][mr2] = jZPoverZS[imom][0][ijack][mr1][mr2];
-//                    (out.jZVoverZA)[imom][0][ijack][mr1][mr2] = (out.jZ)[imom][1][ijack][mr1][mr2]/(out.jZ)[imom][3][ijack][mr1][mr2];
-//                    (out.jZPoverZS)[imom][0][ijack][mr1][mr2] = (out.jZ)[imom][2][ijack][mr1][mr2]/(out.jZ)[imom][0][ijack][mr1][mr2];
-//                }
-    
-    
-    // Z4f
-    //    if(compute_4f)
-    //    for(int imom=0;imom<out._meslepmoms;imom++)
-    //        for(int iop1=0;iop1<nbil;iop1++)
-    //            for(int iop2=0;iop2<nbil;iop2++)
-    //                for(int ijack=0;ijack<njacks;ijack++)
-    //                    for(int mr1=0;mr1<out._nmr;mr1++)
-    //                        for(int mr2=0;mr2<out._nmr;mr2++)
-    //                        {
-    //                            (out.jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2] -= CF*g2b*subZ4f(imom,p2_tilde,p4_tilde,iop1,iop2,0);
-    //                            (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] -= subZ4f(imom,p2_tilde,p4_tilde,iop1,iop2,1);
-    //                        }
+        
+        out.compute_Zq();
+        
+        // Zbil
+        for(int imom=0;imom<out._bilmoms;imom++)
+            for(int ibil=0;ibil<nbil;ibil++)
+            {
+                double sub = CF*g2*subG(imom,CSW,P2,P4,ibil,0);
+                
+                #pragma omp parallel for collapse(3)
+                for(int ijack=0;ijack<njacks;ijack++)
+                    for(int mr1=0;mr1<out._nmr;mr1++)
+                        for(int mr2=0;mr2<out._nmr;mr2++)
+                        {
+                            (out.jG)[imom][gbil::LO][ibil][ijack][mr1][mr2] -= sub;
+                            //                        (out.jG)[imom][gbil::QED][ibil][ijack][mr1][mr2] -= subG(imom,CSW,P2,P4,ibil,1);
+                        }
+            }
+        
+        out.compute_Zbil();
+        
+        //    // ZV/ZA and ZP/ZS
+        //    for(int imom=0;imom<out._bilmoms;imom++)
+        //        for(int ijack=0;ijack<njacks;ijack++)
+        //            for(int mr1=0;mr1<out._nmr;mr1++)
+        //                for(int mr2=0;mr2<out._nmr;mr2++)
+        //                {
+        //                    //                    (out.jZVoverZA)[imom][0][ijack][mr1][mr2] = jZVoverZA[imom][0][ijack][mr1][mr2];
+        //                    //                    (out.jZPoverZS)[imom][0][ijack][mr1][mr2] = jZPoverZS[imom][0][ijack][mr1][mr2];
+        //                    (out.jZVoverZA)[imom][0][ijack][mr1][mr2] = (out.jZ)[imom][1][ijack][mr1][mr2]/(out.jZ)[imom][3][ijack][mr1][mr2];
+        //                    (out.jZPoverZS)[imom][0][ijack][mr1][mr2] = (out.jZ)[imom][2][ijack][mr1][mr2]/(out.jZ)[imom][0][ijack][mr1][mr2];
+        //                }
+        
+        
+        // Z4f
+        //    if(compute_4f)
+        //    for(int imom=0;imom<out._meslepmoms;imom++)
+        //        for(int iop1=0;iop1<nbil;iop1++)
+        //            for(int iop2=0;iop2<nbil;iop2++)
+        //                for(int ijack=0;ijack<njacks;ijack++)
+        //                    for(int mr1=0;mr1<out._nmr;mr1++)
+        //                        for(int mr2=0;mr2<out._nmr;mr2++)
+        //                        {
+        //                            (out.jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2] -= CF*g2b*subZ4f(imom,p2_tilde,p4_tilde,iop1,iop2,0);
+        //                            (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] -= subZ4f(imom,p2_tilde,p4_tilde,iop1,iop2,1);
+        //                        }
+        
+    }
     
     return out;
 }
