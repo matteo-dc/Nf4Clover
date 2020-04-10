@@ -682,18 +682,127 @@ oper_t oper_t::chiral_extr()
                 for(int ibil=0;ibil<nbil;ibil++)
                     for(int ins=0; ins<gbil::nins; ins++) // not collapsed
                     {
-                        vvd_t coord_bil(vd_t(0.0,_nm*(_nm+1)/2),npar_bil_max);
-                        
-                        vvd_t jG_r1_r2(vd_t(0.0,_nm*(_nm+1)/2),njacks);
-                        
-                        vd_t G_ave_r1_r2(0.0,_nm*(_nm+1)/2);
-                        vd_t sqr_G_ave_r1_r2(0.0,_nm*(_nm+1)/2);
-                        vd_t G_err_r1_r2(0.0,_nm*(_nm+1)/2);
-                        
-                        int ieq=0;
-                        for(int m1=0; m1<_nm; m1++)
-                            for(int m2=m1; m2<_nm; m2++)
+                        if(ibil!=2)  /* not for P */
+                        {
+                            
+                            vvd_t coord_bil(vd_t(0.0,_nm*(_nm+1)/2),npar_bil_max);
+                            
+                            vvd_t jG_r1_r2(vd_t(0.0,_nm*(_nm+1)/2),njacks);
+                            
+                            vd_t G_ave_r1_r2(0.0,_nm*(_nm+1)/2);
+                            vd_t sqr_G_ave_r1_r2(0.0,_nm*(_nm+1)/2);
+                            vd_t G_err_r1_r2(0.0,_nm*(_nm+1)/2);
+                            
+                            int ieq=0;
+                            for(int m1=0; m1<_nm; m1++)
+                                for(int m2=m1; m2<_nm; m2++)
+                                {
+                                    
+                                    int mr1 = r1 + _nr*m1;
+                                    int mr2 = r2 + _nr*m2;
+                                    
+                                    if(!UseEffMass)
+                                    {
+                                        if(constant)
+                                        {
+                                            coord_bil[0][ieq] = 1.0;                              // 1
+                                            coord_bil[1][ieq] = 1.0/(mass_val[m1]+mass_val[m2]);  // 1/(am1+am2)
+                                        }
+                                        else if(linear)
+                                        {
+                                            coord_bil[0][ieq] = 1.0;                        // 1
+                                            coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];  // (am1+am2)
+                                            coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];      // 1/(am1+am2)
+                                        }
+                                        else if(quadratic)
+                                        {
+                                            coord_bil[0][ieq] = 1.0;                                 // 1
+                                            coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];           // (am1+am2)
+                                            coord_bil[2][ieq] = coord_bil[1][ieq]*coord_bil[1][ieq]; // (am1+am2)^2
+                                            coord_bil[3][ieq] = 1.0/coord_bil[1][ieq];               // 1/(am1+am2)
+                                            
+                                        }
+                                    }
+                                    else if(UseEffMass)
+                                    {
+                                        if(!linear)
+                                        {
+                                            cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                                            exit(0);
+                                        }
+                                        
+                                        coord_bil[0][ieq] = 1.0;
+                                        // M^2 (averaged over equivalent combinations)
+                                        coord_bil[1][ieq] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
+                                        // 1/M^2
+                                        coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];
+                                    }
+                                    
+                                    // subtraction of mass correction
+                                    if(ins==gbil::QED and UseEffMass)
+                                        for(int ijack=0;ijack<njacks;ijack++)
+                                        {
+                                            double b0 = gbil_pars_QCD[ijack][1];
+                                            double c0 = gbil_pars_QCD[ijack][2];
+                                            
+                                            double jM  = eff_mass[ijack][m1][m2];
+                                            double jdM = eff_mass_corr[ijack][m1][m2];
+                                            
+                                            double varb = 2.0*b0*jM*jdM;
+                                            double varc = -2.0*c0*jdM/(jM*jM*jM);
+                                            
+                                            jG[ibilmom][ins][ibil][ijack][mr1][mr2] -= varb + varc;
+                                        }
+                                    
+                                    for(int ijack=0;ijack<njacks;ijack++)
+                                    {
+                                        jG_r1_r2[ijack][ieq] = jG[ibilmom][ins][ibil][ijack][mr1][mr2];
+                                        
+                                        G_ave_r1_r2[ieq] += jG_r1_r2[ijack][ieq]/njacks;
+                                        sqr_G_ave_r1_r2[ieq] += jG_r1_r2[ijack][ieq]*jG_r1_r2[ijack][ieq]/njacks;
+                                    }
+                                    G_err_r1_r2[ieq] = sqrt((double)(njacks-1))*sqrt(fabs(sqr_G_ave_r1_r2[ieq]-G_ave_r1_r2[ieq]*G_ave_r1_r2[ieq]));
+                                    
+                                    ieq++;
+                                }
+                            
+                            vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min,x_max);
+                            
+                            //save fit parameters to be used to subtract dM
+                            if(ins==gbil::LO)
+                                for(int ijack=0;ijack<njacks;ijack++)
+                                {
+                                    gbil_pars_QCD[ijack][0]=jG_pars[ijack][0];
+                                    gbil_pars_QCD[ijack][1]=jG_pars[ijack][1];
+                                    
+                                    if(npar_bil[ibil]<npar_bil_max)
+                                        gbil_pars_QCD[ijack][2]=0.0;
+                                    else
+                                        gbil_pars_QCD[ijack][2]=jG_pars[ijack][2];
+                                    
+                                }
+                            
+                            for(int ijack=0;ijack<njacks;ijack++)
+                                (out.jG)[ibilmom][ins][ibil][ijack][r1][r2] = jG_pars[ijack][0];
+                            
+                            if(ibilmom%20==0 and r1==0 and r2==0)
                             {
+                                plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
+                            }
+                        }
+                        else  /* for P */
+                        {
+                            vvd_t coord_bil(vd_t(0.0,_nm),npar_bil_max);
+                                            
+                            vvd_t jG_r1_r2(vd_t(0.0,_nm),njacks);
+                            
+                            vd_t G_ave_r1_r2(0.0,_nm);
+                            vd_t sqr_G_ave_r1_r2(0.0,_nm);
+                            vd_t G_err_r1_r2(0.0,_nm);
+                            
+                            for(int m1=0; m1<_nm; m1++)
+                            {
+                                int m2=m1;
                                 
                                 int mr1 = r1 + _nr*m1;
                                 int mr2 = r2 + _nr*m2;
@@ -702,21 +811,21 @@ oper_t oper_t::chiral_extr()
                                 {
                                     if(constant)
                                     {
-                                        coord_bil[0][ieq] = 1.0;                              // 1
-                                        coord_bil[1][ieq] = 1.0/(mass_val[m1]+mass_val[m2]);  // 1/(am1+am2)
+                                        coord_bil[0][m1] = 1.0;                              // 1
+                                        coord_bil[1][m1] = 1.0/(mass_val[m1]+mass_val[m2]);  // 1/(am1+am2)
                                     }
                                     else if(linear)
                                     {
-                                        coord_bil[0][ieq] = 1.0;                        // 1
-                                        coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];  // (am1+am2)
-                                        coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];      // 1/(am1+am2)
+                                        coord_bil[0][m1] = 1.0;                        // 1
+                                        coord_bil[1][m1] = mass_val[m1]+mass_val[m2];  // (am1+am2)
+                                        coord_bil[2][m1] = 1.0/coord_bil[1][m1];      // 1/(am1+am2)
                                     }
                                     else if(quadratic)
                                     {
-                                        coord_bil[0][ieq] = 1.0;                                 // 1
-                                        coord_bil[1][ieq] = mass_val[m1]+mass_val[m2];           // (am1+am2)
-                                        coord_bil[2][ieq] = coord_bil[1][ieq]*coord_bil[1][ieq]; // (am1+am2)^2
-                                        coord_bil[3][ieq] = 1.0/coord_bil[1][ieq];               // 1/(am1+am2)
+                                        coord_bil[0][m1] = 1.0;                                 // 1
+                                        coord_bil[1][m1] = mass_val[m1]+mass_val[m2];           // (am1+am2)
+                                        coord_bil[2][m1] = coord_bil[1][m1]*coord_bil[1][m1]; // (am1+am2)^2
+                                        coord_bil[3][m1] = 1.0/coord_bil[1][m1];               // 1/(am1+am2)
                                         
                                     }
                                 }
@@ -728,11 +837,11 @@ oper_t oper_t::chiral_extr()
                                         exit(0);
                                     }
                                     
-                                    coord_bil[0][ieq] = 1.0;
+                                    coord_bil[0][m1] = 1.0;
                                     // M^2 (averaged over equivalent combinations)
-                                    coord_bil[1][ieq] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
+                                    coord_bil[1][m1] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
                                     // 1/M^2
-                                    coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];
+                                    coord_bil[2][m1] = 1.0/coord_bil[1][m1];
                                 }
                                 
                                 // subtraction of mass correction
@@ -753,38 +862,37 @@ oper_t oper_t::chiral_extr()
                                 
                                 for(int ijack=0;ijack<njacks;ijack++)
                                 {
-                                    jG_r1_r2[ijack][ieq] = jG[ibilmom][ins][ibil][ijack][mr1][mr2];
+                                    jG_r1_r2[ijack][m1] = jG[ibilmom][ins][ibil][ijack][mr1][mr2];
                                     
-                                    G_ave_r1_r2[ieq] += jG_r1_r2[ijack][ieq]/njacks;
-                                    sqr_G_ave_r1_r2[ieq] += jG_r1_r2[ijack][ieq]*jG_r1_r2[ijack][ieq]/njacks;
+                                    G_ave_r1_r2[m1] += jG_r1_r2[ijack][m1]/njacks;
+                                    sqr_G_ave_r1_r2[m1] += jG_r1_r2[ijack][m1]*jG_r1_r2[ijack][m1]/njacks;
                                 }
-                                G_err_r1_r2[ieq] = sqrt((double)(njacks-1))*sqrt(fabs(sqr_G_ave_r1_r2[ieq]-G_ave_r1_r2[ieq]*G_ave_r1_r2[ieq]));
-                                
-                                ieq++;
-                            }
-                        
-                        vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min,x_max);
-                        
-                        //save fit parameters to be used to subtract dM
-                        if(ins==gbil::LO)
+                                G_err_r1_r2[m1] = sqrt((double)(njacks-1))*sqrt(fabs(sqr_G_ave_r1_r2[m1]-G_ave_r1_r2[m1]*G_ave_r1_r2[m1]));
+                            } //masses loop
+                            
+                            vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min,x_max);
+                            
+                            //save fit parameters to be used to subtract dM
+                            if(ins==gbil::LO)
+                                for(int ijack=0;ijack<njacks;ijack++)
+                                {
+                                    gbil_pars_QCD[ijack][0]=jG_pars[ijack][0];
+                                    gbil_pars_QCD[ijack][1]=jG_pars[ijack][1];
+                                    
+                                    if(npar_bil[ibil]<npar_bil_max)
+                                        gbil_pars_QCD[ijack][2]=0.0;
+                                    else
+                                        gbil_pars_QCD[ijack][2]=jG_pars[ijack][2];
+                                    
+                                }
+                            
                             for(int ijack=0;ijack<njacks;ijack++)
+                                (out.jG)[ibilmom][ins][ibil][ijack][r1][r2] = jG_pars[ijack][0];
+                            
+                            if(ibilmom%20==0 and r1==0 and r2==0)
                             {
-                                gbil_pars_QCD[ijack][0]=jG_pars[ijack][0];
-                                gbil_pars_QCD[ijack][1]=jG_pars[ijack][1];
-                                
-                                if(npar_bil[ibil]<npar_bil_max)
-                                    gbil_pars_QCD[ijack][2]=0.0;
-                                else
-                                    gbil_pars_QCD[ijack][2]=jG_pars[ijack][2];
-                                
+                                plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                             }
-                        
-                        for(int ijack=0;ijack<njacks;ijack++)
-                            (out.jG)[ibilmom][ins][ibil][ijack][r1][r2] = jG_pars[ijack][0];
-                    
-                        if(ibilmom%20==0 and r1==0 and r2==0)
-                        {
-                            plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                         }
                     }
     
