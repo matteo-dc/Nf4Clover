@@ -686,6 +686,7 @@ oper_t oper_t::chiral_extr()
                     {
                         if(ibil!=2)  /* not for P */
                         {
+                            vd_t x_bil(0.0,_nm*(_nm+1)/2);
                             
                             vvd_t coord_bil(vd_t(0.0,_nm*(_nm+1)/2),npar_bil_max);
                             
@@ -705,6 +706,8 @@ oper_t oper_t::chiral_extr()
                                     
                                     if(!UseEffMass)
                                     {
+                                        x_bil[ieq] = mass_val[m1]+mass_val[m2];
+                                        
                                         if(constant)
                                         {
                                             coord_bil[0][ieq] = 1.0;                              // 1
@@ -727,6 +730,8 @@ oper_t oper_t::chiral_extr()
                                     }
                                     else if(UseEffMass)
                                     {
+                                        x_bil[ieq] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
+                                        
                                         if(!linear)
                                         {
                                             cout<<"Only linear fit implemented when using EffMass!"<<endl;
@@ -789,11 +794,13 @@ oper_t oper_t::chiral_extr()
                             
                             if(ibilmom%20==0 and r1==0 and r2==0)
                             {
-                                plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
+                                    plot_bil_chir_extr(ibilmom,ins,ibil,x_bil,G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                             }
                         }
                         else  /* for P */
                         {
+                            vd_t x_bil(0.0,_nm);
+                            
                             vvd_t coord_bil(vd_t(0.0,_nm),npar_bil_max);
                                             
                             vvd_t jG_r1_r2(vd_t(0.0,_nm),njacks);
@@ -811,6 +818,8 @@ oper_t oper_t::chiral_extr()
                                 
                                 if(!UseEffMass)
                                 {
+                                    x_bil[m1] = mass_val[m1]+mass_val[m2];
+                                    
                                     if(constant)
                                     {
                                         coord_bil[0][m1] = 1.0;                              // 1
@@ -833,6 +842,8 @@ oper_t oper_t::chiral_extr()
                                 }
                                 else if(UseEffMass)
                                 {
+                                    x_bil[m1] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
+                                    
                                     if(!linear)
                                     {
                                         cout<<"Only linear fit implemented when using EffMass!"<<endl;
