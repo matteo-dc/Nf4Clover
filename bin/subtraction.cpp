@@ -470,28 +470,36 @@ oper_t oper_t::subOa2(const int b)
     {P2=p2; P4=p4;}
     
     // Zq
-#pragma omp parallel for collapse(3)
     for(int imom=0;imom<out._linmoms;imom++)
+    {
+        double sub = CF*g2*subSigma1(imom,Np,CSW,P2,P4,0);
+        
+        #pragma omp parallel for collapse(2)
         for(int ijack=0;ijack<njacks;ijack++)
             for(int mr=0;mr<out._nmr;mr++)
             {
-                (out.sigma)[imom][sigma::SIGMA1][sigma::LO][ijack][mr] -= CF*g2*subSigma1(imom,Np,CSW,P2,P4,0);
+                (out.sigma)[imom][sigma::SIGMA1][sigma::LO][ijack][mr] -= sub;
 //                (out.sigma)[imom][sigma::SIGMA1][sigma::QED][ijack][mr] -= subSigma1(imom,Np,CSW,P2,P4,1);
             }
+    }
     
     out.compute_Zq();
     
     // Zbil
-#pragma omp parallel for collapse(5)
     for(int imom=0;imom<out._bilmoms;imom++)
         for(int ibil=0;ibil<nbil;ibil++)
+        {
+            double sub = CF*g2*subG(imom,CSW,P2,P4,ibil,0);
+            
+            #pragma omp parallel for collapse(3)
             for(int ijack=0;ijack<njacks;ijack++)
                 for(int mr1=0;mr1<out._nmr;mr1++)
                     for(int mr2=0;mr2<out._nmr;mr2++)
                     {
-                        (out.jG)[imom][gbil::LO][ibil][ijack][mr1][mr2] -= CF*g2*subG(imom,CSW,P2,P4,ibil,0);
+                        (out.jG)[imom][gbil::LO][ibil][ijack][mr1][mr2] -= sub;
 //                        (out.jG)[imom][gbil::QED][ibil][ijack][mr1][mr2] -= subG(imom,CSW,P2,P4,ibil,1);
                     }
+        }
     
     out.compute_Zbil();
     
