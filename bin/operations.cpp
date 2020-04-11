@@ -1191,7 +1191,7 @@ oper_t chiral_sea_extr(voper_t in)
                 
                 vvd_t y_Z(vd_t(0.0,nmSea),njacks);
                 vd_t dy_Z(0.0,nmSea);
-                //vd_t y_Z_ave(0.0,nmSea);
+                vd_t y_Z_ave(0.0,nmSea);
                 
                 for(int msea=0; msea<nmSea; msea++)
                 {
@@ -1230,7 +1230,7 @@ oper_t chiral_sea_extr(voper_t in)
                         y_Z[ijack][msea] = in[msea].jZ[ibilmom][ibil][ijack][0][0];
                     
                     
-                    //y_Z_ave[msea] = (get<0>(ave_err_Z(in[msea].jZ)))[ibilmom][ibil][0][0];
+                    y_Z_ave[msea] = (get<0>(ave_err_Z(in[msea].jZ)))[ibilmom][ibil][0][0];
                     dy_Z[msea] = (get<1>(ave_err_Z(in[msea].jZ)))[ibilmom][ibil][0][0];
                 }
                 
@@ -1241,7 +1241,7 @@ oper_t chiral_sea_extr(voper_t in)
                 
                 if(ibilmom%20==0)
                 {
-                    plot_bil_chir_extr(ibilmom,ins,ibil,x,y_G_ave,dy_G,jG_pars,"sea");   /* (mom,ins,bil,x,y,dy,jpars) */
+                    plot_bil_chir_extr(ibilmom,ins,ibil,x,y_Z_ave,dy_Z,jZ_pars,"sea");   /* (mom,ins,bil,x,y,dy,jpars) */
                 }
                 
             }
