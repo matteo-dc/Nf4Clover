@@ -904,7 +904,7 @@ oper_t oper_t::chiral_extr()
                             
                             if(ibilmom%20==0 and r1==0 and r2==0)
                             {
-                                plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
+                                plot_bil_chir_extr(ibilmom,ins,ibil,x_bil,G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                             }
                         }
                     }
@@ -1239,10 +1239,10 @@ oper_t chiral_sea_extr(voper_t in)
                 for(int ijack=0;ijack<njacks;ijack++)
                     (out.jZ)[ibilmom][ibil][ijack][0][0] = jZ_pars[ijack][0];
                 
-//                if(ibilmom%20==0)
-//                {
-//                    plot_bil_chir_extr(ibilmom,ins,ibil,coord_bil[1],y_G_ave,dy_G,jG_pars,"sea");   /* (mom,ins,bil,x,y,dy,jpars) */
-//                }
+                if(ibilmom%20==0)
+                {
+                    plot_bil_chir_extr(ibilmom,ins,ibil,x,y_G_ave,dy_G,jG_pars,"sea");   /* (mom,ins,bil,x,y,dy,jpars) */
+                }
                 
             }
     
