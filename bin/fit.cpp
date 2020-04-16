@@ -10,9 +10,9 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
     vXd_t Sy(VectorXd(n_par),njacks);
     vXd_t jpars(VectorXd(n_par),njacks);
     
-    vvd_t jvpars(vd_t(0.0,n_par),njacks);
-
     int xsize=coord[0].size();
+    
+    vvd_t jvpars(vd_t(0.0,n_par+1),njacks);  /* includes the chi2 */
     
     //initialization
     S=MatrixXd::Zero(n_par,n_par);
@@ -23,6 +23,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
     }
     
     //definition
+    int count=0;
     for(int i=0; i<xsize; i++)
     {
         if(coord[1][i]>=xmin and coord[1][i]<=xmax)
@@ -38,21 +39,57 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
                 for(int k=0; k<n_par; k++)
                     if(std::isnan(error[i])==0)
                         Sy[ijack](k) += y[ijack][i]*coord[k][i]/(error[i]*error[i]);
+            
+            count++;
         }
     }
     
+    vvd_t y_in_range(vd_t(0.0,count),njacks);
+    vvd_t err_in_range(vd_t(0.0,count),njacks);
+    vvd_t poly(vd_t(0.0,count),njacks);
+    vd_t chi2(0.0,njacks);
+
     for(int ijack=0; ijack<njacks; ijack++)
     {
         jpars[ijack] = S.colPivHouseholderQr().solve(Sy[ijack]);
         
-        for(int ipar=0;ipar<n_par;ipar++) jvpars[ijack][ipar]=jpars[ijack](ipar);
+        for(int ipar=0;ipar<n_par;ipar++)
+            jvpars[ijack][ipar]=jpars[ijack](ipar);
     }
     
+    /* compute the chi2 */
+
+    for(int ijack=0; ijack<njacks; ijack++)
+    {
+        count=0;
+        for(int i=0; i<xsize; i++)
+        {
+            if(coord[1][i]>=xmin and coord[1][i]<=xmax)
+            {
+                y_in_range[ijack][count] = y[ijack][i];
+                
+                for(int ipar=0; ipar<n_par; ipar++)
+                    poly[ijack][count] += jvpars[ijack][ipar]*coord[ipar][i];
+                
+                count++;
+            }
+        }
+        
+        for(int i=0; i<count; i++)
+            chi2[ijack] += (y_in_range[ijack][i]-poly[ijack][i])*(y_in_range[ijack][i]-poly[ijack][i])/(err_in_range[ijack][i]*err_in_range[ijack][i]);
+    
+        jvpars[ijack][n_par] = chi2[ijack]/n_par; /* chi2/dof */
+    }
+    
+        
     //    for(int i=range_min; i<=range_max; i++)
     //        cout<<"(x,y) [ijack=0] = "<<coord[0][i]<<" "<<y[0][i]<<" "<<error[i]<<endl;
     //    cout<<"Extrapolation (jpars): "<<jpars[0](0)<<endl;
     //    cout<<"Extrapolation (jvpars): "<<jvpars[0][0]<<endl;
     
+        
+        
+        
     return jvpars;
     
 }
@@ -65,7 +102,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
     vXd_t Sy(VectorXd(n_par),njacks);
     vXd_t jpars(VectorXd(n_par),njacks);
     
-    vvd_t jvpars(vd_t(0.0,n_par),njacks);
+    vvd_t jvpars(vd_t(0.0,n_par+1),njacks);
     
     //initialization
     S=MatrixXd::Zero(n_par,n_par);
@@ -76,6 +113,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
     }
     
     //definition
+    int count=0;
     for(int i=range_min; i<=range_max; i++)
     {
         if(error[i]<1.0e-20) error[i]+=1.0e-20;
@@ -87,14 +125,47 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
         for(int ijack=0; ijack<njacks; ijack++)
             for(int k=0; k<n_par; k++)
                 if(std::isnan(error[i])==0) Sy[ijack](k) += y[ijack][i]*coord[k][i]/(error[i]*error[i]);
+        
+        count++;
     }
+    
+    vvd_t y_in_range(vd_t(0.0,count),njacks);
+    vvd_t err_in_range(vd_t(0.0,count),njacks);
+    vvd_t poly(vd_t(0.0,count),njacks);
+    vd_t  chi2(0.0,njacks);
     
     for(int ijack=0; ijack<njacks; ijack++)
     {
         jpars[ijack] = S.colPivHouseholderQr().solve(Sy[ijack]);
         
-        for(int ipar=0;ipar<n_par;ipar++) jvpars[ijack][ipar]=jpars[ijack](ipar);
+        for(int ipar=0;ipar<n_par;ipar++)
+            jvpars[ijack][ipar]=jpars[ijack](ipar);
     }
+    
+    /* compute the chi2 */
+    
+#warning completare!
+    for(int ijack=0; ijack<njacks; ijack++)
+    {
+        int count=0;
+        for(int i=range_min; i<=range_max; i++)
+        {
+            y_in_range[ijack][count] = y[ijack][i];
+            
+            for(int ipar=0; ipar<n_par; ipar++)
+                poly[ijack][count] += jvpars[ijack][ipar]*coord[ipar][i];
+            
+            count++;
+        }
+        
+        for(int i=0; i<count; i++)
+            chi2[ijack] += (y_in_range[ijack][i]-poly[ijack][i])*(y_in_range[ijack][i]-poly[ijack][i])/(err_in_range[ijack][i]*err_in_range[ijack][i]);
+        
+        jvpars[ijack][n_par] = chi2[ijack]/n_par; /* chi2/dof */
+    }
+    
+    
+    
     
 //    for(int i=range_min; i<=range_max; i++)
 //        cout<<"(x,y) [ijack=0] = "<<coord[0][i]<<" "<<y[0][i]<<" "<<error[i]<<endl;

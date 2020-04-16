@@ -2609,7 +2609,9 @@ void oper_t::plot_bil_chir_extr(int mom, int i_ins, int ibil, vd_t x, vd_t y, vd
         }
         pars_err[ipar] = sqrt((double)(njacks-1))*sqrt(fabs(sqr_pars_ave[ipar]-pars_ave[ipar]*pars_ave[ipar]));
         
-        pars_data<<pars_ave[ipar]<<"\t"<<pars_err[ipar]<<endl;
+        if(ipar==npar-1)
+            pars_data<<endl;
+        pars_data<<pars_ave[ipar]<<"\t"<<pars_err[ipar]<<endl;  /* includes also the chi2 */
     }
     
     plot_data<<"0.0\t"<<pars_ave[0]<<"\t"<<pars_err[0]<<endl;
