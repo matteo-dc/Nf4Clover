@@ -67,6 +67,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
             if(coord[1][i]>=xmin and coord[1][i]<=xmax)
             {
                 y_in_range[ijack][count] = y[ijack][i];
+                err_in_range[ijack][count] = error[i];
                 
                 for(int ipar=0; ipar<n_par; ipar++)
                     poly[ijack][count] += jvpars[ijack][ipar]*coord[ipar][i];
@@ -151,6 +152,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
         for(int i=range_min; i<=range_max; i++)
         {
             y_in_range[ijack][count] = y[ijack][i];
+            err_in_range[ijack][count] = error[i];
             
             for(int ipar=0; ipar<n_par; ipar++)
                 poly[ijack][count] += jvpars[ijack][ipar]*coord[ipar][i];
