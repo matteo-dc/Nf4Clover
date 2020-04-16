@@ -295,10 +295,10 @@ int main(int narg,char **arg)
                         evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
                         evo[th].plot("evo");
                         
-                        M1[th] = sea_chir[th].a2p2_extr(ainv[b]);
+                        M1[th] = evo[th].a2p2_extr(ainv[b]);
                         M1[th].plot("M1");
 
-                        M2[th] = sea_chir[th].interpolate_to_p2ref(b);
+                        M2[th] = evo[th].interpolate_to_p2ref(b);
                         M2[th].plot("M2");
 
                     }
