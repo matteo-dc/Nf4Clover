@@ -98,10 +98,11 @@ int main(int narg,char **arg)
             vvoper_t rave(voper_t(nm_Sea[b]),ntheta);
             
             vvoper_t val_chir(voper_t(nm_Sea[b]),ntheta);
-            vvoper_t evo(voper_t(nm_Sea[b]),ntheta);
+//            vvoper_t evo(voper_t(nm_Sea[b]),ntheta);
             vvoper_t sub(voper_t(nm_Sea[b]),ntheta);
             
             voper_t sea_chir(ntheta);
+            voper_t evo(ntheta);
             voper_t M1(ntheta);
             voper_t M2(ntheta);
             
@@ -265,8 +266,8 @@ int main(int narg,char **arg)
                         }
                         else
                         {
-                            evo[th][m] = val_chir[th][m].evolve(ainv[b],p2ref);
-                            evo[th][m].plot("evo");
+//                            evo[th][m] = val_chir[th][m].evolve(ainv[b],p2ref);
+//                            evo[th][m].plot("evo");
 //                            sub[th][m] = evo[th][m].subOa2(b);
 //                            sub[th][m].plot("sub");
                             
@@ -288,8 +289,11 @@ int main(int narg,char **arg)
                         exit(0);
                     else
                     {
-                        sea_chir[th] = chiral_sea_extr(evo[th]);
+                        sea_chir[th] = chiral_sea_extr(val_chir[th]);
                         sea_chir[th].plot("sea");
+                        
+                        evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
+                        evo[th].plot("evo");
                         
                         M1[th] = sea_chir[th].a2p2_extr(ainv[b]);
                         M1[th].plot("M1");
