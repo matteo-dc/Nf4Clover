@@ -2855,6 +2855,8 @@ void oper_t::plot(const string suffix)
     cout<<", ZV/ZA, ZP/ZS";
     ZVovZA_data.open(path_to_ens+"plots/ZVovZA"+(suffix!=""?("_"+suffix):string(""))+".txt");
     ZPovZS_data.open(path_to_ens+"plots/ZPovZS"+(suffix!=""?("_"+suffix):string(""))+".txt");
+    ZVovZA_p2_data.open(path_to_ens+"plots/ZVovZA"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+    ZPovZS_p2_data.open(path_to_ens+"plots/ZPovZS"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
     
     for(int imom=0; imom<in._bilmoms; imom++)
     {
@@ -2865,6 +2867,9 @@ void oper_t::plot(const string suffix)
         
         ZVovZA_data<<(in.p2_tilde)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
         ZPovZS_data<<(in.p2_tilde)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+        
+        ZVovZA_p2_data<<(in.p2)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
+        ZPovZS_p2_data<<(in.p2)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
     }
     
 //    if(compute_4f)
