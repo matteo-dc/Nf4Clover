@@ -145,7 +145,6 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
     
     /* compute the chi2 */
     
-#warning completare!
     for(int ijack=0; ijack<njacks; ijack++)
     {
         int count=0;
