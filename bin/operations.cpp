@@ -2792,6 +2792,7 @@ void oper_t::plot(const string suffix)
 //    , Zbil_EM_p2_data(nbil);
     
     ofstream ZVovZA_data, ZPovZS_data;
+    ofstream ZVovZA_p2_data, ZPovZS_p2_data;
 //    vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
     
