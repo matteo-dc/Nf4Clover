@@ -1082,8 +1082,8 @@ oper_t chiral_sea_extr(voper_t in)
     int npar_bil[5]={2,2,2,2,2};
     int npar_bil_max=*max_element(npar_bil,npar_bil + sizeof(npar_bil)/sizeof(npar_bil[0]));
     // number of fit parameters for meslep
-    int npar_meslep[5]={2,2,2,2,2};
-    int npar_meslep_max=*max_element(npar_meslep,npar_meslep + sizeof(npar_meslep)/sizeof(npar_meslep[0]));
+//    int npar_meslep[5]={2,2,2,2,2};
+//    int npar_meslep_max=*max_element(npar_meslep,npar_meslep + sizeof(npar_meslep)/sizeof(npar_meslep[0]));
     
     bool linear=true, constant=false, quadratic=false;
     
@@ -1098,9 +1098,9 @@ oper_t chiral_sea_extr(voper_t in)
             npar_bil[ibil]--;
         npar_bil_max--;
         
-        for(int i=0;i<nbil;i++)
-            npar_meslep[i]--;
-        npar_meslep_max--;
+//        for(int i=0;i<nbil;i++)
+//            npar_meslep[i]--;
+//        npar_meslep_max--;
     }
     else if(strcmp(chir_ansatz.c_str(),"quadratic")==0)
     {
@@ -1113,9 +1113,9 @@ oper_t chiral_sea_extr(voper_t in)
             npar_bil[ibil]++;
         npar_bil_max++;
         
-        for(int i=0;i<nbil;i++)
-            npar_meslep[i]++;
-        npar_meslep_max++;
+//        for(int i=0;i<nbil;i++)
+//            npar_meslep[i]++;
+//        npar_meslep_max++;
     }
     
     
@@ -1245,6 +1245,84 @@ oper_t chiral_sea_extr(voper_t in)
                 }
                 
             }
+
+    // extrapolate ZV/ZA and ZP/ZS
+#pragma omp parallel for collapse(2)
+    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
+        for(int iloop=0;iloop<2;iloop++)
+        {
+            vvd_t coord_bil(vd_t(0.0,nmSea),npar_bil_max);
+            
+            vvd_t y_Z(vd_t(0.0,nmSea),njacks);
+            vd_t dy_Z(0.0,nmSea);
+            vd_t y_Z_ave(0.0,nmSea);
+            
+            vector<jZbil_t> jzz;
+            
+            for(int msea=0; msea<nmSea; msea++)
+            {
+                coord_bil[0][msea] = 1.0;
+                if(!UseEffMass)
+                {
+                    if(constant)
+                    {
+                        coord_bil[0][msea] = 1.0;      // 1
+                    }
+                    else if(linear)
+                    {
+                        coord_bil[0][msea] = 1.0;      // 1
+                        coord_bil[1][msea] = x[msea];  // (amsea)
+                    }
+                    else if(quadratic)
+                    {
+                        coord_bil[0][msea] = 1.0;               // 1
+                        coord_bil[1][msea] = x[msea];           // (amsea)
+                        coord_bil[2][msea] = x[msea]*x[msea];   // (amsea)^2
+                    }
+                    
+                }
+                else if(UseEffMass)
+                {
+                    if(!linear)
+                    {
+                        cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                        exit(0);
+                    }
+                    
+                    coord_bil[1][msea] = pow(x[msea],2.0);
+                }
+                
+                if(iloop==0)
+                    jzz=in[msea].jZVoverZA;
+                else
+                    jzz=in[msea].jZPoverZS;
+                
+                for(int ijack=0;ijack<njacks;ijack++)
+                    y_Z[ijack][msea] = jzz[ibilmom][0][ijack][0][0];
+                
+                
+                y_Z_ave[msea] = (get<0>(ave_err_Z(jzz)))[ibilmom][0][0][0];
+                dy_Z[msea] = (get<1>(ave_err_Z(jzz)))[ibilmom][0][0][0];
+            }
+            
+            vvd_t jZ_pars = polyfit(coord_bil,npar_bil_max,dy_Z,y_Z,x_min,x_max);
+            
+            for(int ijack=0;ijack<njacks;ijack++)
+            {
+                if(iloop==0)
+                    (out.jZVoverZA)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
+                else
+                    (out.jZPoverZS)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
+            }
+                
+//            if(ibilmom%20==0)
+//            {
+//                out.plot_bil_chir_extr(ibilmom,0,ibil,x,y_Z_ave,dy_Z,jZ_pars,"sea");   /* (mom,ins,bil,x,y,dy,jpars) */
+//            }
+//            
+        }
+
+    
     
     //out.compute_Zbil();
     
