@@ -202,8 +202,7 @@ int main(int narg,char **arg)
                         
                         /*  perturbative subtraction of O(a2)  */
                         
-//                        sub[th][m] = rave[th][m].subOa2(b);
-                        sub[th][m] = rave[th][m]; // just a test!
+                        sub[th][m] = rave[th][m].subOa2(b);
                         if(!load_ave) sub[th][m].plot("sub");
                         
                         
@@ -227,13 +226,11 @@ int main(int narg,char **arg)
                         
                         /* store averaged ingredients */
                         
-//                        if(!load_ave) ave[th][m].print("ave_Enr");
-                        if(!load_ave) ave[th][m].print("ave_nosub"); //just a test!
+                        if(!load_ave) ave[th][m].print("ave_Enr");
                         
                         /* load averaged ingredients if needed */
                         
-//                        if(load_ave) ave[th][m].load("ave_Enr");
-                        if(load_ave) ave[th][m].load("ave_nosub");
+                        if(load_ave) ave[th][m].load("ave_Enr");
 
                         /////////////////////////////////////////////////////
                         
