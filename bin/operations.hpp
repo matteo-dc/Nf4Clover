@@ -191,6 +191,10 @@ struct oper_t
     // chiral valence extrapolation
     oper_t chiral_extr();
     
+    // linear coefficients of chiral extrapolations
+    vector<vvd_t> bval;
+    vector<vvd_t> bsea;
+    
     // O(g2a2) subtraction
     oper_t subtract();
     double subtraction(const int imom, const int ibil, const int LO_or_EM);

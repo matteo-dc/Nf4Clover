@@ -147,6 +147,7 @@ tuple<vvd_t,vvd_t> ave_err_Zq(vector<vvd_t> jZq)
     return tuple_ave_err;
 }
 
+
 // average of valence effective mass and mPCAC
 tuple<vvd_t,vvd_t> ave_err(vvvd_t jM)
 {

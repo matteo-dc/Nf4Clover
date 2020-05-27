@@ -660,7 +660,12 @@ oper_t oper_t::chiral_extr()
                             sigma_pars_QCD[ijack]=sigma_pars[ijack];
                     
                     for(int ijack=0; ijack<njacks; ijack++)
+                    {
                         (out.sigma)[ilinmom][iproj][ins][ijack][r]=sigma_pars[ijack][0];
+                        
+                        if(iproj==0 and ins==0 and r==0 and linear)
+                            (out.bval)[ilinmom][ijack][0]=sigma_pars[ijack][1];
+                    }
                 
                 }
     
@@ -900,7 +905,12 @@ oper_t oper_t::chiral_extr()
                                 }
                             
                             for(int ijack=0;ijack<njacks;ijack++)
+                            {
                                 (out.jG)[ibilmom][ins][ibil][ijack][r1][r2] = jG_pars[ijack][0];
+                             
+                                if(ins==0 and r1==0 and r2==0 and linear)
+                                    (out.bval)[ibilmom][ijack][ibil+1]=jG_pars[ijack][1];
+                            }
                             
                             if(ibilmom%20==0 and r1==0 and r2==0)
                             {
@@ -1171,7 +1181,12 @@ oper_t chiral_sea_extr(voper_t in)
         vvd_t Zq_pars = polyfit(coord_Zq,npar_sigma,dy_Zq,y_Zq,x_min,x_max);
         
         for(int ijack=0; ijack<njacks; ijack++)
+        {
             (out.jZq)[ilinmom][ijack][0] = Zq_pars[ijack][0];
+         
+            if(linear)
+                (out.bsea)[ilinmom][ijack][0]=Zq_pars[ijack][1];
+        }
     }
     
     if(ntypes!=3 and ntypes!=1)
@@ -1237,7 +1252,12 @@ oper_t chiral_sea_extr(voper_t in)
                 vvd_t jZ_pars = polyfit(coord_bil,npar_bil_max,dy_Z,y_Z,x_min,x_max);
                 
                 for(int ijack=0;ijack<njacks;ijack++)
+                {
                     (out.jZ)[ibilmom][ibil][ijack][0][0] = jZ_pars[ijack][0];
+                 
+                    if(linear)
+                        (out.bsea)[ibilmom][ijack][ibil+1]=jZ_pars[ijack][1];
+                }
                 
                 if(ibilmom%20==0)
                 {
@@ -2763,6 +2783,13 @@ void oper_t::plot(const string suffix)
     vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
     vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
     
+    // bval/bsea
+    Zq_tup bval_ave_err = ave_err_Zq(in.bval);
+    Zq_tup bsea_ave_err = ave_err_Zq(in.bsea);
+    vvd_t bval_ave = get<0>(bval_ave_err);
+    vvd_t bval_err = get<1>(bval_ave_err);
+    vvd_t bsea_ave = get<0>(bsea_ave_err);
+    vvd_t bsea_err = get<1>(bsea_ave_err);
     
     // Z4f
 //    Z4f_tup Z_4f_ave_err; /* to be eliminated when really computing 4f */
@@ -2793,6 +2820,10 @@ void oper_t::plot(const string suffix)
     
     ofstream ZVovZA_data, ZPovZS_data;
     ofstream ZVovZA_p2_data, ZPovZS_p2_data;
+    
+    vector<ofstream> bval_data(nbil+1), bval_p2_data(nbil+1);
+    vector<ofstream> bsea_data(nbil+1), bsea_p2_data(nbil+1);
+    
 //    vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
     
@@ -2871,6 +2902,41 @@ void oper_t::plot(const string suffix)
         
         ZVovZA_p2_data<<(in.p2)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
         ZPovZS_p2_data<<(in.p2)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+    }
+    
+    if(suffix=="chir" and strcmp(chir_ansatz.c_str(),"linear")==0)
+    {
+        vector<string> bb={"q","S","V","P","A","T"};
+        
+        cout<<", bval";
+        for(int ib=0;ib<nbil+1;ib++)
+        {
+            bval_data[ib].open(path_to_ens+"plots/bval_"+bb[ib]+".txt");
+            bval_p2_data[ib].open(path_to_ens+"plots/bval_"+bb[ib]+"_p2.txt");
+            
+            for(int imom=0; imom<in._linmoms; imom++)
+            {
+                bval_data[ib]<<(in.p2_tilde)[imom]<<"\t"<<bval_ave[imom][ib]<<"\t"<<bval_err[imom][ib]<<endl;
+                bval_p2_data[ib]<<(in.p2)[imom]<<"\t"<<bval_ave[imom][ib]<<"\t"<<bval_err[imom][ib]<<endl;
+            }
+        }
+    }
+    if(suffix=="sea" and strcmp(chir_ansatz.c_str(),"linear")==0)
+    {
+        vector<string> bb={"q","S","V","P","A","T"};
+        
+        cout<<", bsea";
+        for(int ib=0;ib<nbil+1;ib++)
+        {
+            bsea_data[ib].open(path_to_ens+"plots/bsea_"+bb[ib]+".txt");
+            bsea_p2_data[ib].open(path_to_ens+"plots/bsea_"+bb[ib]+"_p2.txt");
+            
+            for(int imom=0; imom<in._linmoms; imom++)
+            {
+                bsea_data[ib]<<(in.p2_tilde)[imom]<<"\t"<<bsea_ave[imom][ib]<<"\t"<<bsea_err[imom][ib]<<endl;
+                bsea_p2_data[ib]<<(in.p2)[imom]<<"\t"<<bsea_ave[imom][ib]<<"\t"<<bsea_err[imom][ib]<<endl;
+            }
+        }
     }
     
 //    if(compute_4f)
