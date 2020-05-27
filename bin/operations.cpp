@@ -795,7 +795,12 @@ oper_t oper_t::chiral_extr()
                                 }
                             
                             for(int ijack=0;ijack<njacks;ijack++)
+                            {
                                 (out.jG)[ibilmom][ins][ibil][ijack][r1][r2] = jG_pars[ijack][0];
+                                
+                                if(ins==0 and r1==0 and r2==0 and linear)
+                                    (out.bval)[ibilmom][ijack][ibil+1]=jG_pars[ijack][1];
+                            }
                             
                             if(ibilmom%20==0 and r1==0 and r2==0)
                             {
