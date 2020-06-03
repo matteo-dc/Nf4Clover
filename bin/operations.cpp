@@ -549,7 +549,7 @@ oper_t oper_t::chiral_extr()
     
     bool linear=true, constant=false, quadratic=false;
     
-    if(strcmp(chir_ansatz.c_str(),"constant")==0)
+    if(strcmp(chir_ansatz_val.c_str(),"constant")==0)
     {
         linear=false;
         constant=true;
@@ -564,7 +564,7 @@ oper_t oper_t::chiral_extr()
             npar_meslep[i]--;
         npar_meslep_max--;
     }
-    else if(strcmp(chir_ansatz.c_str(),"quadratic")==0)
+    else if(strcmp(chir_ansatz_val.c_str(),"quadratic")==0)
     {
         linear=false;
         quadratic=true;
@@ -1102,7 +1102,7 @@ oper_t chiral_sea_extr(voper_t in)
     
     bool linear=true, constant=false, quadratic=false;
     
-    if(strcmp(chir_ansatz.c_str(),"constant")==0)
+    if(strcmp(chir_ansatz_sea.c_str(),"constant")==0)
     {
         linear=false;
         constant=true;
@@ -1117,7 +1117,7 @@ oper_t chiral_sea_extr(voper_t in)
 //            npar_meslep[i]--;
 //        npar_meslep_max--;
     }
-    else if(strcmp(chir_ansatz.c_str(),"quadratic")==0)
+    else if(strcmp(chir_ansatz_sea.c_str(),"quadratic")==0)
     {
         linear=false;
         quadratic=true;
@@ -2909,7 +2909,7 @@ void oper_t::plot(const string suffix)
         ZPovZS_p2_data<<(in.p2)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
     }
     
-    if(suffix=="chir" and strcmp(chir_ansatz.c_str(),"linear")==0)
+    if(suffix=="chir" and strcmp(chir_ansatz_val.c_str(),"linear")==0)
     {
         vector<string> bb={"q","S","V","P","A","T"};
         
@@ -2926,7 +2926,7 @@ void oper_t::plot(const string suffix)
             }
         }
     }
-    if(suffix=="sea" and strcmp(chir_ansatz.c_str(),"linear")==0)
+    if(suffix=="sea" and strcmp(chir_ansatz_sea.c_str(),"linear")==0)
     {
         vector<string> bb={"q","S","V","P","A","T"};
         

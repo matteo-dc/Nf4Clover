@@ -22,7 +22,7 @@ vector<double> csw;
 int conf_init, conf_step, nm, neq, neq2, nmr, delta_tmin, delta_tmax;
 double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref;
 vector<double> mass_val;
-string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz;
+string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz_val, chir_ansatz_sea;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
 vector<string> volume_label;  // volume_label[Nbeta]
@@ -94,7 +94,8 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,QCD_on_the_right_tag)==0) return QCDONTHERIGHT_TK;
     if(strcasecmp(tok,sub_boosted_tag)==0) return SUB_BOOSTED_TK;
     if(strcasecmp(tok,sub_ptilde_tag)==0) return SUB_PTILDE_TK;
-    if(strcasecmp(tok,chir_ansatz_tag)==0) return CHIR_ANSATZ_TK;
+    if(strcasecmp(tok,chir_ansatz_val_tag)==0) return CHIR_ANSATZ_VAL_TK;
+    if(strcasecmp(tok,chir_ansatz_sea_tag)==0) return CHIR_ANSATZ_SEA_TK;
 
     return VALUE_GLB_TK;
 }
@@ -286,7 +287,8 @@ void read_input_glb(const char path[])
     QCD_on_the_right=DEFAULT_INT_VAL;
     sub_boosted=DEFAULT_INT_VAL;
     sub_ptilde=DEFAULT_INT_VAL;
-    chir_ansatz=DEFAULT_STR_VAL;
+    chir_ansatz_val=DEFAULT_STR_VAL;
+    chir_ansatz_sea=DEFAULT_STR_VAL;
 
     
 //    for(auto &bl : beta_label) bl=DEFAULT_STR_VAL;
@@ -460,8 +462,11 @@ void read_input_glb(const char path[])
             case SUB_PTILDE_TK:
                 get_value_glb(fin,sub_ptilde);
                 break;
-            case CHIR_ANSATZ_TK:
-                get_value_glb(fin,chir_ansatz);
+            case CHIR_ANSATZ_VAL_TK:
+                get_value_glb(fin,chir_ansatz_val);
+                break;
+            case CHIR_ANSATZ_SEA_TK:
+                get_value_glb(fin,chir_ansatz_sea);
                 break;
                 
             case FEOF_GLB_TK:
@@ -513,7 +518,8 @@ void read_input_glb(const char path[])
     check_int_par(QCD_on_the_right,QCD_on_the_right_tag);
     check_int_par(sub_boosted,sub_boosted_tag);
     check_int_par(sub_ptilde,sub_ptilde_tag);
-    check_str_par(chir_ansatz,chir_ansatz_tag);
+    check_str_par(chir_ansatz_val,chir_ansatz_val_tag);
+    check_str_par(chir_ansatz_sea,chir_ansatz_sea_tag);
 
     fclose(fin);
     
@@ -576,11 +582,18 @@ void read_input_glb(const char path[])
         exit(0);
     }
     
-    if(strcmp(chir_ansatz.c_str(),"linear" )!=0 and
-       strcmp(chir_ansatz.c_str(),"constant" )!=0 and
-       strcmp(chir_ansatz.c_str(),"quadratic" )!=0)
+    if(strcmp(chir_ansatz_val.c_str(),"linear" )!=0 and
+       strcmp(chir_ansatz_val.c_str(),"constant" )!=0 and
+       strcmp(chir_ansatz_val.c_str(),"quadratic" )!=0)
     {
-        cout<<"Choose the chiral fit Ansatz among: \"linear/constant/quadratic\"."<<endl;
+        cout<<"Choose the valence chiral fit Ansatz among: \"linear/constant/quadratic\"."<<endl;
+        exit(0);
+    }
+    if(strcmp(chir_ansatz_sea.c_str(),"linear" )!=0 and
+       strcmp(chir_ansatz_sea.c_str(),"constant" )!=0 and
+       strcmp(chir_ansatz_sea.c_str(),"quadratic" )!=0)
+    {
+        cout<<"Choose the sea chiral fit Ansatz among: \"linear/constant/quadratic\"."<<endl;
         exit(0);
     }
     
@@ -643,7 +656,8 @@ void read_input_glb(const char path[])
     if(sub_ptilde) printf("p2tilde.\n");
     else printf("p2.\n");
     
-    printf(" Using [%s] Ansatz for chiral extrapolation.\n",chir_ansatz.c_str());
+    printf(" Using [%s] Ansatz for valence chiral extrapolation.\n",chir_ansatz_val.c_str());
+    printf(" Using [%s] Ansatz for sea chiral extrapolation.\n",chir_ansatz_sea.c_str());
     
     
     printf("\n");

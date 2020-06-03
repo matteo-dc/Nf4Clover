@@ -150,5 +150,6 @@ extern int load_ave;
 // load chiral extrapolated quantities
 extern int load_chir;
 // chiral fit ansatz
-extern string chir_ansatz;
+extern string chir_ansatz_val;
+extern string chir_ansatz_sea;
 #endif
