@@ -1264,7 +1264,7 @@ oper_t chiral_sea_extr(voper_t in)
                         (out.bsea)[ibilmom][ijack][ibil+1]=jZ_pars[ijack][1];
                 }
                 
-                if(ibilmom%20==0)
+                if(ibilmom%10==0)
                 {
                     out.plot_bil_chir_extr(ibilmom,0,ibil,x,y_Z_ave,dy_Z,jZ_pars,"sea");   /* (mom,ins,bil,x,y,dy,jpars) */
                 }
