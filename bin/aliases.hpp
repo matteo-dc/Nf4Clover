@@ -12,6 +12,7 @@
 
 #include <valarray>
 #include <complex>
+#include <array>
 #include <vector>
 #include <tuple>
 

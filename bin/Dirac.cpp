@@ -1,6 +1,7 @@
 #include "read.hpp"
 #include "aliases.hpp"
 #include <math.h>
+#include <array>
 #include <vector>
 
 //create Dirac Gamma matrices

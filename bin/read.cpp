@@ -2,6 +2,7 @@
 #include "global.hpp"
 #include <fstream>
 #include <iostream>
+#include <array>
 #include <vector>
 #include <stdio.h>
 #include <omp.h>

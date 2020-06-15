@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <array>
 #include <vector>
 
 double read_plaquette(const string &path);

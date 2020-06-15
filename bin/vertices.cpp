@@ -149,7 +149,7 @@ jproj_t compute_pr_bil( vvvprop_t &jpropOUT_inv,  valarray<jvert_t> &jVert,  vvv
     
     jproj_t pr_bil(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,nmr),nmr),njacks),nbil),gbil::nins);
     
-    const int ibil_of_igam[gbil::nGamma]={0,1,1,1,1,2,3,3,3,3,4,4,4,4,4,4};
+    const int ibil_of_igam[/*gbil::nGamma*/16]={0,1,1,1,1,2,3,3,3,3,4,4,4,4,4,4};
     
 #pragma omp parallel for collapse(5)
     for(int ijack=0;ijack<njacks;ijack++)

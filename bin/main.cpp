@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <array>
 #include <vector>
 #include <iostream>
 #include <fstream>

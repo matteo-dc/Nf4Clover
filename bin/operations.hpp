@@ -4,6 +4,7 @@
 #include <iostream>
 #include "aliases.hpp"
 #include "global.hpp"
+#include <array>
 #include <vector>
 #include "read.hpp"
 #include "read_input.hpp"
