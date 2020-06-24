@@ -227,11 +227,11 @@ int main(int narg,char **arg)
                         
                         /* store averaged ingredients */
                         
-                        if(!load_ave) ave[th][m].print("ave_Enr");
+                        if(!load_ave) ave[th][m].print("ave_Enr028");
                         
                         /* load averaged ingredients if needed */
                         
-                        if(load_ave) ave[th][m].load("ave_Enr");
+                        if(load_ave) ave[th][m].load("ave_Enr028");
 
                         /////////////////////////////////////////////////////
                         
