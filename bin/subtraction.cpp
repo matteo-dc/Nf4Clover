@@ -277,7 +277,7 @@ oper_t oper_t::subOainf(const int b)
 
     string path = out.path_to_beta+out._beta_label+"/";
 
-    string RCs[6] = {"q","S","P","V","A","T"};
+    string RCs[6] = {"q","S","V","P","A","T"};
     for(int iRC=0;iRC<6;iRC++)
     {
       DeltaG_file[iRC].open(path+"subainf/DeltaG"+RCs[iRC]);
