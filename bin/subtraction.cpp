@@ -280,7 +280,7 @@ oper_t oper_t::subOainf(const int b, const string &suffix)
     string RCs[6] = {"q","S","V","P","A","T"};
     for(int iRC=0;iRC<6;iRC++)
     {
-      DeltaG_file[iRC].open("DeltaG"+RCs[iRC]);
+      DeltaG_file[iRC].open(path+"DeltaG"+RCs[iRC]);
       if(!DeltaG_file[iRC].good())
       {
         cerr<<"Error opening \""<<path<<"DeltaG"<<RCs[iRC]<<"\"."<<endl;
