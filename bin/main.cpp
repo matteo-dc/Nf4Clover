@@ -113,12 +113,12 @@ int main(int narg,char **arg)
                         /*  perturbative subtraction of O(a2)  */
 
                         sub[th][m] = rave[th][m].subOa2(b);
-                        if(!load_ave) sub[th][m].plot("sub");
+                        if(!load_ave) sub[th][m].plot("sub_a2");
 
                         /*  perturbative subtraction of O(ainf)  */
 
                         sub[th][m] = rave[th][m].subOainf(b);
-                        if(!load_ave) sub[th][m].plot("sub");
+                        if(!load_ave) sub[th][m].plot("sub_ainf");
 
 
                         /*  democratic filter on momenta  */
