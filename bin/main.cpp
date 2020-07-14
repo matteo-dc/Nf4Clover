@@ -104,15 +104,9 @@ int main(int narg,char **arg)
 
                         /* ///////  ENRICO  /////// */
 
-
-                        /*  democratic filter on momenta  */
-
-                        filt[th][m] = basic[th][m].filter_moms();
-                        if(!load_ave)  filt[th][m].plot("filt");
-
                         /*  average over equivalent momenta  */
 
-                        ave[th][m] = filt[th][m].average_equiv_moms();
+                        ave[th][m] = basic[th][m].average_equiv_moms();
                         if(!load_ave) ave[th][m].plot("ave");
 
                         /*  average r  */
@@ -138,16 +132,18 @@ int main(int narg,char **arg)
                         sub[th][m] = rave[th][m].subOainf(b,"eqmoms");
                         if(!load_ave) sub[th][m].plot("sub_ainf");
 
+                        /*  democratic filter on momenta  */
+
+                        filt[th][m] = sub[th][m].filter_moms();
+                        if(!load_ave)  filt[th][m].plot("filt");
+
 
                         /////////////////////////////////////////////////////
 
                         /*  valence chiral extr  */
                         if(free_analysis or recompute_basic)
                         {
-//                            val_chir[th][m] = sub[th][m];
-
-                            // val_chir[th][m] = ave[th][m];  /*ENRICO*/
-                            val_chir[th][m] = sub[th][m];   /*A3*/
+                            val_chir[th][m] = filt[th][m];
                             val_chir[th][m].plot("chir");
 
                             /* store extrapolated ingredients */
@@ -155,10 +151,7 @@ int main(int narg,char **arg)
                         }
                         else
                         {
-//                            val_chir[th][m] = sub[th][m].chiral_extr();
-
-                            // val_chir[th][m] = ave[th][m].chiral_extr();  /*ENRICO*/
-                            val_chir[th][m] = sub[th][m].chiral_extr();  /*A3*/
+                            val_chir[th][m] = filt[th][m].chiral_extr(); 
                             val_chir[th][m].plot("chir");
 
                             /* store extrapolated ingredients */
