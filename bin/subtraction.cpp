@@ -275,13 +275,15 @@ oper_t oper_t::subOainf(const int b)
 
     vector<ifstream> DeltaG_file(6);
 
+    string path = out._path_to_beta+out._beta_label+"/";
+
     string RCs[6] = {"q","S","P","V","A","T"};
     for(int iRC=0;iRC<6;iRC++)
     {
-      DeltaG_file[iRC].open(out._beta_label+"/subainf/DeltaG"+RCs[iRC]);
+      DeltaG_file[iRC].open(path+"subainf/DeltaG"+RCs[iRC]);
       if(!DeltaG_file[iRC].good())
       {
-        cerr<<"Error opening "<<out._beta_label<<" \"/subainf/DeltaG"<<RCs[iRC]<<"\"."<<endl;
+        cerr<<"Error opening \""<<path<<"subainf/DeltaG"<<RCs[iRC]<<"\"."<<endl;
         exit(1);
       }
       while(!DeltaG_file[iRC].eof())
