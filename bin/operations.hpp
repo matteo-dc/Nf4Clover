@@ -203,7 +203,7 @@ struct oper_t
 
     oper_t subOa2(const int b);
 
-    oper_t subOainf(const int b);
+    oper_t subOainf(const int b, const string &suffix);
 
 
     // evolution to 1/a scale
