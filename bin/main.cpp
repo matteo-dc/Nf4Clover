@@ -104,40 +104,38 @@ int main(int narg,char **arg)
 
                         /* ///////  ENRICO  /////// */
 
-                        /*  average over equivalent momenta  */
-
-                        ave[th][m] = basic[th][m].average_equiv_moms();
-                        if(!load_ave) ave[th][m].plot("ave");
-
                         /*  average r  */
 
-                        rave[th][m] = ave[th][m].average_r();
-                        if(!load_ave) rave[th][m].plot("rave");
+                       rave[th][m] = basic[th][m].average_r();
+                       if(!load_ave) rave[th][m].plot("rave");
 
-                        /* store averaged ingredients */
+                       /*  perturbative subtraction of O(a2)  */
 
-                        if(!load_ave) rave[th][m].print("ave_Enr028");
+                       sub[th][m] = rave[th][m].subOa2(b);
+                       if(!load_ave) sub[th][m].plot("sub_a2");
+
+                       // /*  perturbative subtraction of O(ainf)  */
+                       //
+                       // sub[th][m] = rave[th][m].subOainf(b);
+                       // if(!load_ave) sub[th][m].plot("sub_ainf");
+
+                       /*  democratic filter on momenta  */
+
+                       filt[th][m] = sub[th][m].filter_moms();
+                       if(!load_ave)  filt[th][m].plot("filt");
+
+                       /*  average over equivalent momenta  */
+
+                       ave[th][m] = filt[th][m].average_equiv_moms();
+                       if(!load_ave) ave[th][m].plot("ave");
+
+                       /* store averaged ingredients */
+
+                        if(!load_ave) ave[th][m].print("ave_Enr028");
 
                         /* load averaged ingredients if needed */
 
-                        if(load_ave)  rave[th][m].load("ave_Enr028");
-
-                        /*  perturbative subtraction of O(a2)  */
-
-                        sub[th][m] = rave[th][m].subOa2(b);
-                        // if(!load_ave)
-                         sub[th][m].plot("sub_a2");
-
-                        // /*  perturbative subtraction of O(ainf)  */
-
-                        // sub[th][m] = rave[th][m].subOainf(b,"eqmoms");
-                        // if(!load_ave) sub[th][m].plot("sub_ainf");
-
-                        /*  democratic filter on momenta  */
-
-                        filt[th][m] = sub[th][m].filter_moms();
-                        // if(!load_ave)  
-                        filt[th][m].plot("filt");
+                        if(load_ave) ave[th][m].load("ave_Enr028");
 
 
                         /////////////////////////////////////////////////////
@@ -145,7 +143,7 @@ int main(int narg,char **arg)
                         /*  valence chiral extr  */
                         if(free_analysis or recompute_basic)
                         {
-                            val_chir[th][m] = filt[th][m];
+                            val_chir[th][m] = ave[th][m];
                             val_chir[th][m].plot("chir");
 
                             /* store extrapolated ingredients */
@@ -153,7 +151,7 @@ int main(int narg,char **arg)
                         }
                         else
                         {
-                            val_chir[th][m] = filt[th][m].chiral_extr();
+                            val_chir[th][m] = ave[th][m].chiral_extr();
                             val_chir[th][m].plot("chir");
 
                             /* store extrapolated ingredients */
