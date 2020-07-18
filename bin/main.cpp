@@ -109,10 +109,15 @@ int main(int narg,char **arg)
                        rave[th][m] = basic[th][m].average_r();
                        if(!load_ave) rave[th][m].plot("rave");
 
-                       /*  perturbative subtraction of O(a2)  */
+                       /*  no sub  */
 
-                       sub[th][m] = rave[th][m].subOa2(b);
-                       if(!load_ave) sub[th][m].plot("sub_a2");
+                       sub[th][m] = rave[th][m];
+                       if(!load_ave) sub[th][m].plot("sub_nosub");
+
+                       // /*  perturbative subtraction of O(a2)  */
+                       //
+                       // sub[th][m] = rave[th][m].subOa2(b);
+                       // if(!load_ave) sub[th][m].plot("sub_a2");
 
                        // /*  perturbative subtraction of O(ainf)  */
                        //
