@@ -109,20 +109,20 @@ int main(int narg,char **arg)
                        rave[th][m] = basic[th][m].average_r();
                        if(!load_ave) rave[th][m].plot("rave");
 
-                       // /*  no sub  */
-                       //
+                       /*  no sub  */
+
                        // sub[th][m] = rave[th][m];
                        // if(!load_ave) sub[th][m].plot("sub_nosub");
 
                        /*  perturbative subtraction of O(a2)  */
 
-                       sub[th][m] = rave[th][m].subOa2(b);
-                       if(!load_ave) sub[th][m].plot("sub_a2");
+                       // sub[th][m] = rave[th][m].subOa2(b);
+                       // if(!load_ave) sub[th][m].plot("sub_a2");
 
-                       // /*  perturbative subtraction of O(ainf)  */
-                       //
-                       // sub[th][m] = rave[th][m].subOainf(b);
-                       // if(!load_ave) sub[th][m].plot("sub_ainf");
+                       /*  perturbative subtraction of O(ainf)  */
+
+                       sub[th][m] = rave[th][m].subOainf(b,"allmoms");
+                       if(!load_ave) sub[th][m].plot("sub_ainf");
 
                        /*  democratic filter on momenta  */
 
