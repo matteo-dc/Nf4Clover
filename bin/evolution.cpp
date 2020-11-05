@@ -439,7 +439,8 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
       int j=find_lambda_a2p2_imom(_linmoms,p2,ilinmom);
       lambda_imom.push_back(j);
 
-      cout<<"   a2p2["<<ilinmom<<"]="<<p2[ilinmom]<<"\t a2p2["<<j<<"]="<<p2[j]<<"\t  (lambda*a2p2["<<ilinmom<<"]="<<lambda_stepfunc*p2[ilinmom]<<")"<<endl;
+      cout<<"   p2["<<ilinmom<<"]="<<p2[ilinmom]*pow(_ainv,2.0)<<"\t p2["<<j<<"]="<<p2[j]*pow(_ainv,2.0);
+      cout<<"\t  (lambda*p2["<<ilinmom<<"]="<<lambda_stepfunc*p2[ilinmom]*pow(_ainv,2.0)<<")"<<endl;
     }
     cout<<endl;
 
