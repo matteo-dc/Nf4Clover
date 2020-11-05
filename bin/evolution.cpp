@@ -489,7 +489,7 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
                     }
 
               #warning assuming nmr=1
-                  (out.stepfunc)[ibilmom][ijack][ibil+1] = jZq[lambda_imom[ibilmom]][ijack][0]/jZq[ibilmom][ijack][0];
+                  (out.stepfunc)[ibilmom][ijack][ibil+1] = jZ[lambda_imom[ibilmom]][ibil][ijack][0][0]/jZ[ibilmom][ibil][ijack][0][0];
                   (out.stepfunc)[ibilmom][ijack][ibil+1] -= 1.0/cO_lambda[ibil];
             }
     }
