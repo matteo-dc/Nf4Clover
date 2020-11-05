@@ -432,14 +432,14 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
     vd_t cO(0.0,5), cO_lambda(0.0,5);
 
     // find all lambda_p2 for step scaling function
-    cout<<"  combinations for step scaling function (lambda=<<"<<lambda_stepfunc<<"):"<<endl;
+    cout<<"  combinations for step scaling function (lambda="<<lambda_stepfunc<<"):"<<endl;
     vector<int>  lambda_imom;
     for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
     {
       int j=find_lambda_a2p2_imom(_linmoms,p2,ilinmom);
       lambda_imom.push_back(j);
 
-      cout<<"   a2p2["<<ilinmom<<"]="<<p2[ilinmom]<<" <-> a2p2["<<j<<"]~lambda*a2p2["<<ilinmom<<"]="<<p2[j]<<endl;
+      cout<<"   a2p2["<<ilinmom<<"]="<<p2[ilinmom]<<"\t a2p2["<<j<<"]="<<p2[j]<<"\t  (lambda*a2p2["<<ilinmom<<"]="<<lambda_stepfunc*p2[ilinmom]<<")"<<endl;
     }
     cout<<endl;
 
