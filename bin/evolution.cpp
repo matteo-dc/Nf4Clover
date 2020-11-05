@@ -400,7 +400,7 @@ double T_evolution_to_RIp(int Nf,double p2,double p2ref)
     return cmu/cmu0;
 }
 
-int find_lambda_a2p2_imom(const int size, const int imom)
+int find_lambda_a2p2_imom(const int size, const vector<double> p2, const int imom)
 {
   vector<pair<double,int>> dist_list;
   // find momentum closer to lambda*a2p2
@@ -432,21 +432,21 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
     vd_t cO(0.0,5), cO_lambda(0.0,5);
 
     // find all lambda_p2 for step scaling function
-    cout<<"  scaling function computed with the following combinations:"<<endl;
+    cout<<"  combinations for step scaling function (lambda=<<"<<lambda_stepfunc<<"):"<<endl;
     vector<int>  lambda_imom;
     for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
     {
-      int j=find_lambda_a2p2_imom(_linmoms,ilinmom);
+      int j=find_lambda_a2p2_imom(_linmoms,p2,ilinmom);
       lambda_imom.push_back(j);
 
-      cout<<"   a2p2["<<ilinmom<<"]="<<p2[ilinmom]<<" <-> a2p2["<<j<<"]~lambda*a2p2["<<i<<"]="<<p2[j]<<endl;
+      cout<<"   a2p2["<<ilinmom<<"]="<<p2[ilinmom]<<" <-> a2p2["<<j<<"]~lambda*a2p2["<<ilinmom<<"]="<<p2[j]<<endl;
     }
     cout<<endl;
 
     for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
     {
         cq=q_evolution_to_RIp(Nf,p2[ilinmom]*pow(_ainv,2.0),p2_evol);
-        cq_lambda=q_evolution_to_RIp(Nf,p2[ilinmom]*pow(_ainv,2.0),p2[lambda_imom[ilinmom]]*pow(_ainv,2.0))
+        cq_lambda=q_evolution_to_RIp(Nf,p2[ilinmom]*pow(_ainv,2.0),p2[lambda_imom[ilinmom]]*pow(_ainv,2.0));
 
         for(int ijack=0;ijack<njacks;ijack++)
         {
@@ -647,177 +647,177 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
 //     return out;
 // }
 
-O4f_t evaluate_Carrasco(double a2p2)
-{
-    double LL=log(a2p2);
+// O4f_t evaluate_Carrasco(double a2p2)
+// {
+//     double LL=log(a2p2);
+//
+//     O4f_t ZQED;
+//     /* The factor 1/(16*Pi^2) is included */
+//     ZQED << -0.0242556 + 0.0158314*LL, 0.00339251, 0.0101775, -0.0203551, -0.00508877,
+//             +0.00339251, -0.0486754 + 0.00949886*LL, -0.0203551, 0.0101775, -0.00254439,
+//             +0.00254439, -0.00508877, -0.0308496 - 0.00105543*LL, -0.00678503, 0.0,
+//             -0.00508877, 0.00254439, -0.00678503, -0.0308496 - 0.00105543*LL, 0.00203498 + 0.000527714*LL,
+//             -0.0610652, -0.0305326, 0.0, 0.0976791 + 0.0253303*LL, -0.0383375 + 0.0172387*LL;
+//
+//     return ZQED;
+// }
 
-    O4f_t ZQED;
-    /* The factor 1/(16*Pi^2) is included */
-    ZQED << -0.0242556 + 0.0158314*LL, 0.00339251, 0.0101775, -0.0203551, -0.00508877,
-            +0.00339251, -0.0486754 + 0.00949886*LL, -0.0203551, 0.0101775, -0.00254439,
-            +0.00254439, -0.00508877, -0.0308496 - 0.00105543*LL, -0.00678503, 0.0,
-            -0.00508877, 0.00254439, -0.00678503, -0.0308496 - 0.00105543*LL, 0.00203498 + 0.000527714*LL,
-            -0.0610652, -0.0305326, 0.0, 0.0976791 + 0.0253303*LL, -0.0383375 + 0.0172387*LL;
-
-    return ZQED;
-}
-
-oper_t oper_t::evolve_mixed(double ainv)
-{
-    cout<<endl;
-    cout<<"----- mixed evolution of the eta -----"<<endl<<endl;
-
-    oper_t out=(*this);
-
-    double CF=(Nc*Nc-1.0)/(2.0*Nc);
-
-    double gamma_q_s0 = 0.0; /* in the Landau gauge the one-loop strong an. dim. is zero */
-    double gamma_q_e0 = 2.0;
-    double gamma_q_se1 = -8.0;
-
-    double gamma_bil_s0[5] =   {-6.0*CF,0.0,-6.0*CF,0.0,+2.0*CF};
-    double gamma_bil_e0[5] =   {-6.0,   0.0,-6.0,   0.0,+2.0};
-    double gamma_bil_se1[5] =  {-8.0,   0.0,-8.0,   0.0,-152.0/3.0};
-
-    for(int imom=0;imom<out._linmoms;imom++)
-    {
-        // eta_q
-
-        double al0;
-
-        double UQCD_q    = 1.0/q_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
-        double UQCDinv_q = 1.0/UQCD_q;
-        double UQED1_q = 0.5*gamma_q_e0*log(p2[imom])/pow(4.0*M_PI,2.0);
-        double UQED2_q = 0.5*gamma_q_se1*log(p2[imom])/pow(4.0*M_PI,2.0) +
-                         0.25*pow(log(p2[imom]),2.0)*gamma_q_e0*gamma_q_s0/pow(4.0*M_PI,2.0);
-
-        al0=alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
-
-        for(int ijack=0;ijack<njacks;ijack++)
-            for(int mr=0;mr<out._nmr;mr++)
-                (out.jZq_EM)[imom][ijack][mr] =
-                    jZq_EM[imom][ijack][mr] + al0*UQCDinv_q*UQED2_q + UQCDinv_q*UQED1_q - UQED1_q;
-
-        // eta_bil
-        double UQCD_bil[5] = {
-            1.0/S_evolution_to_RIp_ainv(Nf,ainv,p2[imom]),
-            1.0,
-            1.0/P_evolution_to_RIp_ainv(Nf,ainv,p2[imom]),
-//            1.0/P_evolution_to_RIp_two_GeV(Nf,ainv,p2[imom]),
-            1.0,
-            1.0/T_evolution_to_RIp_ainv(Nf,ainv,p2[imom])};
-
-        for(int ibil=0;ibil<nbil;ibil++)
-        {
-            double UQCDinv_bil = 1.0/UQCD_bil[ibil];
-            double UQED1_bil = 0.5*gamma_bil_e0[ibil]*log(p2[imom])/pow(4.0*M_PI,2.0);
-            double UQED2_bil = 0.5*gamma_bil_se1[ibil]*log(p2[imom])/pow(4.0*M_PI,2.0) +
-                               0.25*pow(log(p2[imom]),2.0)*gamma_bil_e0[ibil]*gamma_bil_s0[ibil]/pow(4.0*M_PI,2.0);
-
-/* evolution of ZP to 2GeV*/
-//            double UQED1_bil = 0.5*gamma_bil_e0[ibil]*log(p2[imom]*pow(ainv,2.0)/4.0)/pow(4.0*M_PI,2.0);
-//            double UQED2_bil = 0.5*gamma_bil_se1[ibil]*log(p2[imom]*pow(ainv,2.0)/4.0)/pow(4.0*M_PI,2.0) +
-//                               0.25*pow(log(p2[imom]*pow(ainv,2.0)/4.0),2.0)*gamma_bil_e0[ibil]*gamma_bil_s0[ibil]/pow(4.0*M_PI,2.0);
-
-            if(ibil==4)
-                al0=alphas(Nf,pow(ainv,2.0)*p2[imom],2)/(4.0*M_PI);
-            else
-                al0=alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
-
-            for(int ijack=0;ijack<njacks;ijack++)
-                for(int mr1=0;mr1<out._nmr;mr1++)
-                    for(int mr2=0;mr2<out._nmr;mr2++)
-                        (out.jZ_EM)[imom][ibil][ijack][mr1][mr2] =
-                            jZ_EM[imom][ibil][ijack][mr1][mr2]  + al0*UQCDinv_bil*UQED2_bil +  UQCDinv_bil*UQED1_bil - UQED1_bil;
-        }
-
-    }
-
-    O4f_t UQCD(O4f_t::Zero()), UQCDinv(O4f_t::Zero());
-    O4f_t ZQCD(O4f_t::Zero()), ZQCDinv(O4f_t::Zero());
-    O4f_t UQED1(O4f_t::Zero()),UQED2(O4f_t::Zero());
-    O4f_t eta(O4f_t::Zero());
-
-    O4f_t ZQEDan;
-
-    double gamma_se1[5][5] = {
-        {+4.0,+0.0,+0.0,+0.0,+0.0},
-        {+0.0,-4.0,+0.0,+0.0,+0.0},
-        {+0.0,+0.0,+484.0/9.0,+0.0,+0.0},
-        {+0.0,+0.0,+0.0,+412.0/9.0,-38.0/9.0},
-        {+0.0,+0.0,+0.0,-928.0/9.0,-428.0/27.0}}; // to be updated
-    /* including the lepton */
-//    double gamma_e0[5][5] = {
-//        {-4.0,+0.0,+0.0,+0.0,+0.0},
-//        {+0.0,-2.0,+0.0,+0.0,+0.0},
-//        {+0.0,+0.0,+4.0/3.0,+0.0,+0.0},
-//        {+0.0,+0.0,+0.0,+4.0/3.0,-1.0/6.0},
-//        {+0.0,+0.0,+0.0,-8.0,-40.0/9.0}};
-    /* without the lepton contribution */
-    double gamma_e0[5][5] = {
-        {-5.0,+0.0,+0.0,+0.0,+0.0},
-        {+0.0,-3.0,+0.0,+0.0,+0.0},
-        {+0.0,+0.0,+1.0/3.0,+0.0,+0.0},
-        {+0.0,+0.0,+0.0,+1.0/3.0,-1.0/6.0},
-        {+0.0,+0.0,+0.0,-8.0,-49.0/9.0}};
-
-    double gamma_s0[5] = {0.0,0.0,-6.0*CF,-6.0*CF,+2.0*CF};
-
-    for(int imom=0;imom<out._meslepmoms;imom++)
-    {
-        UQCD(0,0)=1.0;
-        UQCD(1,1)=1.0;
-        UQCD(2,2)=1.0/P_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
-        UQCD(3,3)=1.0/P_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
-        UQCD(4,4)=1.0/T_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
-
-        UQCDinv = UQCD.inverse();
-
-        ZQEDan = evaluate_Carrasco(p2[imom]);
-
-#warning al0 da aggiustare: per ZT deve essere calcolato a 2 loop!
-        double al0 = alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
-
-        for(int ijack=0;ijack<njacks;ijack++)
-            for(int mr1=0;mr1<out._nmr;mr1++)
-                for(int mr2=0;mr2<out._nmr;mr2++)
-                {
-                    for(int iop1=0;iop1<nbil;iop1++)
-                        for(int iop2=0;iop2<nbil;iop2++)
-                        {
-                            ZQCD(iop1,iop2) = jZ_4f[imom][iop1][iop2][ijack][mr1][mr2];
-                            eta(iop1,iop2)  = jZ_4f_EM[imom][iop1][iop2][ijack][mr1][mr2];
-
-                            UQED1(iop1,iop2) = 0.5*gamma_e0[iop1][iop2]*log(p2[imom])/pow(4.0*M_PI,2.0);
-                            UQED2(iop1,iop2) = 0.5*gamma_se1[iop1][iop2]*log(p2[imom])/pow(4.0*M_PI,2.0) +
-                                               0.125*pow(log(p2[imom]),2.0)*gamma_e0[iop1][iop2]*(gamma_s0[iop1]+gamma_s0[iop2])/pow(4.0*M_PI,2.0);
-                        }
-
-                    ZQCDinv = ZQCD.inverse();
-
-                    if(!QCD_on_the_right)
-                    {
-                        // eta_OLD_4f
-                        for(int iop1=0;iop1<nbil;iop1++)
-                            for(int iop2=0;iop2<nbil;iop2++)
-                                (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
-                                    eta(iop1,iop2) + al0*(ZQCDinv*UQCDinv*UQED2*ZQCD)(iop1,iop2) + (ZQCDinv*UQCDinv*UQED1*ZQCD)(iop1,iop2)
-                                    - UQED1(iop1,iop2);
-
-                    }
-                    else if(QCD_on_the_right)
-                    {
-                        // eta_NEW_4f
-                        for(int iop1=0;iop1<nbil;iop1++)
-                            for(int iop2=0;iop2<nbil;iop2++)
-                                (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
-                                    (UQCD*eta*UQCDinv)(iop1,iop2) + al0*(UQED2*UQCDinv)(iop1,iop2) + (UQCD*ZQEDan*UQCDinv)(iop1,iop2) +
-                                    (UQED1*UQCDinv)(iop1,iop2) - ZQEDan(iop1,iop2) - UQED1(iop1,iop2);
-
-                    }
-                }
-    }
-
-    return out;
-
-}
+// oper_t oper_t::evolve_mixed(double ainv)
+// {
+//     cout<<endl;
+//     cout<<"----- mixed evolution of the eta -----"<<endl<<endl;
+//
+//     oper_t out=(*this);
+//
+//     double CF=(Nc*Nc-1.0)/(2.0*Nc);
+//
+//     double gamma_q_s0 = 0.0; /* in the Landau gauge the one-loop strong an. dim. is zero */
+//     double gamma_q_e0 = 2.0;
+//     double gamma_q_se1 = -8.0;
+//
+//     double gamma_bil_s0[5] =   {-6.0*CF,0.0,-6.0*CF,0.0,+2.0*CF};
+//     double gamma_bil_e0[5] =   {-6.0,   0.0,-6.0,   0.0,+2.0};
+//     double gamma_bil_se1[5] =  {-8.0,   0.0,-8.0,   0.0,-152.0/3.0};
+//
+//     for(int imom=0;imom<out._linmoms;imom++)
+//     {
+//         // eta_q
+//
+//         double al0;
+//
+//         double UQCD_q    = 1.0/q_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
+//         double UQCDinv_q = 1.0/UQCD_q;
+//         double UQED1_q = 0.5*gamma_q_e0*log(p2[imom])/pow(4.0*M_PI,2.0);
+//         double UQED2_q = 0.5*gamma_q_se1*log(p2[imom])/pow(4.0*M_PI,2.0) +
+//                          0.25*pow(log(p2[imom]),2.0)*gamma_q_e0*gamma_q_s0/pow(4.0*M_PI,2.0);
+//
+//         al0=alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
+//
+//         for(int ijack=0;ijack<njacks;ijack++)
+//             for(int mr=0;mr<out._nmr;mr++)
+//                 (out.jZq_EM)[imom][ijack][mr] =
+//                     jZq_EM[imom][ijack][mr] + al0*UQCDinv_q*UQED2_q + UQCDinv_q*UQED1_q - UQED1_q;
+//
+//         // eta_bil
+//         double UQCD_bil[5] = {
+//             1.0/S_evolution_to_RIp_ainv(Nf,ainv,p2[imom]),
+//             1.0,
+//             1.0/P_evolution_to_RIp_ainv(Nf,ainv,p2[imom]),
+// //            1.0/P_evolution_to_RIp_two_GeV(Nf,ainv,p2[imom]),
+//             1.0,
+//             1.0/T_evolution_to_RIp_ainv(Nf,ainv,p2[imom])};
+//
+//         for(int ibil=0;ibil<nbil;ibil++)
+//         {
+//             double UQCDinv_bil = 1.0/UQCD_bil[ibil];
+//             double UQED1_bil = 0.5*gamma_bil_e0[ibil]*log(p2[imom])/pow(4.0*M_PI,2.0);
+//             double UQED2_bil = 0.5*gamma_bil_se1[ibil]*log(p2[imom])/pow(4.0*M_PI,2.0) +
+//                                0.25*pow(log(p2[imom]),2.0)*gamma_bil_e0[ibil]*gamma_bil_s0[ibil]/pow(4.0*M_PI,2.0);
+//
+// /* evolution of ZP to 2GeV*/
+// //            double UQED1_bil = 0.5*gamma_bil_e0[ibil]*log(p2[imom]*pow(ainv,2.0)/4.0)/pow(4.0*M_PI,2.0);
+// //            double UQED2_bil = 0.5*gamma_bil_se1[ibil]*log(p2[imom]*pow(ainv,2.0)/4.0)/pow(4.0*M_PI,2.0) +
+// //                               0.25*pow(log(p2[imom]*pow(ainv,2.0)/4.0),2.0)*gamma_bil_e0[ibil]*gamma_bil_s0[ibil]/pow(4.0*M_PI,2.0);
+//
+//             if(ibil==4)
+//                 al0=alphas(Nf,pow(ainv,2.0)*p2[imom],2)/(4.0*M_PI);
+//             else
+//                 al0=alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
+//
+//             for(int ijack=0;ijack<njacks;ijack++)
+//                 for(int mr1=0;mr1<out._nmr;mr1++)
+//                     for(int mr2=0;mr2<out._nmr;mr2++)
+//                         (out.jZ_EM)[imom][ibil][ijack][mr1][mr2] =
+//                             jZ_EM[imom][ibil][ijack][mr1][mr2]  + al0*UQCDinv_bil*UQED2_bil +  UQCDinv_bil*UQED1_bil - UQED1_bil;
+//         }
+//
+//     }
+//
+//     O4f_t UQCD(O4f_t::Zero()), UQCDinv(O4f_t::Zero());
+//     O4f_t ZQCD(O4f_t::Zero()), ZQCDinv(O4f_t::Zero());
+//     O4f_t UQED1(O4f_t::Zero()),UQED2(O4f_t::Zero());
+//     O4f_t eta(O4f_t::Zero());
+//
+//     O4f_t ZQEDan;
+//
+//     double gamma_se1[5][5] = {
+//         {+4.0,+0.0,+0.0,+0.0,+0.0},
+//         {+0.0,-4.0,+0.0,+0.0,+0.0},
+//         {+0.0,+0.0,+484.0/9.0,+0.0,+0.0},
+//         {+0.0,+0.0,+0.0,+412.0/9.0,-38.0/9.0},
+//         {+0.0,+0.0,+0.0,-928.0/9.0,-428.0/27.0}}; // to be updated
+//     /* including the lepton */
+// //    double gamma_e0[5][5] = {
+// //        {-4.0,+0.0,+0.0,+0.0,+0.0},
+// //        {+0.0,-2.0,+0.0,+0.0,+0.0},
+// //        {+0.0,+0.0,+4.0/3.0,+0.0,+0.0},
+// //        {+0.0,+0.0,+0.0,+4.0/3.0,-1.0/6.0},
+// //        {+0.0,+0.0,+0.0,-8.0,-40.0/9.0}};
+//     /* without the lepton contribution */
+//     double gamma_e0[5][5] = {
+//         {-5.0,+0.0,+0.0,+0.0,+0.0},
+//         {+0.0,-3.0,+0.0,+0.0,+0.0},
+//         {+0.0,+0.0,+1.0/3.0,+0.0,+0.0},
+//         {+0.0,+0.0,+0.0,+1.0/3.0,-1.0/6.0},
+//         {+0.0,+0.0,+0.0,-8.0,-49.0/9.0}};
+//
+//     double gamma_s0[5] = {0.0,0.0,-6.0*CF,-6.0*CF,+2.0*CF};
+//
+//     for(int imom=0;imom<out._meslepmoms;imom++)
+//     {
+//         UQCD(0,0)=1.0;
+//         UQCD(1,1)=1.0;
+//         UQCD(2,2)=1.0/P_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
+//         UQCD(3,3)=1.0/P_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
+//         UQCD(4,4)=1.0/T_evolution_to_RIp_ainv(Nf,ainv,p2[imom]);
+//
+//         UQCDinv = UQCD.inverse();
+//
+//         ZQEDan = evaluate_Carrasco(p2[imom]);
+//
+// #warning al0 da aggiustare: per ZT deve essere calcolato a 2 loop!
+//         double al0 = alphas(Nf,pow(ainv,2.0)*p2[imom],3)/(4.0*M_PI);
+//
+//         for(int ijack=0;ijack<njacks;ijack++)
+//             for(int mr1=0;mr1<out._nmr;mr1++)
+//                 for(int mr2=0;mr2<out._nmr;mr2++)
+//                 {
+//                     for(int iop1=0;iop1<nbil;iop1++)
+//                         for(int iop2=0;iop2<nbil;iop2++)
+//                         {
+//                             ZQCD(iop1,iop2) = jZ_4f[imom][iop1][iop2][ijack][mr1][mr2];
+//                             eta(iop1,iop2)  = jZ_4f_EM[imom][iop1][iop2][ijack][mr1][mr2];
+//
+//                             UQED1(iop1,iop2) = 0.5*gamma_e0[iop1][iop2]*log(p2[imom])/pow(4.0*M_PI,2.0);
+//                             UQED2(iop1,iop2) = 0.5*gamma_se1[iop1][iop2]*log(p2[imom])/pow(4.0*M_PI,2.0) +
+//                                                0.125*pow(log(p2[imom]),2.0)*gamma_e0[iop1][iop2]*(gamma_s0[iop1]+gamma_s0[iop2])/pow(4.0*M_PI,2.0);
+//                         }
+//
+//                     ZQCDinv = ZQCD.inverse();
+//
+//                     if(!QCD_on_the_right)
+//                     {
+//                         // eta_OLD_4f
+//                         for(int iop1=0;iop1<nbil;iop1++)
+//                             for(int iop2=0;iop2<nbil;iop2++)
+//                                 (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
+//                                     eta(iop1,iop2) + al0*(ZQCDinv*UQCDinv*UQED2*ZQCD)(iop1,iop2) + (ZQCDinv*UQCDinv*UQED1*ZQCD)(iop1,iop2)
+//                                     - UQED1(iop1,iop2);
+//
+//                     }
+//                     else if(QCD_on_the_right)
+//                     {
+//                         // eta_NEW_4f
+//                         for(int iop1=0;iop1<nbil;iop1++)
+//                             for(int iop2=0;iop2<nbil;iop2++)
+//                                 (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
+//                                     (UQCD*eta*UQCDinv)(iop1,iop2) + al0*(UQED2*UQCDinv)(iop1,iop2) + (UQCD*ZQEDan*UQCDinv)(iop1,iop2) +
+//                                     (UQED1*UQCDinv)(iop1,iop2) - ZQEDan(iop1,iop2) - UQED1(iop1,iop2);
+//
+//                     }
+//                 }
+//     }
+//
+//     return out;
+//
+// }
