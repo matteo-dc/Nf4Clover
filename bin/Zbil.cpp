@@ -10,33 +10,33 @@
 void oper_t::compute_Zbil()
 {
     cout<<"Computing Zbil"<<endl;
-    
-//    vvvvvd_t jG_EM(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,_nmr),_nmr),njacks),nbil),_bilmoms);
-    
-    for(int ibil=0;ibil<nbil;ibil++)
-    {
-        cout<<"jG[imom=1][mr=0][ibil="<<ibil<<"] "<<endl;
-        for(int ijack=0;ijack<njacks;ijack++)
-            cout<<jG[1][gbil::LO][ibil][ijack][0][0]<<endl;
-        cout<<endl;
-        cout<<"jG[imom="<<_bilmoms-1<<"][mr=0][ibil="<<ibil<<"] "<<endl;
-        for(int ijack=0;ijack<njacks;ijack++)
-            cout<<jG[_bilmoms-1][gbil::LO][ibil][ijack][0][0]<<endl;
-        cout<<endl;
-    }
 
-    
-    
+//    vvvvvd_t jG_EM(vvvvd_t(vvvd_t(vvd_t(vd_t(0.0,_nmr),_nmr),njacks),nbil),_bilmoms);
+
+    // for(int ibil=0;ibil<nbil;ibil++)
+    // {
+    //     cout<<"jG[imom=1][mr=0][ibil="<<ibil<<"] "<<endl;
+    //     for(int ijack=0;ijack<njacks;ijack++)
+    //         cout<<jG[1][gbil::LO][ibil][ijack][0][0]<<endl;
+    //     cout<<endl;
+    //     cout<<"jG[imom="<<_bilmoms-1<<"][mr=0][ibil="<<ibil<<"] "<<endl;
+    //     for(int ijack=0;ijack<njacks;ijack++)
+    //         cout<<jG[_bilmoms-1][gbil::LO][ibil][ijack][0][0]<<endl;
+    //     cout<<endl;
+    // }
+
+
+
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
     {
 //        const int imom1=bilmoms[ibilmom][1]; // p1
 //        const int imom2=bilmoms[ibilmom][2]; // p2
         const int imom1=ibilmom;
         const int imom2=ibilmom;
-        
+
         /*DEBUG*/
 //        cout<<ibilmom<<"/"<<in._bilmoms<<" {"<<imom1<<","<<imom2<<"}"<<endl;
-        
+
         //compute Z's according to 'riqed.pdf', one for each momentum
 #pragma omp parallel for collapse(4)
         for(int ibil=0;ibil<nbil;ibil++)
@@ -48,12 +48,12 @@ void oper_t::compute_Zbil()
                         jZ[ibilmom][ibil][ijack][mr_fw][mr_bw] =
                             sqrt(jZq[imom1][ijack][mr_fw]*jZq[imom2][ijack][mr_bw])/
                             jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
-                                                
+
                         jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
                             jZ[ibilmom][1][ijack][mr_fw][mr_bw]/ jZ[ibilmom][3][ijack][mr_fw][mr_bw];
                         jZPoverZS[ibilmom][0][ijack][mr_fw][mr_bw]=
                             jZ[ibilmom][2][ijack][mr_fw][mr_bw]/ jZ[ibilmom][0][ijack][mr_fw][mr_bw];
-                        
+
                         // EM (relative)
 //                        jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] =
 //                            jG[ibilmom][gbil::PH ][ibil][ijack][mr_fw][mr_bw] /
@@ -68,27 +68,24 @@ void oper_t::compute_Zbil()
 //                                jG[ibilmom][gbil::Sbw][ibil][ijack][mr_fw][mr_bw]*deltamu[ijack][mr_bw]) /
 //                                jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
 //                        }
-//                        
+//
 //                        jZ_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] =
 //                            -jG_EM[ibilmom][ibil][ijack][mr_fw][mr_bw] +
 //                            0.5*(jZq_EM[imom1][ijack][mr_fw] + jZq_EM[imom2][ijack][mr_bw]);
                     }
-        
+
     }// close mom loop
-    
-    for(int ibil=0;ibil<nbil;ibil++)
-    {
-        cout<<"jZ[imom=1][mr=0][ibil="<<ibil<<"] "<<endl;
-        for(int ijack=0;ijack<njacks;ijack++)
-            cout<<jZ[1][ibil][ijack][0][0]<<endl;
-        cout<<endl;
-        cout<<"jZ[imom="<<_bilmoms-1<<"][mr=0][ibil="<<ibil<<"] "<<endl;
-        for(int ijack=0;ijack<njacks;ijack++)
-            cout<<jZ[_bilmoms-1][ibil][ijack][0][0]<<endl;
-        cout<<endl;
-    }
-    
+
+    // for(int ibil=0;ibil<nbil;ibil++)
+    // {
+    //     cout<<"jZ[imom=1][mr=0][ibil="<<ibil<<"] "<<endl;
+    //     for(int ijack=0;ijack<njacks;ijack++)
+    //         cout<<jZ[1][ibil][ijack][0][0]<<endl;
+    //     cout<<endl;
+    //     cout<<"jZ[imom="<<_bilmoms-1<<"][mr=0][ibil="<<ibil<<"] "<<endl;
+    //     for(int ijack=0;ijack<njacks;ijack++)
+    //         cout<<jZ[_bilmoms-1][ibil][ijack][0][0]<<endl;
+    //     cout<<endl;
+    // }
+
 }
-
-
-
