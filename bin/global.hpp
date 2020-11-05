@@ -145,6 +145,8 @@ extern int sub_ptilde;
 extern bool recompute_basic;
 // reference p2
 extern double p2ref;
+// lambda for step scaling function at lambda*p2
+extern double lambda_stepfunc;
 // load averaged quantities
 extern int load_ave;
 // load chiral extrapolated quantities

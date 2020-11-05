@@ -196,6 +196,9 @@ struct oper_t
     vector<vvd_t> bval;
     vector<vvd_t> bsea;
 
+    // step scaling function
+    vector<vvd_t> stepfunc;
+
     // O(g2a2) subtraction
     oper_t subtract();
     double subtraction(const int imom, const int ibil, const int LO_or_EM);

@@ -20,7 +20,7 @@ int L, T;
 vector<double> ainv;
 vector<double> csw;
 int conf_init, conf_step, nm, neq, neq2, nmr, delta_tmin, delta_tmax;
-double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref;
+double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref,lambda_stepfunc;
 vector<double> mass_val;
 string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz_val, chir_ansatz_sea;
 vector<string> path_analysis;
@@ -50,7 +50,7 @@ TK_glb_t get_TK_glb(FILE *fin)
             exit(FAILED_READ);
         }
     }
-    
+
     //parse the token
     if(strcasecmp(tok,nconfs_tag)==0) return NCONFS_TK;
     if(strcasecmp(tok,njacks_tag)==0) return NJACKS_TK;
@@ -96,6 +96,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,sub_ptilde_tag)==0) return SUB_PTILDE_TK;
     if(strcasecmp(tok,chir_ansatz_val_tag)==0) return CHIR_ANSATZ_VAL_TK;
     if(strcasecmp(tok,chir_ansatz_sea_tag)==0) return CHIR_ANSATZ_SEA_TK;
+    if(strcasecmp(tok,lambda_stepfunc_tag)==0) return LAMBDA_STEPFUNC_TK;
 
     return VALUE_GLB_TK;
 }
@@ -113,7 +114,7 @@ TK_t get_TK(FILE *fin)
             exit(FAILED_READ);
         }
     }
-    
+
     //parse the token
     if(strcasecmp(tok,mom_list_tag)==0) return MOM_LIST_TK;
     if(strcasecmp(tok,L_tag)==0) return L_TK;
@@ -142,9 +143,9 @@ void _get_value_glb(FILE *fin,T &ret,const char *t)
         fprintf(stderr,"Getting token %s in the wrong place\n",tok);
         exit(MISPLACED_TK);
     }
-    
+
     int rc=sscanf(tok,t,&ret);
-    
+
     if(rc!=1)
     {
         fprintf(stderr,"Converting %s to %s failed\n",tok,t);
@@ -180,9 +181,9 @@ void _get_value(FILE *fin,T &ret,const char *t)
         fprintf(stderr,"Getting token %s in the wrong place\n",tok);
         exit(MISPLACED_TK);
     }
-    
+
     int rc=sscanf(tok,t,&ret);
-    
+
     if(rc!=1)
     {
         fprintf(stderr,"Converting %s to %s failed\n",tok,t);
@@ -205,7 +206,7 @@ void get_value(FILE *fin,string &out)
     char temp[1024];
     _get_value(fin,temp,"%s");
     out=string(temp);
-    
+
 }
 
 
@@ -255,7 +256,7 @@ void read_input_glb(const char path[])
         fprintf(stderr,"Failed to open \"%s\"\n",path);
         exit(FAILED_OPEN);
     }
-        
+
     action=DEFAULT_STR_VAL;
     scheme=DEFAULT_STR_VAL;
     path_folder=DEFAULT_STR_VAL;
@@ -289,8 +290,9 @@ void read_input_glb(const char path[])
     sub_ptilde=DEFAULT_INT_VAL;
     chir_ansatz_val=DEFAULT_STR_VAL;
     chir_ansatz_sea=DEFAULT_STR_VAL;
+    lambda_stepfunc=DEFAULT_DOUBLE_VAL;
 
-    
+
 //    for(auto &bl : beta_label) bl=DEFAULT_STR_VAL;
 //    //        for(auto &l : L) l=DEFAULT_INT_VAL;
 //    //        for(auto &t : T) t=DEFAULT_INT_VAL;
@@ -300,7 +302,7 @@ void read_input_glb(const char path[])
 //        for(auto &b : a) b=DEFAULT_INT_VAL;
 //    for(auto &t : theta_label) t=DEFAULT_STR_VAL;
 //    for(auto &v : ainv) v=DEFAULT_DOUBLE_VAL;
-    
+
     while(not feof(fin))
     {
         TK_glb_t tk=get_TK_glb(fin);
@@ -468,12 +470,15 @@ void read_input_glb(const char path[])
             case CHIR_ANSATZ_SEA_TK:
                 get_value_glb(fin,chir_ansatz_sea);
                 break;
-                
+            case LAMBDA_STEPFUNC_TK:
+                get_value_glb(fin,lambda_stepfunc);
+                break;
+
             case FEOF_GLB_TK:
                 break;
         }
     }
-    
+
     //check initialization
     check_int_par(nconfs,nconfs_tag);
     check_int_par(njacks,njacks_tag);
@@ -520,37 +525,38 @@ void read_input_glb(const char path[])
     check_int_par(sub_ptilde,sub_ptilde_tag);
     check_str_par(chir_ansatz_val,chir_ansatz_val_tag);
     check_str_par(chir_ansatz_sea,chir_ansatz_sea_tag);
+    check_double_par(lambda_stepfunc,lambda_stepfunc_tag);
 
     fclose(fin);
-    
+
     clover_analysis=false;
-    
+
     free_analysis=false;
     inte_analysis=false;
     eta_analysis=false;
-    
+
     if(strcmp(clover.c_str(),"no" )==0)
     {
         if(strcmp(analysis.c_str(),"inte" )==0)
         {
             path_analysis={"Nf4"+an_suffix};
-            
+
             inte_analysis=true;
         }
         else if(strcmp(analysis.c_str(),"free" )==0)
         {
             path_analysis={"free_matching"+an_suffix};
-            
+
             free_analysis=true;
         }
         else if(strcmp(analysis.c_str(),"eta")==0)
         {
             path_analysis={"Rat"+an_suffix,"Nf4"+an_suffix,"free_matching"+an_suffix};
-            
+
             eta_analysis=true;
         }
         else {cout<<"Choose the analysis: 'inte', 'free' or 'eta'."<<endl; exit(0);}
-        
+
         if(strcmp(analysis.c_str(),"free")==0 and nr>1)
         {
             cout<<"Nr must be 1 in free theory. Setting Nr=1 instead of Nr="<<nr<<"."<<endl;
@@ -559,13 +565,13 @@ void read_input_glb(const char path[])
     }
     else if(strcmp(clover.c_str(),"yes" )==0)
     {
-        
+
         clover_analysis=true;
-        
+
         if(strcmp(analysis.c_str(),"inte" )==0)
         {
             path_analysis={"Nf4"+an_suffix};
-            
+
             inte_analysis=true;
         }
         else
@@ -573,15 +579,15 @@ void read_input_glb(const char path[])
     }
     else
     {cout<<"Specify if the analysis is Clover: 'yes' or 'no'."<<endl; exit(0);}
-    
+
     load = (load_ave or load_chir);
-    
+
     if(load and only_basic)
     {
         cout<<"Cannot load saved quantities in the only_basic mode."<<endl;
         exit(0);
     }
-    
+
     if(strcmp(chir_ansatz_val.c_str(),"linear" )!=0 and
        strcmp(chir_ansatz_val.c_str(),"constant" )!=0 and
        strcmp(chir_ansatz_val.c_str(),"quadratic" )!=0)
@@ -596,35 +602,38 @@ void read_input_glb(const char path[])
         cout<<"Choose the sea chiral fit Ansatz among: \"linear/constant/quadratic\"."<<endl;
         exit(0);
     }
-    
+
     // this is the path to the directory which contains 'print', 'plots', ecc.
     string full_path = path_folder+path_analysis[0]+"/";
-    
+
     // evaluate max number of sea masses for the ensembles
     nm_Sea_max = *max_element(nm_Sea.begin(),nm_Sea.end());
-    
+
     //print input parameters
     printf("*------------------------------------------------------*\n");
     printf("|                Global configuration                  |\n");
     printf("*------------------------------------------------------*\n\n");
-    
+
     printf(" %s = %s",analysis_tag,analysis.c_str());  //free, inte, ratio
     if(clover_analysis){printf(" with Clover\n\n");}else{printf("\n\n");}
-    
+
     printf(" %s = %s\n",scheme_tag,scheme.c_str());
     printf("    with BC: %s \n\n",BC.c_str());
-    
+
     printf(" %s = %.2lf\n",thresh_tag,thresh);
     printf(" Continuum limit range: p2 = [%.1lf,%.1lf]\n\n",p2min,p2max);
-    
+
+    printf(" Evolution at the scale: p2ref = %.1lf\n",p2ref);
+    printf(" Step scaling tested with lambda = %.2lf  (Z[lambda*p2]/Z[p2])\n\n",lambda_stepfunc);
+
     printf(" %s = %s  --  %s = %d  -- %s = %d -- %s = %.3lf \n",act_tag,action.c_str(),Nf_tag,Nf,Nc_tag,Nc,LambdaQCD_tag,LambdaQCD);
     printf(" %s = %d  (%d njacks) \n",nconfs_tag,nconfs,njacks);
     printf(" %s = %s \n\n",path_folder_tag,full_path.c_str());
-    
+
     printf(" %s = %d\n",nr_tag,nr);
     printf(" %s = %d\n",ntypes_tag,ntypes);
     printf(" %s = %d\n\n",nhits_tag,nhits);
-    
+
     printf(" Working with %d beta: \n",nbeta);
     for(int b=0;b<nbeta;b++)
     {
@@ -640,61 +649,61 @@ void read_input_glb(const char path[])
                 printf("%s.d.%d.%s ",beta_label[b].c_str(),SeaMasses_label[b][m],volume_label[b].c_str());
         printf("\n");
     }
-    
+
     printf(" Using Zq according to ");
     if(UseSigma1) printf("RI'-MOM variant (eq.33 of 1004.1115). \n");
     else printf("RI'-MOM prescription. \n");
-    
+
     printf(" Using Z^{QCD} factorized on the ");
     if(QCD_on_the_right) printf("RIGHT. \n");
     else printf("LEFT. \n");
-    
+
     printf(" Perturbative subtraction done with ");
     if(sub_boosted) printf("g^2[boosted] = g0^2/<Plaq>  (g0^2 = 6/beta) ");
     else printf("g0^2 = 6/beta ");
     printf("and using ");
     if(sub_ptilde) printf("p2tilde.\n");
     else printf("p2.\n");
-    
+
     printf(" Using [%s] Ansatz for valence chiral extrapolation.\n",chir_ansatz_val.c_str());
     printf(" Using [%s] Ansatz for sea chiral extrapolation.\n",chir_ansatz_sea.c_str());
-    
-    
+
+
     printf("\n");
-    
+
     if(only_basic)
         printf(" Computing only basic quantities. \n");
-    
+
     if(load_ave)
         printf(" Loading averaged quantities. \n");
-    
+
     // define global variables from input
     clust_size=nconfs/njacks;
-    
+
     nbil=5;
-    
+
     //slightly increment thresh to include border
     thresh*=1+1e-10;
-    
+
     printf("\n\n");
 }
 
 void read_input(const string &path_to_ens, const string &name)
 {
     string path_to_input = path_to_ens + "input.txt";
-    
+
     FILE *fin=fopen(path_to_input.c_str(),"r");
     if(not fin)
     {
         fprintf(stderr,"Failed to open \"%s\"\n",path_to_input.c_str());
         exit(FAILED_OPEN);
     }
-    
+
     mom_path=DEFAULT_STR_VAL;
-    
+
     int L=DEFAULT_INT_VAL;
     int T=DEFAULT_INT_VAL;
-    
+
     conf_init=DEFAULT_INT_VAL;
     conf_step=DEFAULT_INT_VAL;
     nm=DEFAULT_INT_VAL;
@@ -704,7 +713,7 @@ void read_input(const string &path_to_ens, const string &name)
     mu_sea=DEFAULT_DOUBLE_VAL;
     plaquette=DEFAULT_DOUBLE_VAL;
 //    for(auto &m : mass_val) m=DEFAULT_DOUBLE_VAL;
-    
+
     while(not feof(fin))
     {
         TK_t tk=get_TK(fin);
@@ -752,12 +761,12 @@ void read_input(const string &path_to_ens, const string &name)
             case DELTA_TMAX_TK:
                 get_value(fin,delta_tmax);
                 break;
-                
+
             case FEOF_TK:
                 break;
         }
     }
-    
+
     check_str_par(mom_path.c_str(),mom_list_tag);
     check_int_par(L,L_tag);
     check_int_par(T,T_tag);
@@ -770,39 +779,39 @@ void read_input(const string &path_to_ens, const string &name)
         check_double_par(mass_val[i],mass_val_tag);
     check_int_par(delta_tmin,delta_tmin_tag);
     check_int_par(delta_tmax,delta_tmax_tag);
-    
+
     fclose(fin);
-    
+
     if(plaquette==0.0)  plaquette=read_plaquette(path_to_ens);
-    
+
     size={T,L,L,L};
-    
+
     printf("*------------------------------------------------------*\n");
     printf("|                     Ensemble %s                     |\n",name.c_str());
     printf("*------------------------------------------------------*\n\n");
-    
-    
+
+
     printf(" %s = \"%s\"\n",mom_list_tag,mom_path.c_str());
     printf(" Dimensions = %dc%d\n",L,T);
     printf(" %s = %lf -- %s = %.6lf -- %s = %.4lf \n",plaquette_tag,plaquette,kappa_tag,kappa,mu_sea_tag,mu_sea);
-    
-    
+
+
     printf(" %s = %d  [from %d to %d]\n",nconfs_tag,nconfs,conf_init,conf_init+(nconfs-1)*conf_step);
-    
+
     printf(" Fit range for deltam_cr: [%d,%d]\n",delta_tmin,delta_tmax);
-    
+
     printf(" %s = ",mass_val_tag);
     for (int i=0; i<nm; i++)
         printf("%.4lf  ",mass_val[i]);
     printf("\n\n");
-    
-    
+
+
     ntypes_lep = 2;
-    
+
     nmr=nm*nr;
     combo=nm*nr*ntypes*nhits*nconfs;
     combo_lep=ntypes_lep*nhits*nconfs;
     neq=fact(nm+nr-1)/fact(nr)/fact(nm-1);
     neq2=nm;
-    
+
 }

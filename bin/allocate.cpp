@@ -21,7 +21,7 @@ void oper_t::clear_all()
 {
     sigma.clear();
     sigma.shrink_to_fit();
-    
+
     jG.clear();
     jG.shrink_to_fit();
 
@@ -47,12 +47,15 @@ void oper_t::clear_all()
     jZVoverZA.shrink_to_fit();
     jZPoverZS.clear();
     jZPoverZS.shrink_to_fit();
-    
+
     bval.clear();
     bval.shrink_to_fit();
     bsea.clear();
     bsea.shrink_to_fit();
-    
+
+    stepfunc.clear();
+    stepfunc.shrink_to_fit();
+
 }
 
 void oper_t::allocate_val()
@@ -60,7 +63,7 @@ void oper_t::allocate_val()
     // allocate effective masses
     allocate_vec(eff_mass,{njacks,_nm,_nm});
     allocate_vec(eff_mass_sea,{njacks});
-    
+
     // allocate deltam
     allocate_vec(deltam_cr,{njacks,_nmr});
     allocate_vec(deltamu,{njacks,_nmr});
@@ -85,14 +88,14 @@ void oper_t::check_allocation()
 void oper_t::allocate()
 {
     clear_all();
-    
+
     // allocate sigmas
     allocate_vec(sigma,{_linmoms,sigma::nproj,sigma::nins,njacks,_nmr});
     // allocate pr_bil
     allocate_vec(jG,{_bilmoms,gbil::nins,nbil,njacks,_nmr,_nmr});
     // allocate pr_meslep
 //    allocate_vec(jpr_meslep,{_meslepmoms,pr_meslep::nins,nbil,nbil,njacks,_nmr,_nmr});
-    
+
     // allocate Zq
     allocate_vec(jZq,{_linmoms,njacks,_nmr});
 //    allocate_vec(jZq_EM,{_linmoms,njacks,_nmr});
@@ -102,15 +105,18 @@ void oper_t::allocate()
     // allocate Z4f
 //    allocate_vec(jZ_4f,{_meslepmoms,nbil,nbil,njacks,_nmr,_nmr});
 //    allocate_vec(jZ_4f_EM,{_meslepmoms,nbil,nbil,njacks,_nmr,_nmr});
-    
+
     // allocate ZV/ZA
     allocate_vec(jZVoverZA,{_bilmoms,1,njacks,_nmr,_nmr});
     // allocate ZP/ZS
     allocate_vec(jZPoverZS,{_bilmoms,1,njacks,_nmr,_nmr});
-    
+
     // allocate bval/bsea
     allocate_vec(bval,{_linmoms,njacks,nbil+1});
     allocate_vec(bsea,{_linmoms,njacks,nbil+1});
-    
+
+    // allocate stepfunc
+    allocate_vec(stepfunc,{_linmoms,njacks,nbil+1});
+
     check_allocation();
 }
