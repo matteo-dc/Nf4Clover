@@ -400,7 +400,7 @@ double T_evolution_to_RIp(int Nf,double p2,double p2ref)
     return cmu/cmu0;
 }
 
-pair<int,int> find_stepfunc_imom(const int size, const vector<double> a2p2, const int imom, const double _ainv)
+pair<int,int> find_stepfunc_imom(const int size, const vector<double> a2p2, const double _ainv)
 {
   vector<pair<double,int>> dist_list_min, dist_list_max;
   // find momentum closer to p2step_min & p2step_max
@@ -435,7 +435,7 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
 
     // find p2 (physical units) for step scaling function
     cout<<"  combinations for step scaling function:"<<endl;
-    pair<int,int> jminmax = find_stepfunc_imom(_linmoms,p2,ilinmom,_ainv);
+    pair<int,int> jminmax = find_stepfunc_imom(_linmoms,p2,_ainv);
     int step_imom_min = jminmax.first;
     int step_imom_max = jminmax.second;
 
