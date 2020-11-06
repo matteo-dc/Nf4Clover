@@ -2799,9 +2799,9 @@ void oper_t::plot(const string suffix)
     vvd_t bsea_err = get<1>(bsea_ave_err);
 
     // stepfunc
-    Zq_tup stepfunc_ave_err = ave_err_Zq(in.stepfunc);
-    vvd_t stepfunc_ave = get<0>(stepfunc_ave_err);
-    vvd_t stepfunc_err = get<1>(stepfunc_ave_err);
+    tuple<vd_t,vd_t> stepfunc_ave_err = ave_err(in.stepfunc);
+    vd_t stepfunc_ave = get<0>(stepfunc_ave_err);
+    vd_t stepfunc_err = get<1>(stepfunc_ave_err);
 
     // Z4f
 //    Z4f_tup Z_4f_ave_err; /* to be eliminated when really computing 4f */
@@ -2956,11 +2956,7 @@ void oper_t::plot(const string suffix)
      for(int ib=0;ib<nbil+1;ib++)
      {
        stepfunc_p2_data[ib].open(path_to_ens+"plots/stepfunc_"+bb[ib]+"_p2.txt");
-
-       for(int imom=0; imom<in._linmoms; imom++)
-       {
-           stepfunc_p2_data[ib]<<(in.p2)[imom]<<"\t"<<stepfunc_ave[imom][ib]<<"\t"<<stepfunc_err[imom][ib]<<"\t"<<lambda_stepfunc<<endl;
-       }
+       stepfunc_p2_data[ib]<<stepfunc_ave[ib]<<"\t"<<stepfunc_err[ib]<<endl;
      }
     }
 

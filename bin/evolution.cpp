@@ -400,17 +400,19 @@ double T_evolution_to_RIp(int Nf,double p2,double p2ref)
     return cmu/cmu0;
 }
 
-int find_lambda_a2p2_imom(const int size, const vector<double> p2, const int imom)
+pair<int,int> find_stepfunc_imom(const int size, const vector<double> a2p2, const int imom, const double _ainv)
 {
-  vector<pair<double,int>> dist_list;
-  // find momentum closer to lambda*a2p2
+  vector<pair<double,int>> dist_list_min, dist_list_max;
+  // find momentum closer to p2step_min & p2step_max
   for(int j=0;j<size;j++)
   {
-    dist_list.push_back(make_pair( fabs(p2[j]-lambda_stepfunc*p2[imom]) , j ));
+    dist_list_min.push_back(make_pair( fabs(a2p2[j]*pow(_ainv,2.0) - stepfunc_min) , j ));
+    dist_list_max.push_back(make_pair( fabs(a2p2[j]*pow(_ainv,2.0) - stepfunc_max) , j ));
   }
-  sort(dist_list.begin(), dist_list.end());
+  sort(dist_list_min.begin(), dist_list_min.end());
+  sort(dist_list_max.begin(), dist_list_max.end());
 
-  return dist_list[0].second;
+  return make_pair(dist_list_min[0].second,dist_list_max[0].second);
 }
 
 oper_t oper_t::evolve(const double _ainv, const double p2_evol)
@@ -428,39 +430,38 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
 
     oper_t out=(*this);
 
-    double cq=0.0, cq_lambda=0.0;
-    vd_t cO(0.0,5), cO_lambda(0.0,5);
+    double cq=0.0, cq_step=0.0;
+    vd_t cO(0.0,5), cO_step(0.0,5);
 
-    // find all lambda_p2 for step scaling function
-    cout<<"  combinations for step scaling function (lambda="<<lambda_stepfunc<<"):"<<endl;
-    vector<int>  lambda_imom;
-    for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
-    {
-      int j=find_lambda_a2p2_imom(_linmoms,p2,ilinmom);
-      lambda_imom.push_back(j);
+    // find p2 (physical units) for step scaling function
+    cout<<"  combinations for step scaling function:"<<endl;
+    pair<int,int> jminmax = find_stepfunc_imom(_linmoms,p2,ilinmom,_ainv);
+    int step_imom_min = jminmax.first;
+    int step_imom_max = jminmax.second;
 
-      cout<<"   p2["<<ilinmom<<"]="<<p2[ilinmom]*pow(_ainv,2.0)<<"\t p2["<<j<<"]="<<p2[j]*pow(_ainv,2.0);
-      cout<<"\t  (lambda*p2["<<ilinmom<<"]="<<lambda_stepfunc*p2[ilinmom]*pow(_ainv,2.0)<<")"<<endl;
-    }
-    cout<<endl;
+    cout<<"   p2min["<<step_imom_min<<"]="<<p2[step_imom_min]*pow(_ainv,2.0)<<"  ("<<stepfunc_min<<")"<<endl;
+    cout<<"   p2max["<<step_imom_max<<"]="<<p2[step_imom_max]*pow(_ainv,2.0)<<"  ("<<stepfunc_max<<")"<<endl<<endl;
 
     for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
     {
         cq=q_evolution_to_RIp(Nf,p2[ilinmom]*pow(_ainv,2.0),p2_evol);
-        cq_lambda=q_evolution_to_RIp(Nf,p2[ilinmom]*pow(_ainv,2.0),p2[lambda_imom[ilinmom]]*pow(_ainv,2.0));
 
         for(int ijack=0;ijack<njacks;ijack++)
-        {
-            for(int mr1=0; mr1<_nmr; mr1++)
-            {
-                (out.jZq)[ilinmom][ijack][mr1] = jZq[ilinmom][ijack][mr1]/cq;
-                // (out.jZq_EM)[ilinmom][ijack][mr1] = jZq_EM[ilinmom][ijack][mr1]/cq;
-            }
+          for(int mr1=0; mr1<_nmr; mr1++)
+          {
+              (out.jZq)[ilinmom][ijack][mr1] = jZq[ilinmom][ijack][mr1]/cq;
+              // (out.jZq_EM)[ilinmom][ijack][mr1] = jZq_EM[ilinmom][ijack][mr1]/cq;
+          }
+    }
 
-        #warning assuming nmr=1
-            (out.stepfunc)[ilinmom][ijack][0] = jZq[lambda_imom[ilinmom]][ijack][0]/jZq[ilinmom][ijack][0];
-            (out.stepfunc)[ilinmom][ijack][0] -= 1.0/cq_lambda;
-        }
+    cq_step=q_evolution_to_RIp(Nf,p2[step_imom_min]*pow(_ainv,2.0),p2[step_imom_max]*pow(_ainv,2.0));
+    /**/
+    cout<<"     Sigma(q) [pert.] = "<<1.0/cq_step<<endl;
+    /**/
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+      (out.stepfunc)[ijack][0] = jZq[step_imom_max][ijack][0]/jZq[step_imom_min][ijack][0];
+      (out.stepfunc)[ijack][0] -= 1.0/cq_step;
     }
 
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
@@ -471,28 +472,34 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
         cO[2]=P_evolution_to_RIp(Nf,p2[ibilmom]*pow(_ainv,2.0),p2_evol); //P
         cO[3]=1.0;                                       //V
         cO[4]=T_evolution_to_RIp(Nf,p2[ibilmom]*pow(_ainv,2.0),p2_evol); //T
-        /***/
-        cO_lambda[0]=S_evolution_to_RIp(Nf,p2[ibilmom]*pow(_ainv,2.0),p2[lambda_imom[ibilmom]]*pow(_ainv,2.0)); //S
-        cO_lambda[1]=1.0;                                       //A
-        cO_lambda[2]=P_evolution_to_RIp(Nf,p2[ibilmom]*pow(_ainv,2.0),p2[lambda_imom[ibilmom]]*pow(_ainv,2.0)); //P
-        cO_lambda[3]=1.0;                                       //V
-        cO_lambda[4]=T_evolution_to_RIp(Nf,p2[ibilmom]*pow(_ainv,2.0),p2[lambda_imom[ibilmom]]*pow(_ainv,2.0)); //T
 
         for(int ibil=0;ibil<5;ibil++)
             for(int ijack=0;ijack<njacks;ijack++)
-            {
                 for(int mr1=0; mr1<_nmr; mr1++)
                     for(int mr2=0; mr2<_nmr; mr2++)
                     {
                         (out.jZ)[ibilmom][ibil][ijack][mr1][mr2] = jZ[ibilmom][ibil][ijack][mr1][mr2]/cO[ibil];
                         // (out.jZ_EM)[ibilmom][ibil][ijack][mr1][mr2] = jZ_EM[ibilmom][ibil][ijack][mr1][mr2]/cO[ibil];
                     }
-
-              #warning assuming nmr=1
-                  (out.stepfunc)[ibilmom][ijack][ibil+1] = jZ[lambda_imom[ibilmom]][ibil][ijack][0][0]/jZ[ibilmom][ibil][ijack][0][0];
-                  (out.stepfunc)[ibilmom][ijack][ibil+1] -= 1.0/cO_lambda[ibil];
-            }
     }
+
+    cO_step[0]=S_evolution_to_RIp(Nf,p2[step_imom_min]*pow(_ainv,2.0),p2[step_imom_max]*pow(_ainv,2.0)); //S
+    cO_step[1]=1.0;                                       //A
+    cO_step[2]=P_evolution_to_RIp(Nf,p2[step_imom_min]*pow(_ainv,2.0),p2[step_imom_max]*pow(_ainv,2.0)); //P
+    cO_step[3]=1.0;                                       //V
+    cO_step[4]=T_evolution_to_RIp(Nf,p2[step_imom_min]*pow(_ainv,2.0),p2[step_imom_max]*pow(_ainv,2.0)); //T
+    /**/
+    vector<string> bil={"S","V","P","A","T"};
+    for(int i=0;i<5;i++)
+      cout<<"     Sigma("<<bil[i]<<") [pert.] = "<<1.0/cO_step[i]<<endl;
+    cout<<endl;
+    /**/
+    for(int ijack=0;ijack<njacks;ijack++)
+      for(int ibil=0;ibil<5;ibil++)
+      {
+        (out.stepfunc)[ijack][ibil+1] = jZ[step_imom_max][ibil][ijack][0][0]/jZ[step_imom_min][ibil][ijack][0][0];
+        (out.stepfunc)[ijack][ibil+1] -= 1.0/cO_step[ibil];
+      }
 
 #warning missing evolution for 4f
 

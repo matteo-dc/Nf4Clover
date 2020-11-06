@@ -19,7 +19,7 @@
 //{
 //    sizes.push_back(vec.size());
 //    cout<<vec.size()<<endl;
-//    
+//
 //    get_sizes(vec[0],sizes);
 //}
 //
@@ -28,7 +28,7 @@
 //{
 //    sizes.push_back(vec.size());
 //    cout<<vec.size()<<endl;
-//    
+//
 //    get_sizes(vec[0],sizes);
 //}
 //
@@ -43,15 +43,15 @@
 //tuple<T,T> ave_err<T,0>(vector<T> vec)
 //{
 //    vector<int> sizes, new_sizes;
-//    
+//
 //    get_sizes(vec,sizes);
-//    
+//
 //    for(int i=0;i<sizes.size();i++)
 //        if(i!=col)
 //            new_sizes.push_back(sizes[i]);
-//    
+//
 //    T ave, sqr_ave, err;
-//    
+//
 //    allocate_vec(ave,new_sizes);
 //    allocate_vec(sqr_ave,new_sizes);
 //    allocate_vec(err,new_sizes);
@@ -61,7 +61,7 @@
 //tuple<T,T> ave_err(valarray<T> vec, int col)
 //{
 //    vector<int> sizes;
-//    
+//
 //    get_sizes(vec,sizes);
 //}
 
@@ -85,6 +85,9 @@ tuple<double,double> ave_err(vd_t jM);
 
 // average of deltam
 tuple<vd_t,vd_t> ave_err(vvd_t jdeltam);
+
+// average stepscaling function
+tuple<vd_t,vd_t> ave_err(vector<vd_t> jy);
 
 // average meslep
 tuple<vvvvvvd_t,vvvvvvd_t> ave_err(vector<jproj_meslep_t> jmeslep);

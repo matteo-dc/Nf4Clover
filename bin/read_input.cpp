@@ -20,7 +20,7 @@ int L, T;
 vector<double> ainv;
 vector<double> csw;
 int conf_init, conf_step, nm, neq, neq2, nmr, delta_tmin, delta_tmax;
-double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref,lambda_stepfunc;
+double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref, stepfunc_min, stepfunc_max;
 vector<double> mass_val;
 string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz_val, chir_ansatz_sea;
 vector<string> path_analysis;
@@ -96,7 +96,8 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,sub_ptilde_tag)==0) return SUB_PTILDE_TK;
     if(strcasecmp(tok,chir_ansatz_val_tag)==0) return CHIR_ANSATZ_VAL_TK;
     if(strcasecmp(tok,chir_ansatz_sea_tag)==0) return CHIR_ANSATZ_SEA_TK;
-    if(strcasecmp(tok,lambda_stepfunc_tag)==0) return LAMBDA_STEPFUNC_TK;
+    if(strcasecmp(tok,stepfunc_min_tag)==0) return STEPFUNC_MIN_TK;
+    if(strcasecmp(tok,stepfunc_max_tag)==0) return STEPFUNC_MAX_TK;
 
     return VALUE_GLB_TK;
 }
@@ -290,7 +291,8 @@ void read_input_glb(const char path[])
     sub_ptilde=DEFAULT_INT_VAL;
     chir_ansatz_val=DEFAULT_STR_VAL;
     chir_ansatz_sea=DEFAULT_STR_VAL;
-    lambda_stepfunc=DEFAULT_DOUBLE_VAL;
+    stepfunc_min=DEFAULT_DOUBLE_VAL;
+    stepfunc_max=DEFAULT_DOUBLE_VAL;
 
 
 //    for(auto &bl : beta_label) bl=DEFAULT_STR_VAL;
@@ -470,8 +472,11 @@ void read_input_glb(const char path[])
             case CHIR_ANSATZ_SEA_TK:
                 get_value_glb(fin,chir_ansatz_sea);
                 break;
-            case LAMBDA_STEPFUNC_TK:
-                get_value_glb(fin,lambda_stepfunc);
+            case STEPFUNC_MIN_TK:
+                get_value_glb(fin,stepfunc_min);
+                break;
+            case STEPFUNC_MAX_TK:
+                get_value_glb(fin,stepfunc_max);
                 break;
 
             case FEOF_GLB_TK:
@@ -525,7 +530,8 @@ void read_input_glb(const char path[])
     check_int_par(sub_ptilde,sub_ptilde_tag);
     check_str_par(chir_ansatz_val,chir_ansatz_val_tag);
     check_str_par(chir_ansatz_sea,chir_ansatz_sea_tag);
-    check_double_par(lambda_stepfunc,lambda_stepfunc_tag);
+    check_double_par(stepfunc_min,stepfunc_min_tag);
+    check_double_par(stepfunc_max,stepfunc_max_tag);
 
     fclose(fin);
 
@@ -624,7 +630,7 @@ void read_input_glb(const char path[])
     printf(" Continuum limit range: p2 = [%.1lf,%.1lf]\n\n",p2min,p2max);
 
     printf(" Evolution at the scale: p2ref = %.1lf\n",p2ref);
-    printf(" Step scaling tested with lambda = %.2lf  (Z[lambda*p2]/Z[p2])\n\n",lambda_stepfunc);
+    printf(" Step scaling test: (%.2lf,%.2lf) GeV^2 (Z[p2_max]/Z[p2_min])\n\n",stepfunc_min,stepfunc_max);
 
     printf(" %s = %s  --  %s = %d  -- %s = %d -- %s = %.3lf \n",act_tag,action.c_str(),Nf_tag,Nf,Nc_tag,Nc,LambdaQCD_tag,LambdaQCD);
     printf(" %s = %d  (%d njacks) \n",nconfs_tag,nconfs,njacks);

@@ -197,7 +197,7 @@ struct oper_t
     vector<vvd_t> bsea;
 
     // step scaling function
-    vector<vvd_t> stepfunc;
+    vector<vd_t> stepfunc;
 
     // O(g2a2) subtraction
     oper_t subtract();

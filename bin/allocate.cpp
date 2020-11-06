@@ -116,7 +116,7 @@ void oper_t::allocate()
     allocate_vec(bsea,{_linmoms,njacks,nbil+1});
 
     // allocate stepfunc
-    allocate_vec(stepfunc,{_linmoms,njacks,nbil+1});
+    allocate_vec(stepfunc,{njacks,nbil+1});
 
     check_allocation();
 }
