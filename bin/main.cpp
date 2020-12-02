@@ -86,8 +86,11 @@ int main(int narg,char **arg)
 
             voper_t sea_chir(ntheta);
             voper_t evo(ntheta);
+            voper_t cont(ntheta);
             voper_t M1(ntheta);
             voper_t M2(ntheta);
+            voper_t M1b(ntheta);
+            voper_t M2b(ntheta);
 
             for(int th=0; th<ntheta; th++)
             {
@@ -208,6 +211,16 @@ int main(int narg,char **arg)
                         M2[th] = evo[th].interpolate_to_p2ref(b);
                         M2[th].plot("M2");
 
+                        /*****/
+
+                        cont[th] = evo[th].remove_hadr_cont(ainv[b]);
+                        cont[th].plot("cont");
+
+                        M1b[th] = cont[th].a2p2_extr(ainv[b]);
+                        M1b[th].plot("M1b");
+
+                        M2b[th] = cont[th].interpolate_to_p2ref(b);
+                        M2b[th].plot("M2b");
                     }
                 }
 

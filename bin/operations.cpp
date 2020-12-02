@@ -2477,6 +2477,77 @@ oper_t oper_t::a2p2_extr(double _ainv)
     return out;
 }
 
+
+oper_t oper_t::remove_hadr_cont(double _ainv)
+{
+    cout<<endl;
+    cout<<"----- removing hadr. cont. ~ 1/p^2 -----"<<endl<<endl;
+
+    oper_t out=(*this);
+
+    int npar=3;
+    vvd_t coord(vd_t(0.0,_linmoms),npar);
+    for(int j=0; j<_linmoms; j++)
+    {
+        // linear fit in physical units
+        coord[0][j] = 1.0;
+        coord[1][j] = p2[j]*_ainv*_ainv; //Gev^2
+        coord[2][j] = 1.0/coord[1][j];
+    }
+
+    // // Interpolating Zq
+    // vvd_t y_Zq(vd_t(0.0,_linmoms),njacks);       // [njacks][moms]
+    // vd_t  dy_Zq(0.0,_linmoms);                   // [moms]
+    // vvd_t dy_Zq_tmp = get<1>(ave_err_Zq((*this).jZq)); // [moms][nmr]
+    //
+    // for(int imom=0;imom<_linmoms;imom++)
+    // {
+    //     for(int ijack=0;ijack<njacks;ijack++)
+    //     {
+    //         y_Zq[ijack][imom] = jZq[imom][ijack][0];
+    //     }
+    //     dy_Zq[imom] = dy_Zq_tmp[imom][0];
+    // }
+    //
+    // vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,p2min,p2max); // [ijack][ipar]
+
+    // for(int ijack=0;ijack<njacks;ijack++)
+    // {
+    //     (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
+    // }
+
+    // Interpolating Zbil
+    vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_Zbil(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
+
+    for(int ibil=0;ibil<nbil;ibil++)
+    {
+      if(ibil==1) // V
+      {
+        for(int imom=0;imom<_bilmoms;imom++)
+        {
+          for(int ijack=0;ijack<njacks;ijack++)
+          {
+            y_Zbil[ijack][imom] = jZ[imom][ibil][ijack][0][0];
+          }
+          dy_Zbil[imom] = dy_Zbil_tmp[imom][ibil][0][0];
+        }
+
+        vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,0,40); // [ijack][ipar]
+
+        for(int imom=0;imom<_bilmoms;imom++)
+          for(int ijack=0;ijack<njacks;ijack++)
+          {
+            (out.jZ)[imom][ibil][ijack][0][0] -= jZ_pars[ijack][2]/coord[1][imom];
+          }
+      }
+    }
+
+    return out;
+}
+
+
 voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
 {
     cout<<endl;

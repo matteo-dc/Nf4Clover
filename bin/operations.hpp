@@ -249,6 +249,9 @@ struct oper_t
 
     // a2p2->0 extrapolation
     oper_t a2p2_extr(double _ainv);
+
+    // remove hadronic contamination ~1/p2
+    oper_t remove_hadr_cont(double _ainv);
 };
 
 // valarray of oper_t struct;
