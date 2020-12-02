@@ -214,6 +214,7 @@ int main(int narg,char **arg)
                         /*****/
 
                         cont[th] = evo[th].remove_hadr_cont(ainv[b]);
+                        cont[th] = cont[th].evolve(ainv[b],p2ref);
                         cont[th].plot("cont");
 
                         M1b[th] = cont[th].a2p2_extr(ainv[b]);

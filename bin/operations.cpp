@@ -3019,14 +3019,14 @@ void oper_t::plot(const string suffix)
             }
         }
     }
-    if(suffix=="evo")
+    if(suffix=="evo" or suffix=="cont")
     {
      vector<string> bb={"q","S","V","P","A","T"};
 
      cout<<", stepfunc ";
      for(int ib=0;ib<nbil+1;ib++)
      {
-       stepfunc_p2_data[ib].open(path_to_ens+"plots/stepfunc_"+bb[ib]+"_p2.txt");
+       stepfunc_p2_data[ib].open(path_to_ens+"plots/stepfunc_"+bb[ib]+"_p2_"+suffix+".txt");
        stepfunc_p2_data[ib]<<stepfunc_ave[ib]<<"\t"<<stepfunc_err[ib]<<endl;
      }
     }
