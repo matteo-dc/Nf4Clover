@@ -2534,7 +2534,7 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
           dy_Zbil[imom] = dy_Zbil_tmp[imom][ibil][0][0];
         }
 
-        vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,0,40); // [ijack][ipar]
+        vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,13,40); // [ijack][ipar]
 
         for(int imom=0;imom<_bilmoms;imom++)
           for(int ijack=0;ijack<njacks;ijack++)
