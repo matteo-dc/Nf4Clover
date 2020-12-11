@@ -2537,6 +2537,8 @@ oper_t oper_t::a2p2_extr_with_pole(double _ainv)
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
 
     vector<int> p2min_bil={13,13,15,10,10}; /* {S,V,P,A,T} */
+    vector<string> str_bil={"S","V","P","A","T"};
+    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks);
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
@@ -2554,7 +2556,12 @@ oper_t oper_t::a2p2_extr_with_pole(double _ainv)
         for(int ijack=0;ijack<njacks;ijack++)
         {
             (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0];
+            jlincoeff[ijack] = jZ_pars[ijack][1];
+            jpole[ijack] = jZ_pars[ijack][2];
         }
+
+        cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<0>(ave_err(jpole))<<endl;
+        cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<0>(ave_err(jlincoeff))<<endl
     }
 
     // Interpolating ZVoverZA and ZPoverZS
