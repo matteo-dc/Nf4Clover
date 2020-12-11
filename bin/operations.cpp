@@ -2561,7 +2561,7 @@ oper_t oper_t::a2p2_extr_with_pole(double _ainv)
         }
 
         cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<0>(ave_err(jpole))<<endl;
-        cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<0>(ave_err(jlincoeff))<<endl
+        cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<0>(ave_err(jlincoeff))<<endl;
     }
 
     // Interpolating ZVoverZA and ZPoverZS
