@@ -196,7 +196,6 @@ int main(int narg,char **arg)
 
                         evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
                         evo[th].plot("evo");
-                        fin[b] = evo[th];
 
                         M1[th] = evo[th].a2p2_extr(ainv[b]);
                         M1[th].plot("M1");
