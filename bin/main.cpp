@@ -86,11 +86,11 @@ int main(int narg,char **arg)
 
             voper_t sea_chir(ntheta);
             voper_t evo(ntheta);
-            // voper_t cont(ntheta);
+            voper_t cont(ntheta);
             voper_t M1(ntheta);
             voper_t M2(ntheta);
-            // voper_t M1b(ntheta);
-            // voper_t M2b(ntheta);
+            voper_t M1b(ntheta);
+            voper_t M2b(ntheta);
             voper_t M3(ntheta);
 
 
