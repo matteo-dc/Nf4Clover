@@ -2606,16 +2606,16 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
     double epsq = 0.0;
     vector<double> eps = {0.0,0.24,0.0,0.226,0.0}; //{S,V,P,A,T}  [GeV^2]
     double epsVA = 0.0;
-    double epsSP = 0.0;
+    double epsPS = 0.0;
 
     for(int imom=0;imom<_bilmoms;imom++)
       for(int ijack=0;ijack<njacks;ijack++)
       {
-        (out.jZq)[imom][ijack][0] -= epsq/(p2[j]*_ainv*_ainv;
+        (out.jZq)[imom][ijack][0] -= epsq/(p2[imom]*_ainv*_ainv);
         for(int ibil=0;ibil<nbil;ibil++)
-          (out.jZ)[imom][ibil][ijack][0][0] -= eps[ibil]/(p2[j]*_ainv*_ainv);
-        (out.jZVoverZA)[imom][0][ijack][0][0] -= epsVA/(p2[j]*_ainv*_ainv);
-        (out.jZSoverZS)[imom][0][ijack][0][0] -= epsVA/(p2[j]*_ainv*_ainv);
+          (out.jZ)[imom][ibil][ijack][0][0] -= eps[ibil]/(p2[imom]*_ainv*_ainv);
+        (out.jZVoverZA)[imom][0][ijack][0][0] -= epsVA/(p2[imom]*_ainv*_ainv);
+        (out.jZPoverZS)[imom][0][ijack][0][0] -= epsPS/(p2[imom]*_ainv*_ainv);
       }
 
     return out;
