@@ -501,7 +501,13 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
         (out.stepfunc)[ijack][ibil+1] -= 1.0/cO_step[ibil];
       }
 
-#warning missing evolution for 4f
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+      (out.stepfunc)[ijack][nbil+1] = jZVoverZA[step_imom_max][0][ijack][0][0]/jZVoverZA[step_imom_min][0][ijack][0][0];
+      (out.stepfunc)[ijack][nbil+1] -= 1.0;
+      (out.stepfunc)[ijack][nbil+2] = jZPoverZS[step_imom_max][0][ijack][0][0]/jZPoverZS[step_imom_min][0][ijack][0][0];
+      (out.stepfunc)[ijack][nbil+2] -= 1.0;
+    }
 
     return out;
 

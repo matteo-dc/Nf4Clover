@@ -2977,7 +2977,7 @@ void oper_t::plot(const string suffix)
     vector<ofstream> bval_data(nbil+1), bval_p2_data(nbil+1);
     vector<ofstream> bsea_data(nbil+1), bsea_p2_data(nbil+1);
 
-    vector<ofstream> stepfunc_p2_data(nbil+1);
+    vector<ofstream> stepfunc_p2_data(nbil+1+2);
 
 //    vector<ofstream> Z_4f_data(nbil*nbil);
 //    , Z_4f_EM_data(nbil*nbil);
@@ -3095,10 +3095,10 @@ void oper_t::plot(const string suffix)
     }
     if(suffix=="evo" or suffix=="cont")
     {
-     vector<string> bb={"q","S","V","P","A","T"};
+     vector<string> bb={"q","S","V","P","A","T","VA","SP"};
 
      cout<<", stepfunc ";
-     for(int ib=0;ib<nbil+1;ib++)
+     for(int ib=0;ib<nbil+1+2;ib++)
      {
        stepfunc_p2_data[ib].open(path_to_ens+"plots/stepfunc_"+bb[ib]+"_p2_"+suffix+".txt");
        stepfunc_p2_data[ib]<<stepfunc_ave[ib]<<"\t"<<stepfunc_err[ib]<<endl;
