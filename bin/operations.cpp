@@ -2606,7 +2606,7 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
     double epsq = 0.0;
     vector<double> eps = {0.0,0.24,0.0,0.226,0.0}; //{S,V,P,A,T}  [GeV^2]
     double epsVA = 0.0;
-    double epsPS = 0.0;
+    double epsPS = 0.497;
 
     for(int imom=0;imom<_bilmoms;imom++)
       for(int ijack=0;ijack<njacks;ijack++)
