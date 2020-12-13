@@ -173,22 +173,12 @@ int main(int narg,char **arg)
 
                         if(eta_analysis)
                         {
-//                            oper_for_eta[b][th][m][loop] = val_chir[th][m];
+                           // oper_for_eta[b][th][m][loop] = val_chir[th][m];
                             exit(0);
                         }
                         else
                         {
-//                            evo[th][m] = val_chir[th][m].evolve(ainv[b],p2ref);
-//                            evo[th][m].plot("evo");
-//                            sub[th][m] = evo[th][m].subOa2(b);
-//                            sub[th][m].plot("sub");
-
-
-//                            M1[th][b][m] = sub[th][m].a2p2_extr();
-//                            M1[th][b][m].plot("M1");
-//                            M2[th][b][m] = sub[th][m].interpolate_to_p2ref(b);
-//                           /* M2[th][b][m] = sub[th][m].interpolate_to_ainv(b); */
-//                            M2[th][b][m].plot("M2");
+                          //
                         }
 
                     } //close if(!only_basic)
@@ -206,6 +196,7 @@ int main(int narg,char **arg)
 
                         evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
                         evo[th].plot("evo");
+                        fin[b] = evo[th];
 
                         M1[th] = evo[th].a2p2_extr(ainv[b]);
                         M1[th].plot("M1");
@@ -213,26 +204,24 @@ int main(int narg,char **arg)
                         M2[th] = evo[th].interpolate_to_p2ref(b);
                         M2[th].plot("M2");
 
-                        M3[th] = evo[th].a2p2_extr_with_pole(ainv[b]);
-                        M3[th].plot("M3");
+                        // M3[th] = evo[th].a2p2_extr_with_pole(ainv[b]);
+                        // M3[th].plot("M3");
 
                         /*****/
 
-                        // cont[th] = evo[th].remove_hadr_cont(ainv[b]);
-                        // cont[th] = cont[th].evolve(ainv[b],p2ref);
-                        // cont[th].plot("cont");
-                        //
-                        // M1b[th] = cont[th].a2p2_extr(ainv[b]);
-                        // M1b[th].plot("M1b");
-                        //
-                        // M2b[th] = cont[th].interpolate_to_p2ref(b);
-                        // M2b[th].plot("M2b");
+                        cont[th] = sea_chir[th].remove_hadr_cont(ainv[b]);
+                        cont[th] = cont[th].evolve(ainv[b],p2ref);
+                        cont[th].plot("cont");
+
+                        M1b[th] = cont[th].a2p2_extr(ainv[b]);
+                        M1b[th].plot("M1b");
+
+                        M2b[th] = cont[th].interpolate_to_p2ref(b);
+                        M2b[th].plot("M2b");
                     }
                 }
 
-                exit(0);
-
-            } //close ntheta
+            } //close ntheta (fake if Nf4Clover)
 
         } //close nbeta
 
@@ -240,103 +229,7 @@ int main(int narg,char **arg)
 
 
 
-    /*   DA MODIFICARE DA QUI IN POI  */
 
-//    if(eta_analysis and !only_basic)
-//    {
-//        for(int b=0; b<nbeta; b++)
-//        {
-//            for(int th=0; th<ntheta; th++)
-//            {
-//                eta[b][th].resize(nm_Sea[b]);
-//                etaM1[th][b].resize(nm_Sea[b]);
-//                etaM2[th][b].resize(nm_Sea[b]);
-//
-//                for(int m=0; m<nm_Sea[b]; m++)
-//                {
-//                    eta[b][th][m] = compute_eta(oper_for_eta[b][th][m]);
-////#warning uncorrelated photons
-////                    eta[b][th][m] = compute_eta_uncorr(oper_for_eta[b][th][m],oper_for_eta[b][th][(m+1)%nm_Sea[b]]);
-//                    eta[b][th][m].plot("eta");
-//
-//                    eta[b][th][m] = eta[b][th][m].evolve_mixed(ainv[b]);
-//                    eta[b][th][m].plot("eta_evo");
-//
-//                    etaM2[th][b][m] = eta[b][th][m].interpolate_to_p2ref(b);
-////                    etaM2[th][b][m] = eta[b][th][m].interpolate_to_ainv(b);
-//                    etaM2[th][b][m].plot("eta_M2");
-//                    etaM1[th][b][m] = eta[b][th][m].a2p2_extr();
-//                    etaM1[th][b][m].plot("eta_M1");
-//
-//                } //close nm_sea
-//            } //close theta
-//        } //close beta
-//
-//        if(nm_Sea_max>1)
-//            for(int th=0; th<ntheta; th++)
-//            {
-//                etaM2_sea[th] = combined_chiral_sea_extr(etaM2[th]);
-//                etaM1_sea[th] = combined_chiral_sea_extr(etaM1[th]);
-//
-//                for(int b=0; b<nbeta; b++)
-//                {
-//                    etaM2_sea[th][b].plot("eta_M2_sea");
-//                    etaM1_sea[th][b].plot("eta_M1_sea");
-//                }
-//            }
-//
-//        if(ntheta>1)
-//        {
-//            etaM2_theta = theta_average(etaM2_sea);
-//            etaM1_theta = theta_average(etaM1_sea);
-//
-//            for(int b=0; b<nbeta; b++)
-//            {
-//                etaM2_theta[b].plot("eta_M2_theta");
-//                etaM1_theta[b].plot("eta_M1_theta");
-//            }
-//        }
-//    }
-//    else if((free_analysis or inte_analysis) and !only_basic)
-//    {
-//        if(nm_Sea_max>1)
-//            for(int th=0; th<ntheta; th++)
-//            {
-//                M2_sea[th] = combined_chiral_sea_extr(M2[th]);
-//                M1_sea[th] = combined_chiral_sea_extr(M1[th]);
-//
-//                for(int b=0; b<nbeta; b++)
-//                {
-//                    M2_sea[th][b].plot("M2_sea");
-//                    M1_sea[th][b].plot("M1_sea");
-//                }
-//            }
-//
-//        if(ntheta>1)
-//        {
-//            M2_theta = theta_average(M2_sea);
-//            M1_theta = theta_average(M1_sea);
-//
-//            for(int b=0; b<nbeta; b++)
-//            {
-//                M2_theta[b].plot("M2_theta");
-//                M1_theta[b].plot("M1_theta");
-//            }
-//        }
-//    }
-
-//    if(nbeta>1 and only_basic==0)
-//    {
-//        /*  a2p2->0 extrapolation  */
-//
-//        rave_ave_chir_sub_sea_theta_evo_extr = a2p2_extr(rave_ave_chir_sub_sea_theta_evo);
-//
-//        /*  continuum limit  */
-//
-//        cout<<"Continuum limit extrapolation:"<<endl<<endl;
-////        a2p2_extr(rave_chir_sub_sea_theta_evo_ave,LO);
-////        a2p2_extr(rave_chir_sub_sea_theta_evo_ave,EM);
-//    }
 
     cout<<"DONE!"<<endl;
 
