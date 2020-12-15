@@ -2644,17 +2644,13 @@ oper_t oper_t::Z_improvement()
     // cout<<"p2 range (physical units):   "<<p2min<<" - "<<p2max<<endl;
 
     int npar=2;
-    vvd_t coord(vd_t(0.0,_linmoms),npar);
-    int l=0;
-    for(int j=0; j<_linmoms; j++)
-    for(int k=j+1; k<_linmoms; k++)
-    {
-        // linear fit in physical units
-        coord[0][l] = 1.0;
-        coord[1][l] = (p2[j]+p2[k]);
-        l++;
-    }
-    int length=l;
+
+    int length=0;
+    for(int imom=0;imom<_linmoms;imom++)
+      for(int jmom=imom+1;jmom<_linmoms;jmom++)
+        length++;
+
+    vvd_t coord(vd_t(0.0,length),npar);
 
     // Interpolating Z's
     vvd_t y_Zq(vd_t(0.0,length),njacks);       // [njacks][moms]
@@ -2666,6 +2662,10 @@ oper_t oper_t::Z_improvement()
     for(int imom=0;imom<_linmoms;imom++)
     for(int jmom=imom+1;jmom<_linmoms;jmom++)
     {
+        // linear fit in physical units
+        coord[0][l] = 1.0;
+        coord[1][l] = (p2[imom]+p2[jmom]);
+
         for(int ijack=0;ijack<njacks;ijack++)
         {
             y_Zq[ijack][l] = (jZq[jmom][ijack][0]*p2[jmom]-jZq[imom][ijack][0]*p2[imom])/(p2[jmom]-p2[imom]);
