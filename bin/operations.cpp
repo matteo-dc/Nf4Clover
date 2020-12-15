@@ -2695,7 +2695,7 @@ oper_t oper_t::Z_improvement()
     for(int ibil=0;ibil<nbil;ibil++)
     {
       vd_t dy_Zbil = get<1>(ave_err(y_Zbil[ibil]));
-      vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Z[ibil],15,30/*p2min,p2max*/); // [ijack][ipar]
+      vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Zbil[ibil],15,30/*p2min,p2max*/); // [ijack][ipar]
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
