@@ -2658,7 +2658,7 @@ oper_t oper_t::Z_improvement()
     vvd_t y_ZVovZA(vd_t(0.0,length),njacks);       // [njacks][moms]
     vvd_t y_ZPovZS(vd_t(0.0,length),njacks);       // [njacks][moms]
 
-    l=0;
+    int l=0;
     for(int imom=0;imom<_linmoms;imom++)
     for(int jmom=imom+1;jmom<_linmoms;jmom++)
     {
