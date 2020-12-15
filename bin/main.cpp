@@ -203,8 +203,8 @@ int main(int narg,char **arg)
                         M2[th] = evo[th].interpolate_to_p2ref(b);
                         M2[th].plot("M2");
 
-                        // M3[th] = evo[th].a2p2_extr_with_pole(ainv[b]);
-                        // M3[th].plot("M3");
+                        M3[th] = evo[th].a2p2_extr_with_pole(ainv[b]);
+                        M3[th].plot("M3");
 
                         // /*****/
                         //

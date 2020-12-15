@@ -2524,7 +2524,7 @@ oper_t oper_t::a2p2_extr_with_pole(double _ainv)
         dy_Zq[imom] = dy_Zq_tmp[imom][0];
     }
 
-    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,10,45); // [ijack][ipar]
+    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,10,30); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
@@ -2551,7 +2551,7 @@ oper_t oper_t::a2p2_extr_with_pole(double _ainv)
             dy_Zbil[imom] = dy_Zbil_tmp[imom][ibil][0][0];
         }
 
-        vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,p2min_bil[ibil],45); // [ijack][ipar]
+        vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,p2min_bil[ibil],30); // [ijack][ipar]
 
         for(int ijack=0;ijack<njacks;ijack++)
         {
@@ -2583,8 +2583,8 @@ oper_t oper_t::a2p2_extr_with_pole(double _ainv)
         dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
     }
 
-    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,13,45); // [ijack][ipar]
-    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,15,45); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,13,30); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,15,30); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
