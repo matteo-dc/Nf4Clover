@@ -253,6 +253,9 @@ struct oper_t
 
     // remove hadronic contamination ~1/p2
     oper_t remove_hadr_cont(double _ainv);
+
+    // improvement of Z w/o hadr. cont.
+    oper_t Z_improvement();
 };
 
 // valarray of oper_t struct;

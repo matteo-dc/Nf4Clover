@@ -2595,7 +2595,6 @@ oper_t oper_t::a2p2_extr_with_pole(double _ainv)
     return out;
 }
 
-
 oper_t oper_t::remove_hadr_cont(double _ainv)
 {
     cout<<endl;
@@ -2621,6 +2620,91 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
     return out;
 }
 
+oper_t oper_t::Z_improvement()
+{
+    cout<<endl;
+    cout<<"----- [strategy: a1] Z-improvement -----"<<endl<<endl;
+
+    oper_t out=(*this);
+
+    out.linmoms=vector<array<int,1>>{{0}};
+    out.bilmoms=vector<array<int,3>>{{0,0,0}};
+    out.meslepmoms=out.bilmoms;
+
+    out._linmoms=1;
+    out._bilmoms=1;
+    out._meslepmoms=1;
+
+    out.allocate_val();
+    out.allocate();
+
+    out.eff_mass=(*this).eff_mass;
+    out.eff_mass_sea=(*this).eff_mass_sea;
+
+    // cout<<"p2 range (physical units):   "<<p2min<<" - "<<p2max<<endl;
+
+    int npar=2;
+    vvd_t coord(vd_t(0.0,_linmoms),npar);
+    int l=0;
+    for(int j=0; j<_linmoms; j++)
+    for(int k=j+1; k<_linmoms; k++)
+    {
+        // linear fit in physical units
+        coord[0][l] = 1.0;
+        coord[1][l] = (p2[j]+p2[k]);
+        l++;
+    }
+    int length=l;
+
+    // Interpolating Z's
+    vvd_t y_Zq(vd_t(0.0,length),njacks);       // [njacks][moms]
+    vvvd_t y_Zbil(vvd_t(vd_t(0.0,length),njacks),nbil);       // [njacks][moms]
+    vvd_t y_ZVovZA(vd_t(0.0,length),njacks);       // [njacks][moms]
+    vvd_t y_ZPovZS(vd_t(0.0,length),njacks);       // [njacks][moms]
+
+    l=0;
+    for(int imom=0;imom<_linmoms;imom++)
+    for(int jmom=imom+1;jmom<_linmoms;jmom++)
+    {
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            y_Zq[ijack][l] = (jZq[jmom][ijack][0]*p2[jmom]-jZq[imom][ijack][0]*p2[imom])/(p2[jmom]-p2[imom]);
+            for(int ibil=0;ibil<nbil;ibil++)
+              y_Zbil[ibil][ijack][l] = (jZ[jmom][ibil][ijack][0][0]*p2[jmom]-jZ[imom][ibil][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
+            y_ZVovZA[ijack][l] = (jZVoverZA[jmom][0][ijack][0][0]*p2[jmom]-jZVoverZA[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
+            y_ZPovZS[ijack][l] = (jZPoverZS[jmom][0][ijack][0][0]*p2[jmom]-jZPoverZS[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
+        }
+        l++;
+    }
+
+    vd_t dy_Zq = get<1>(ave_err(y_Zq));
+    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,15,30/*p2min,p2max*/); // [ijack][ipar]
+
+    vd_t dy_ZVovZA = get<1>(ave_err(y_ZVovZA));
+    vd_t dy_ZPovZS = get<1>(ave_err(y_ZPovZS));
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,15,30/*p2min,p2max*/); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,15,30/*p2min,p2max*/); // [ijack][ipar]
+
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
+        (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+    }
+
+    for(int ibil=0;ibil<nbil;ibil++)
+    {
+      vd_t dy_Zbil = get<1>(ave_err(y_Zbil[ibil]));
+      vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Z[ibil],15,30/*p2min,p2max*/); // [ijack][ipar]
+
+      for(int ijack=0;ijack<njacks;ijack++)
+      {
+          (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0];
+      }
+    }
+
+    return out;
+}
 
 voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
 {

@@ -206,17 +206,22 @@ int main(int narg,char **arg)
                         // M3[th] = evo[th].a2p2_extr_with_pole(ainv[b]);
                         // M3[th].plot("M3");
 
-                        /*****/
+                        // /*****/
+                        //
+                        // cont[th] = sea_chir[th].remove_hadr_cont(ainv[b]);
+                        // cont[th] = cont[th].evolve(ainv[b],p2ref);
+                        // cont[th].plot("cont");
+                        //
+                        // M1b[th] = cont[th].a2p2_extr(ainv[b]);
+                        // M1b[th].plot("M1b");
+                        //
+                        // M2b[th] = cont[th].interpolate_to_p2ref(b);
+                        // M2b[th].plot("M2b");
 
-                        cont[th] = sea_chir[th].remove_hadr_cont(ainv[b]);
-                        cont[th] = cont[th].evolve(ainv[b],p2ref);
-                        cont[th].plot("cont");
+                        /* Method 1 : Z-improvement */
+                        cont[th] = evo[th].Z_improvement();
+                        cont[th].plot("a1");
 
-                        M1b[th] = cont[th].a2p2_extr(ainv[b]);
-                        M1b[th].plot("M1b");
-
-                        M2b[th] = cont[th].interpolate_to_p2ref(b);
-                        M2b[th].plot("M2b");
                     }
                 }
 
