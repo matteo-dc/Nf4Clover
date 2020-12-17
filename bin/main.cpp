@@ -219,7 +219,7 @@ int main(int narg,char **arg)
                         // M2b[th].plot("M2b");
 
                         /* Method 1 : Z-improvement */
-                        cont[th] = evo[th].Z_improvement();
+                        cont[th] = evo[th].Z_improvement(ainv[b]);
                         cont[th].plot("a1");
 
                     }

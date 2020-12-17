@@ -2620,7 +2620,7 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
     return out;
 }
 
-oper_t oper_t::Z_improvement()
+oper_t oper_t::Z_improvement(double _ainv)
 {
     cout<<endl;
     cout<<"----- [strategy: a1] Z-improvement -----"<<endl<<endl;
@@ -2644,8 +2644,8 @@ oper_t oper_t::Z_improvement()
     // cout<<"p2 range (physical units):   "<<p2min<<" - "<<p2max<<endl;
 
     int npar=2;
-    double p2minn = 15.0;
-    double p2maxx = 30.0;
+    double p2minn = 15.0/(_ainv*_ainv); // in lattice units!
+    double p2maxx = 30.0/(_ainv*_ainv);
 
     int length=0;
     for(int imom=0;imom<_linmoms;imom++)

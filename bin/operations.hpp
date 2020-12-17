@@ -255,7 +255,7 @@ struct oper_t
     oper_t remove_hadr_cont(double _ainv);
 
     // improvement of Z w/o hadr. cont.
-    oper_t Z_improvement();
+    oper_t Z_improvement(double _ainv);
 };
 
 // valarray of oper_t struct;
