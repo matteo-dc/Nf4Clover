@@ -2684,12 +2684,12 @@ oper_t oper_t::Z_improvement()
           }
 
     vd_t dy_Zq = get<1>(ave_err(y_Zq));
-    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,100/*p2min,p2max*/); // [ijack][ipar]
+    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
 
     vd_t dy_ZVovZA = get<1>(ave_err(y_ZVovZA));
     vd_t dy_ZPovZS = get<1>(ave_err(y_ZPovZS));
-    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0,100/*p2min,p2max*/); // [ijack][ipar]
-    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0,100/*p2min,p2max*/); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
@@ -2701,7 +2701,7 @@ oper_t oper_t::Z_improvement()
     for(int ibil=0;ibil<nbil;ibil++)
     {
       vd_t dy_Zbil = get<1>(ave_err(y_Zbil[ibil]));
-      vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil[ibil],0,100/*p2min,p2max*/); // [ijack][ipar]
+      vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil[ibil],0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
