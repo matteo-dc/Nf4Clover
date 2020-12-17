@@ -2645,8 +2645,7 @@ oper_t oper_t::Z_improvement()
 
     int npar=2;
     double p2minn = 15.0;
-    double p2maxx = 30.0
-
+    double p2maxx = 30.0;
 
     int length=0;
     for(int imom=0;imom<_linmoms;imom++)
