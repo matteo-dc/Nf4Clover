@@ -2644,14 +2644,14 @@ oper_t oper_t::Z_improvement(double _ainv)
     // cout<<"p2 range (physical units):   "<<p2min<<" - "<<p2max<<endl;
 
     int npar=2;
-    double p2minn = 20.0/(_ainv*_ainv); // in lattice units!
+    double p2minn = 15.0/(_ainv*_ainv); // in lattice units!
     double p2maxx = 30.0/(_ainv*_ainv);
 
     int length=0;
     for(int imom=0;imom<_linmoms;imom++)
       if(p2[imom]>p2minn && p2[imom]<p2maxx)
         for(int jmom=imom+1;jmom<_linmoms;jmom++)
-          if(p2[jmom]>p2minn && p2[jmom]<p2maxx)
+          if(/*p2[jmom]>p2minn*/ p2[jmom]-p2[imom]>1.0 && p2[jmom]<p2maxx)
             length++;
 
     vvd_t coord(vd_t(0.0,length),npar);
@@ -2666,7 +2666,7 @@ oper_t oper_t::Z_improvement(double _ainv)
     for(int imom=0;imom<_linmoms;imom++)
       if(p2[imom]>p2minn && p2[imom]<p2maxx)
         for(int jmom=imom+1;jmom<_linmoms;jmom++)
-          if(p2[jmom]>p2minn && p2[jmom]<p2maxx)
+          if(/*p2[jmom]>p2minn*/ p2[jmom]-p2[imom]>1.0 && p2[jmom]<p2maxx)
           {
             // linear fit in physical units
             coord[0][l] = 1.0;
