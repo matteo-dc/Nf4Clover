@@ -2644,7 +2644,7 @@ oper_t oper_t::Z_improvement(double _ainv)
     // cout<<"p2 range (physical units):   "<<p2min<<" - "<<p2max<<endl;
 
     int npar=2;
-    double p2minn = 15.0/(_ainv*_ainv); // in lattice units!
+    double p2minn = 20.0/(_ainv*_ainv); // in lattice units!
     double p2maxx = 30.0/(_ainv*_ainv);
 
     int length=0;
