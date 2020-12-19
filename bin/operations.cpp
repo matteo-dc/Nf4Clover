@@ -2666,7 +2666,7 @@ oper_t oper_t::Z_improvement(double _ainv)
     for(int imom=0;imom<_linmoms;imom++)
       if(p2[imom]>p2minn && p2[imom]<p2maxx)
         for(int jmom=imom+1;jmom<_linmoms;jmom++)
-          if(/*p2[jmom]>p2minn*/ p2[jmom]-p2[imom]>1.0 && p2[jmom]<p2maxx)
+          if(/*p2[jmom]>p2minn*/ p2[jmom]-p2[imom]>1.0/(_ainv*_ainv) && p2[jmom]<p2maxx)
           {
             // linear fit in physical units
             coord[0][l] = 1.0;
