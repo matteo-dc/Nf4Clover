@@ -2481,8 +2481,8 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
     {
         // linear fit in physical units
         coord[0][j] = 1.0;
-        coord[1][j] = p2[j]; // latt. units
-        coord[2][j] = 1.0/(p2[j]*ainv2); // 1/GeV^2
+        coord[1][j] = p2[j]*ainv2;       // GeV^2
+        coord[2][j] = 1.0/(coord[1][j]); // 1/GeV^2
     }
 
     // Interpolating Zq
@@ -2535,7 +2535,7 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
             jpole[ijack] = jZ_pars[ijack][2];
         }
 
-        cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<"  [GeV^2]"<<endl;
+        cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
         cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
     }
 
