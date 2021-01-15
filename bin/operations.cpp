@@ -2464,14 +2464,12 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 
     int _p2min = 5;  //GeV^2
     int _p2max = 0;
-    switch (b) {
-      case 0 : _p2max = 20;
-        break;
-      case 1 : _p2max = 25;
-        break;
-      case 2 : _p2max = 30;
-        break;
-    }
+    if(b==0)
+      _p2max = 20;
+    else if(b==1)
+      _p2max = 25;
+    else if(b==2)
+      _p2max = 30;
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
 
