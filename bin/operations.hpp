@@ -248,8 +248,8 @@ struct oper_t
     void plot_sigmas();
 
     // a2p2->0 extrapolation
-    oper_t a2p2_extr(double _ainv);
-    oper_t a2p2_extr_with_pole(double _ainv);
+    oper_t a2p2_extr(int b);
+    oper_t a2p2_extr_with_pole(int b);
 
     // remove hadronic contamination ~1/p2
     oper_t remove_hadr_cont(double _ainv);

@@ -197,13 +197,13 @@ int main(int narg,char **arg)
                         evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
                         evo[th].plot("evo");
 
-                        M1[th] = evo[th].a2p2_extr(ainv[b]);
+                        M1[th] = evo[th].a2p2_extr(b);
                         M1[th].plot("M1");
 
                         M2[th] = evo[th].interpolate_to_p2ref(b);
                         M2[th].plot("M2");
 
-                        M3[th] = evo[th].a2p2_extr_with_pole(ainv[b]);
+                        M3[th] = evo[th].a2p2_extr_with_pole(b);
                         M3[th].plot("M3");
 
                         // /*****/
