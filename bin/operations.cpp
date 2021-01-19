@@ -2481,6 +2481,8 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
         coord[0][j] = 1.0;
         coord[1][j] = p2[j]*ainv2;       // GeV^2
         coord[2][j] = 1.0/(coord[1][j]); // 1/GeV^2
+
+        cout<<coord[1][j]<<endl;
     }
 
     // Interpolating Zq
