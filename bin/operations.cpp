@@ -2482,7 +2482,7 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
         coord[1][j] = p2[j]*ainv2;       // GeV^2
         coord[2][j] = 1.0/(coord[1][j]); // 1/GeV^2
 
-        if(coord[1][i]>=_p2min and coord[1][i]<=_p2max)
+        if(coord[1][j]>=_p2min and coord[1][j]<=_p2max)
           cout<<coord[1][j]<<endl;
     }
 
