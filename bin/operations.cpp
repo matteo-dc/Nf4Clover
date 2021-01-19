@@ -2462,8 +2462,8 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 
     double ainv2 = ainv[b]*ainv[b];
 
-    int _p2min = 5;  //GeV^2
-    int _p2max = 0;
+    double _p2min = 4;  //GeV^2
+    double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
       _p2max = 20;
     else if(fabs(ainv[b]-2.4635)<1e-10)
@@ -2512,7 +2512,7 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
     vd_t  dy_Zbil(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
 
-    vector<int> p2min_bil={_p2min,_p2min,_p2min,_p2min,_p2min}; /* {S,V,P,A,T} */
+    vector<double> p2min_bil={_p2min,_p2min,_p2min,_p2min,_p2min}; /* {S,V,P,A,T} */
     vector<string> str_bil={"S","V","P","A","T"};
     vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks);
 
