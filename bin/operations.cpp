@@ -2661,7 +2661,7 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
             (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0];
             jlincoeff[ijack] = jZ_pars[ijack][1];
             jpole[ijack] = jZ_pars[ijack][2];
-            jsqrcoeff[ijack] = jZ_pars[ijack][1];
+            jsqrcoeff[ijack] = jZ_pars[ijack][3];
         }
 
         cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
