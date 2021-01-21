@@ -2357,6 +2357,8 @@ oper_t oper_t::a2p2_extr(int b)
         coord[1][j] = p2[j]*ainv2; //Gev^2
     }
 
+    vd_t jlincoeff(0.0,njacks), jchisq(0.0,njacks);
+
     // Interpolating Zq
     vvd_t y_Zq(vd_t(0.0,_linmoms),njacks);       // [njacks][moms]
     vd_t  dy_Zq(0.0,_linmoms);                   // [moms]
@@ -2376,7 +2378,13 @@ oper_t oper_t::a2p2_extr(int b)
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
+        jlincoeff[ijack] = jZq_pars[ijack][1];
+        /**/
+        jchisq[ijack] = jZq_pars[ijack][npar];
     }
+
+    cout<<"  -- lincoeff[q] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+    cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
 
     // Interpolating Zbil
     vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
@@ -2403,10 +2411,14 @@ oper_t oper_t::a2p2_extr(int b)
         {
             (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0];
             jlincoeff[ijack] = jZ_pars[ijack][1];
+            /**/
+            jchisq[ijack] = jZ_pars[ijack][npar];
         }
 
         cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
-    }
+        cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
+
+      }
 
     // Interpolating ZVoverZA and ZPoverZS
     vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
@@ -2462,7 +2474,7 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 
     double ainv2 = ainv[b]*ainv[b];
 
-    double _p2min = 5;  //GeV^2
+    double _p2min = 4;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
       _p2max = 20;
@@ -2483,6 +2495,8 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
         coord[2][j] = 1.0/(coord[1][j]); // 1/GeV^2
     }
 
+    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
+
     // Interpolating Zq
     vvd_t y_Zq(vd_t(0.0,_linmoms),njacks);       // [njacks][moms]
     vd_t  dy_Zq(0.0,_linmoms);                   // [moms]
@@ -2502,7 +2516,15 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
+        jlincoeff[ijack] = jZq_pars[ijack][1];
+        jpole[ijack] = jZq_pars[ijack][2];
+        /**/
+        jchisq[ijack] = jZq_pars[ijack][npar];
     }
+
+    cout<<"  -- pole[q] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+    cout<<"  -- lincoeff[q] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+    cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
 
     // Interpolating Zbil
     vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
@@ -2511,7 +2533,6 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 
     vector<double> p2min_bil={_p2min,_p2min,_p2min,_p2min,_p2min}; /* {S,V,P,A,T} */
     vector<string> str_bil={"S","V","P","A","T"};
-    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks);
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
@@ -2531,10 +2552,13 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
             (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0];
             jlincoeff[ijack] = jZ_pars[ijack][1];
             jpole[ijack] = jZ_pars[ijack][2];
+            /**/
+            jchisq[ijack] = jZ_pars[ijack][npar];
         }
 
         cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
         cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+        cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
     }
 
     // Interpolating ZVoverZA and ZPoverZS
@@ -2641,7 +2665,7 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
 
     vector<double> p2min_bil={_p2min,_p2min,_p2min,_p2min,_p2min}; /* {S,V,P,A,T} */
     vector<string> str_bil={"S","V","P","A","T"};
-    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jsqrcoeff(0.0,njacks);
+    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jsqrcoeff(0.0,njacks), jchisq(0.0,njacks);
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
@@ -2662,11 +2686,14 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
             jlincoeff[ijack] = jZ_pars[ijack][1];
             jpole[ijack] = jZ_pars[ijack][2];
             jsqrcoeff[ijack] = jZ_pars[ijack][3];
+            /**/
+            jchisq[ijack] = jZ_pars[ijack][npar];
         }
 
         cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
         cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
         cout<<"  -- sqrcoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
+        cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
     }
 
     // Interpolating ZVoverZA and ZPoverZS
