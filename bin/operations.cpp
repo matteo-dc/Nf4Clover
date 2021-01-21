@@ -2392,7 +2392,6 @@ oper_t oper_t::a2p2_extr(int b)
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
 
     vector<string> str_bil={"S","V","P","A","T"};
-    vd_t jlincoeff(0.0,njacks);
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
