@@ -92,6 +92,7 @@ int main(int narg,char **arg)
             voper_t M1b(ntheta);
             voper_t M2b(ntheta);
             voper_t M3(ntheta);
+            voper_t M4(ntheta);
 
 
             for(int th=0; th<ntheta; th++)
@@ -205,6 +206,9 @@ int main(int narg,char **arg)
 
                         M3[th] = evo[th].a2p2_extr_with_pole(b);
                         M3[th].plot("M3");
+
+                        M4[th] = evo[th].a2p2_extr_with_pole_and_p4(b);
+                        M4[th].plot("M4");
 
                         // /*****/
                         //

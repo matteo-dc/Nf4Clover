@@ -2481,9 +2481,6 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
         coord[0][j] = 1.0;
         coord[1][j] = p2[j]*ainv2;       // GeV^2
         coord[2][j] = 1.0/(coord[1][j]); // 1/GeV^2
-
-        if(coord[1][j]>=_p2min and coord[1][j]<=_p2max)
-          cout<<coord[1][j]<<endl;
     }
 
     // Interpolating Zq
@@ -2538,6 +2535,138 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 
         cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
         cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+    }
+
+    // Interpolating ZVoverZA and ZPoverZS
+    vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+
+    for(int imom=0;imom<_bilmoms;imom++)
+    {
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
+            y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+        }
+        dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
+        dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+    }
+
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
+
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+    }
+
+    return out;
+}
+
+oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
+{
+    cout<<endl;
+    cout<<"----- extrapolation to p2 = 0 [with pole 1/p2 + quadratic] -----"<<endl<<endl;
+
+    oper_t out=(*this);
+
+    out.linmoms=vector<array<int,1>>{{0}};
+    out.bilmoms=vector<array<int,3>>{{0,0,0}};
+    out.meslepmoms=out.bilmoms;
+
+    out._linmoms=1;
+    out._bilmoms=1;
+    out._meslepmoms=1;
+
+    out.allocate_val();
+    out.allocate();
+
+    out.eff_mass=(*this).eff_mass;
+    out.eff_mass_sea=(*this).eff_mass_sea;
+
+    double ainv2 = ainv[b]*ainv[b];
+
+    double _p2min = 5;  //GeV^2
+    double _p2max = 0;
+    if(fabs(ainv[b]-2.1218)<1e-10)
+      _p2max = 20;
+    else if(fabs(ainv[b]-2.4635)<1e-10)
+      _p2max = 25;
+    else if(fabs(ainv[b]-2.8934)<1e-10)
+      _p2max = 30;
+
+    cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
+
+    int npar=4;
+    vvd_t coord(vd_t(0.0,_linmoms),npar);
+    for(int j=0; j<_linmoms; j++)
+    {
+        // linear fit in physical units
+        coord[0][j] = 1.0;
+        coord[1][j] = p2[j]*ainv2;       // GeV^2
+        coord[2][j] = 1.0/(coord[1][j]); // 1/GeV^2
+        coord[3][j] = coord[1][j]*coord[1][j];       // GeV^4
+    }
+
+    // Interpolating Zq
+    vvd_t y_Zq(vd_t(0.0,_linmoms),njacks);       // [njacks][moms]
+    vd_t  dy_Zq(0.0,_linmoms);                   // [moms]
+    vvd_t dy_Zq_tmp = get<1>(ave_err_Zq((*this).jZq)); // [moms][nmr]
+
+    for(int imom=0;imom<_linmoms;imom++)
+    {
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            y_Zq[ijack][imom] = jZq[imom][ijack][0];
+        }
+        dy_Zq[imom] = dy_Zq_tmp[imom][0];
+    }
+
+    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,_p2min,_p2max); // [ijack][ipar]
+
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
+    }
+
+    // Interpolating Zbil
+    vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_Zbil(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
+
+    vector<double> p2min_bil={_p2min,_p2min,_p2min,_p2min,_p2min}; /* {S,V,P,A,T} */
+    vector<string> str_bil={"S","V","P","A","T"};
+    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jsqrcoeff(0.0,njacks);
+
+    for(int ibil=0;ibil<nbil;ibil++)
+    {
+        for(int imom=0;imom<_bilmoms;imom++)
+        {
+            for(int ijack=0;ijack<njacks;ijack++)
+            {
+                y_Zbil[ijack][imom] = jZ[imom][ibil][ijack][0][0];
+            }
+            dy_Zbil[imom] = dy_Zbil_tmp[imom][ibil][0][0];
+        }
+
+        vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,p2min_bil[ibil],_p2max); // [ijack][ipar]
+
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0];
+            jlincoeff[ijack] = jZ_pars[ijack][1];
+            jpole[ijack] = jZ_pars[ijack][2];
+            jsqrcoeff[ijack] = jZ_pars[ijack][1];
+        }
+
+        cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+        cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+        cout<<"  -- sqrcoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
     }
 
     // Interpolating ZVoverZA and ZPoverZS
