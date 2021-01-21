@@ -2591,7 +2591,7 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
 
     double ainv2 = ainv[b]*ainv[b];
 
-    double _p2min = 5;  //GeV^2
+    double _p2min = 4;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
       _p2max = 20;
