@@ -2664,10 +2664,10 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
         jchisq[ijack] = jZq_pars[ijack][npar];
     }
 
-    cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
-    cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
-    cout<<"  -- sqrcoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
-    cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
+    cout<<"  -- pole[q] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+    cout<<"  -- lincoeff[q] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+    cout<<"  -- sqrcoeff[q] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
+    cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
 
     // Interpolating Zbil
     vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
