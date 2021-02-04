@@ -2848,12 +2848,9 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
         }
       }
 
-
       dy_Zq[j_tot] = dy_Zq_tmp[j][0];
       for(int ibil=0;ibil<nbil;ibil++)
         dy_Zbil[ibil][j_tot] = dy_Zbil_tmp[j][ibil][0][0];
-
-
 
       j_tot++;
     }
@@ -2885,7 +2882,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   {
     vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Zbil[ibil],0,300); // [ijack][ipar]
 
-    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
+    //vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
@@ -2894,7 +2891,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
         jlincoeff[ijack] = jZ_pars[ijack][nbeta];
         jpole[ijack] = jZ_pars[ijack][nbeta+1];
         /**/
-        jchisq[ijack] = jZq_pars[ijack][npar];
+        jchisq[ijack] = jZ_pars[ijack][npar];
       }
 
       cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
