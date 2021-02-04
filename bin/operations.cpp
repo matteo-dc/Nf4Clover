@@ -2863,7 +2863,8 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
 
   vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
 
-    cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
+    for(int b=0; b<nbeta;b++)
+      cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
     for(int ijack=0;ijack<njacks;ijack++)
     {
       for(int b=0; b<nbeta;b++)
