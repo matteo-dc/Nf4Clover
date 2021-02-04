@@ -2829,7 +2829,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
     if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
     {
       for(int bb=0; bb<nbeta;bb++)
-        coord[b][j_tot]     = (bb==b?1.0:0.0);   //Constant: Za,Zb,Zc
+        coord[b][j_tot]     = (bb-b==0)? 1.0 : 0.0;   //Constant: Za,Zb,Zc
       coord[nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
       coord[nbeta+1][j_tot] = 1.0/(in[b].p2[j]*ainv2); // 1/GeV^2
 
