@@ -2833,6 +2833,8 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
       coord[nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
       coord[nbeta+1][j_tot] = 1.0/(in[b].p2[j]*ainv2); // 1/GeV^2
 
+      cout<<"a - "<<jtot<<endl;
+
       for(int ijack=0;ijack<njacks;ijack++)
       {
         y_Zq[ijack][j_tot] = in[b].jZq[j][ijack][0];
@@ -2842,10 +2844,13 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
           y_Zbil[ibil][ijack][j_tot] = in[b].jZ[j][ibil][ijack][0][0];
         }
       }
+      cout<<"b - "<<jtot<<endl;
 
       dy_Zq[j_tot] = dy_Zq_tmp[j][0];
       for(int ibil=0;ibil<nbil;ibil++)
         dy_Zbil[ibil][j_tot] = dy_Zbil_tmp[j_tot][ibil][0][0];
+
+      cout<<"c - "<<jtot<<endl;
 
       j_tot++;
     }
