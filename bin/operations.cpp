@@ -1469,98 +1469,6 @@ voper_t theta_average(vvoper_t in) // in[th][b]
     return out;
 }
 
-//oper_t theta_average( voper_t in)
-//{
-//    cout<<endl;
-//    cout<<"----- theta average -----"<<endl<<endl;
-//
-//    oper_t out=in[0];  //?
-//
-//    int _linmoms = in[0]._linmoms;
-//    int _bilmoms = in[0]._bilmoms;
-//    int _meslepmoms = in[0]._meslepmoms;
-//
-//    out.allocate_val();
-//    out.allocate();
-//
-//    out.path_to_ens = in[0].path_to_beta;
-//
-//    for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
-//        for(int ijack=0;ijack<njacks;ijack++)
-//        {
-//            out.jZq[ilinmom][ijack][0] = 0.5*(in[0].jZq[ilinmom][ijack][0] + in[1].jZq[ilinmom][ijack][0]);
-//            out.jZq_EM[ilinmom][ijack][0] = 0.5*(in[0].jZq_EM[ilinmom][ijack][0] + in[1].jZq_EM[ilinmom][ijack][0]);
-//        }
-//    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-//        for(int ibil=0;ibil<nbil;ibil++)
-//            for(int ijack=0;ijack<njacks;ijack++)
-//            {
-//                out.jZ[ibilmom][ibil][ijack][0][0] =
-//                    0.5*(in[0].jZ[ibilmom][ibil][ijack][0][0] + in[1].jZ[ibilmom][ibil][ijack][0][0]);
-//                out.jZ_EM[ibilmom][ibil][ijack][0][0] =
-//                    0.5*(in[0].jZ_EM[ibilmom][ibil][ijack][0][0] + in[1].jZ_EM[ibilmom][ibil][ijack][0][0]);
-//            }
-//    for(int imom=0;imom<_meslepmoms;imom++)
-//        for(int iop1=0;iop1<nbil;iop1++)
-//            for(int iop2=0;iop2<nbil;iop2++)
-//            for(int ijack=0;ijack<njacks;ijack++)
-//            {
-//                out.jZ_4f[imom][iop1][iop2][ijack][0][0] =
-//                    0.5*(in[0].jZ_4f[imom][iop1][iop2][ijack][0][0] + in[1].jZ_4f[imom][iop1][iop2][ijack][0][0]);
-//                out.jZ_4f_EM[imom][iop1][iop2][ijack][0][0] =
-//                    0.5*(in[0].jZ_4f_EM[imom][iop1][iop2][ijack][0][0] + in[1].jZ_4f_EM[imom][iop1][iop2][ijack][0][0]);
-//            }
-//
-//    return out;
-//}
-
-//oper_t oper_t::evolve(const int b)
-//{
-//    cout<<endl;
-//    cout<<"----- evolution to the scale 1/a -----"<<endl<<endl;
-//
-//    oper_t out=(*this);
-//
-//    double cq=0.0;
-//    vd_t cO(0.0,5);
-//
-//    double _ainv=ainv[b];
-//
-//    for(int ilinmom=0;ilinmom<_linmoms;ilinmom++)
-//    {
-//        cq=q_evolution_to_RIp_ainv(Nf,_ainv,p2[ilinmom]);
-//
-//        for(int ijack=0;ijack<njacks;ijack++)
-//            for(int mr1=0; mr1<_nmr; mr1++)
-//            {
-//                (out.jZq)[ilinmom][ijack][mr1] = jZq[ilinmom][ijack][mr1]/cq;
-//                (out.jZq_EM)[ilinmom][ijack][mr1] = jZq_EM[ilinmom][ijack][mr1]/cq;
-//            }
-//    }
-//
-//    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-//    {
-//        // Note that ZV  ZA are RGI because they're protected by the WIs
-//        cO[0]=S_evolution_to_RIp_ainv(Nf,_ainv,p2[ibilmom]); //S
-//        cO[1]=1.0;                                       //A
-//        cO[2]=P_evolution_to_RIp_ainv(Nf,_ainv,p2[ibilmom]); //P
-//        cO[3]=1.0;                                       //V
-//        cO[4]=T_evolution_to_RIp_ainv(Nf,_ainv,p2[ibilmom]); //T
-//
-//        for(int ibil=0;ibil<5;ibil++)
-//            for(int ijack=0;ijack<njacks;ijack++)
-//                for(int mr1=0; mr1<_nmr; mr1++)
-//                    for(int mr2=0; mr2<_nmr; mr2++)
-//                    {
-//                        (out.jZ)[ibilmom][ibil][ijack][mr1][mr2] = jZ[ibilmom][ibil][ijack][mr1][mr2]/cO[ibil];
-//                        (out.jZ_EM)[ibilmom][ibil][ijack][mr1][mr2] = jZ_EM[ibilmom][ibil][ijack][mr1][mr2]/cO[ibil];
-//                    }
-//    }
-//
-//#warning missing evolution for 4f
-//
-//    return out;
-//}
 
 int mom_list_xyz(vector<coords_t> &mom_list, const size_t imom)
 {
@@ -2853,6 +2761,137 @@ oper_t oper_t::Z_improvement(double _ainv)
 
     return out;
 }
+
+voper_t combined_M3(voper_t in)  // M3 method combined on all betas
+{
+
+  cout<<endl;
+  cout<<"----- Combined M3 fit on all the curves -----"<<endl<<endl;
+
+  voper_t out(nbeta);
+
+  for(int b=0;b<nbeta;b++)
+  {
+    out[b].linmoms=vector<array<int,1>>{{0}};
+    out[b].bilmoms=vector<array<int,3>>{{0,0,0}};
+    out[b].meslepmoms=out[b].bilmoms;
+
+    out[b]._linmoms=1;
+    out[b]._bilmoms=1;
+    out[b]._meslepmoms=1;
+
+    out[b].allocate_val();
+    out[b].allocate();
+  }
+
+  double _p2min = 4;  //GeV^2
+  double _p2max[] = {20,25,30};
+
+  // count all the momenta respecting the above criteria of p2min&p2max
+  int _linmoms_tot=0;
+  for(int b=0; b<nbeta;b++)
+  {
+    double ainv2 = ainv[b]*ainv[b];
+    for(int j=0; j<in[b]._linmoms; j++)
+      if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+        _linmoms_tot ++;
+  }
+
+  int npar=nbeta+2;
+
+  // for(int b=0; b<nbeta;b++)
+  //   _linmoms_tot += in[b]._linmoms;
+
+  vvd_t coord(vd_t(0.0,_linmoms_tot),npar);
+
+  vvd_t y_Zq(vd_t(0.0,_linmoms_tot),njacks);       // [njacks][moms]
+  vd_t  dy_Zq(0.0,_linmoms_tot);                   // [moms]
+  vvvd_t y_Zbil(vvd_t(vd_t(0.0,_linmoms_tot),njacks),nbil);       // [nbil][njacks][moms]
+  vvd_t  dy_Zbil(vd_t(0.0,_linmoms_tot),nbil);                   // [nbil][moms]
+
+  int j_tot=0;
+  for(int b=0; b<nbeta;b++)
+  {
+    double ainv2 = ainv[b]*ainv[b];
+    vvd_t dy_Zq_tmp = get<1>(ave_err_Zq(in[b].jZq));
+    vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ));
+
+    for(int j=0; j<in[b]._linmoms; j++)
+    if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+    {
+      for(int bb=0; bb<nbeta;bb++)
+        coord[b][j_tot]     = (bb==b?1.0:0.0);   //Constant: Za,Zb,Zc
+      coord[nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
+      coord[nbeta+1][j_tot] = 1.0/(in[b].p2[j]*ainv2); // 1/GeV^2
+
+      for(int ijack=0;ijack<njacks;ijack++)
+      {
+        y_Zq[ijack][j_tot] = in[b].jZq[j][ijack][0];
+
+        for(int ibil=0;ibil<nbil;ibil++)
+        {
+          y_Zbil[ibil][ijack][j_tot] = in[b].jZ[j][ibil][ijack][0][0];
+        }
+      }
+
+      dy_Zq[j_tot] = dy_Zq_tmp[j][0];
+      for(int ibil=0;ibil<nbil;ibil++)
+        dy_Zbil[ibil][j_tot] = dy_Zbil_tmp[j_tot][ibil][0][0];
+
+      j_tot++;
+    }
+  }
+
+  vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,300); // [ijack][ipar]
+
+  vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
+  for(int b=0; b<nbeta;b++)
+  {
+    cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out[b].jZq)[0][ijack][0] = jZq_pars[ijack][b];
+        jlincoeff[ijack] = jZq_pars[ijack][nbeta];
+        jpole[ijack] = jZq_pars[ijack][nbeta+1];
+        /**/
+        jchisq[ijack] = jZq_pars[ijack][npar];
+    }
+
+    cout<<"%%%%%%% beta = "<<beta_label[b]<<"  %%%%%%%%%%%%%% "<<endl;
+    cout<<"  -- pole[q] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+    cout<<"  -- lincoeff[q] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+    cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
+  }
+
+  vector<string> str_bil={"S","V","P","A","T"};
+  for(int ibil=0; ibil<nbil; ibil++)
+  {
+    vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Zbil[ibil],0,300); // [ijack][ipar]
+
+    vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
+    for(int b=0; b<nbeta;b++)
+    {
+      for(int ijack=0;ijack<njacks;ijack++)
+      {
+          (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
+          jlincoeff[ijack] = jZ_pars[ijack][nbeta];
+          jpole[ijack] = jZ_pars[ijack][nbeta+1];
+          /**/
+          jchisq[ijack] = jZq_pars[ijack][npar];
+      }
+
+      cout<<"%%%%%%% beta = "<<beta_label[b]<<"  %%%%%%%%%%%%%% "<<endl;
+      cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+      cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+      cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
+    }
+  }
+ 
+   return out;
+}
+
+
+
 
 voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
 {

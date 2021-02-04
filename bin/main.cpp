@@ -59,7 +59,7 @@ int main(int narg,char **arg)
     if(eta_analysis)
         nloop=2;
 
-
+    voper_t all(nbeta); // ONLY WORKS WITH NTHETA=1
 
     recompute_basic = false;
 
@@ -198,17 +198,25 @@ int main(int narg,char **arg)
                         evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
                         evo[th].plot("evo");
 
+                        // save all the curves for combined fit (ONLY WORKS WITH NTHETA=1)
+                        if(ntheta==1)
+                        all[b] = evo[th];
+
+                        // linear extrapolation
                         M1[th] = evo[th].a2p2_extr(b);
                         M1[th].plot("M1");
 
+                        // constant interpolation
                         M2[th] = evo[th].interpolate_to_p2ref(b);
                         M2[th].plot("M2");
 
+                        // linear + pole 1/p2 extrapolation
                         M3[th] = evo[th].a2p2_extr_with_pole(b);
                         M3[th].plot("M3");
 
-                        M4[th] = evo[th].a2p2_extr_with_pole_and_p4(b);
-                        M4[th].plot("M4");
+                        // quadratic + pole 1/p2 extrapolation
+                        // M4[th] = evo[th].a2p2_extr_with_pole_and_p4(b);
+                        // M4[th].plot("M4");
 
                         // /*****/
                         //
@@ -235,7 +243,14 @@ int main(int narg,char **arg)
 
     } //close nloop
 
+    voper_t M3combo(nbeta);
 
+    if(!only_basic)
+    {
+      M3combo = combined_M3(all);
+      for(int b=0;b<nbeta;b++)
+        M3combo[b].plot("M3comb"); 
+    }
 
 
 

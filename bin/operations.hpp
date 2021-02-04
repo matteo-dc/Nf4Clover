@@ -266,6 +266,9 @@ using vvvoper_t=valarray<vvoper_t>;
 using vvvvoper_t=valarray<vvvoper_t>;
 using vvvvvoper_t=valarray<vvvvoper_t>;
 
+// combined a2p2 extrapolation
+voper_t combined_M3(voper_t in); 
+
 // chiral sea extrapolation
 oper_t chiral_sea_extr(valarray<oper_t> in);
 
