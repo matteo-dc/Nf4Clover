@@ -2772,6 +2772,8 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
 
   for(int b=0;b<nbeta;b++)
   {
+    out[b] = in[b];
+
     out[b].linmoms=vector<array<int,1>>{{0}};
     out[b].bilmoms=vector<array<int,3>>{{0,0,0}};
     out[b].meslepmoms=out[b].bilmoms;
@@ -2796,6 +2798,13 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
       if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
         _linmoms_tot ++;
   }
+
+  int _linmoms_tot_complete=0;
+  for(int b=0; b<nbeta;b++)
+  {
+    _linmoms_tot_complete += in[b]._linmoms;
+  }
+  cout<<"tot moms = "<<_linmoms_tot<<"/"<<_linmoms_tot_complete<<endl;
 
   int npar=nbeta+2;
 
@@ -2886,7 +2895,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
       cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
     }
   }
- 
+
    return out;
 }
 
