@@ -2823,7 +2823,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   {
     double ainv2 = ainv[b]*ainv[b];
     vvd_t dy_Zq_tmp = get<1>(ave_err_Zq(in[b].jZq));
-    vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ));
+    vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ)); // [moms][nbil][nmr][nmr]
 
     for(int j=0; j<in[b]._linmoms; j++)
     if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
@@ -2848,7 +2848,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
 
       dy_Zq[j_tot] = dy_Zq_tmp[j][0];
       for(int ibil=0;ibil<nbil;ibil++)
-        dy_Zbil[ibil][j_tot] = dy_Zbil_tmp[j_tot][ibil][0][0];
+        dy_Zbil[ibil][j_tot] = dy_Zbil_tmp[j][ibil][0][0];
 
       cout<<"c - "<<j_tot<<endl;
 
