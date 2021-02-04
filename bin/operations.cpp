@@ -2862,23 +2862,22 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,300); // [ijack][ipar]
 
   vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
-  for(int b=0; b<nbeta;b++)
-  {
+
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
     for(int ijack=0;ijack<njacks;ijack++)
     {
+      for(int b=0; b<nbeta;b++)
         (out[b].jZq)[0][ijack][0] = jZq_pars[ijack][b];
-        jlincoeff[ijack] = jZq_pars[ijack][nbeta];
-        jpole[ijack] = jZq_pars[ijack][nbeta+1];
-        /**/
-        jchisq[ijack] = jZq_pars[ijack][npar];
+      jlincoeff[ijack] = jZq_pars[ijack][nbeta];
+      jpole[ijack] = jZq_pars[ijack][nbeta+1];
+      /**/
+      jchisq[ijack] = jZq_pars[ijack][npar];
     }
 
-    cout<<"%%%%%%% beta = "<<beta_label[b]<<"  %%%%%%%%%%%%%% "<<endl;
     cout<<"  -- pole[q] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
     cout<<"  -- lincoeff[q] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
     cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
-  }
+
 
   vector<string> str_bil={"S","V","P","A","T"};
   for(int ibil=0; ibil<nbil; ibil++)
@@ -2886,22 +2885,20 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
     vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Zbil[ibil],0,300); // [ijack][ipar]
 
     vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
-    for(int b=0; b<nbeta;b++)
-    {
+
       for(int ijack=0;ijack<njacks;ijack++)
       {
+        for(int b=0; b<nbeta;b++)
           (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
-          jlincoeff[ijack] = jZ_pars[ijack][nbeta];
-          jpole[ijack] = jZ_pars[ijack][nbeta+1];
-          /**/
-          jchisq[ijack] = jZq_pars[ijack][npar];
+        jlincoeff[ijack] = jZ_pars[ijack][nbeta];
+        jpole[ijack] = jZ_pars[ijack][nbeta+1];
+        /**/
+        jchisq[ijack] = jZq_pars[ijack][npar];
       }
 
-      cout<<"%%%%%%% beta = "<<beta_label[b]<<"  %%%%%%%%%%%%%% "<<endl;
       cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
       cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
       cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
-    }
   }
 
    return out;
