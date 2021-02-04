@@ -245,11 +245,11 @@ int main(int narg,char **arg)
 
     voper_t M3combo(nbeta);
 
-    if(!only_basic)
+    if(!only_basic && nbeta>1)
     {
       M3combo = combined_M3(all);
       for(int b=0;b<nbeta;b++)
-        M3combo[b].plot("M3comb"); 
+        M3combo[b].plot("M3comb");
     }
 
 
