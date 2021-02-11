@@ -127,9 +127,7 @@ int main(int narg,char **arg)
 
                        /*  perturbative subtraction of O(ainf)  */
 
-                       //sub[th][m] = rave[th][m].subOainf(b,"allmoms");
-                       //if(!load_ave) sub[th][m].plot("sub_ainf");
-                       sub[th][m] = rave[th][m];
+                       sub[th][m] = rave[th][m].subOainf(b,"allmoms");
                        if(!load_ave) sub[th][m].plot("sub_ainf");
 
                        /*  democratic filter on momenta  */
@@ -140,7 +138,7 @@ int main(int narg,char **arg)
                        /*  average over equivalent momenta  */
 
                        ave[th][m] = filt[th][m].average_equiv_moms();
-                       if(!load_ave) ave[th][m].plot("ave_nosub");
+                       if(!load_ave) ave[th][m].plot("ave");
 
                        /* store averaged ingredients */
 
