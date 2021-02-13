@@ -85,6 +85,7 @@ int main(int narg,char **arg)
             vvoper_t sub(voper_t(nm_Sea[b]),ntheta);
 
             voper_t sea_chir(ntheta);
+            voper_t sub2(ntheta);
             voper_t evo(ntheta);
             voper_t cont(ntheta);
             voper_t M1(ntheta);
@@ -117,8 +118,8 @@ int main(int narg,char **arg)
 
                        /*  no sub  */
 
-                       // sub[th][m] = rave[th][m];
-                       // if(!load_ave) sub[th][m].plot("sub_nosub");
+                       sub[th][m] = rave[th][m];
+                       if(!load_ave) sub[th][m].plot("sub_nosub");
 
                        /*  perturbative subtraction of O(a2)  */
 
@@ -127,8 +128,8 @@ int main(int narg,char **arg)
 
                        /*  perturbative subtraction of O(ainf)  */
 
-                       sub[th][m] = rave[th][m].subOainf(b,"allmoms");
-                       if(!load_ave) sub[th][m].plot("sub_ainf");
+                       // sub[th][m] = rave[th][m].subOainf(b,"allmoms");
+                       // if(!load_ave) sub[th][m].plot("sub_ainf");
 
                        /*  democratic filter on momenta  */
 
@@ -195,7 +196,13 @@ int main(int narg,char **arg)
                         sea_chir[th] = chiral_sea_extr(val_chir[th]);
                         sea_chir[th].plot("sea");
 
-                        evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
+                        #warning SUB2 IS JUST FOR TESTS
+                        /*  perturbative subtraction of O(ainf) à la Martha  */
+                        sub2[th] = sea_chir[th].subOainfMartha(b,"eqmoms");
+                        sub2[th].plot("sub_ainf_Martha");
+                        evo[th] = sub2[th].evolve(ainv[b],p2ref);
+
+                        // evo[th] = sea_chir[th].evolve(ainv[b],p2ref);
                         evo[th].plot("evo");
 
                         // save all the curves for combined fit (ONLY WORKS WITH NTHETA=1)

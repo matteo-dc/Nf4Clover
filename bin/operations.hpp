@@ -208,6 +208,7 @@ struct oper_t
 
     oper_t subOainf(const int b, const string &suffix);
 
+    oper_t subOainfMartha(const int b, const string &suffix);
 
     // evolution to 1/a scale
     oper_t evolve(const double ainv, const double p2_evol);
@@ -267,7 +268,7 @@ using vvvvoper_t=valarray<vvvoper_t>;
 using vvvvvoper_t=valarray<vvvvoper_t>;
 
 // combined a2p2 extrapolation
-voper_t combined_M3(voper_t in); 
+voper_t combined_M3(voper_t in);
 
 // chiral sea extrapolation
 oper_t chiral_sea_extr(valarray<oper_t> in);

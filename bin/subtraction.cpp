@@ -328,3 +328,65 @@ oper_t oper_t::subOainf(const int b, const string &suffix)
 
   return out;
 }
+
+oper_t oper_t::subOainfMartha(const int b, const string &suffix)
+{
+  cout<<endl;
+  cout<<"----- subtraction of O(ainf) effects à la Martha -----"<<endl<<endl;
+
+  oper_t out=(*this);
+
+  if(!load_ave)
+  {
+    double CF = 4.0/3.0;
+    double g2 = 6.0/beta[b];
+    if(sub_boosted)
+    g2 /= plaquette;
+
+    vector<vector<double>> DeltaZ_moms(out._linmoms,vector<double>(6));
+
+    vector<ifstream> DeltaZ_file(6);
+
+    string path = out.path_to_beta+out._beta_label+"/subainf/"+suffix+"/";
+
+    string RCs[6] = {"q","S","V","P","A","T"};
+    for(int iRC=0;iRC<6;iRC++)
+    {
+      DeltaG_file[iRC].open(path+"DeltaZ"+RCs[iRC]);
+      if(!DeltaG_file[iRC].good())
+      {
+        cerr<<"Error opening \""<<path<<"DeltaZ"<<RCs[iRC]<<"\"."<<endl;
+        exit(1);
+      }
+      while(!DeltaG_file[iRC].eof())
+      {
+        for(int imom=0; imom<out._linmoms; imom++)
+        DeltaZ_file[iRC]>>DeltaZ_moms[imom][iRC];
+      }
+    }
+
+    // Zq
+    #pragma omp parallel for collapse(2)
+    for(int imom=0;imom<out._linmoms;imom++)
+    {
+      for(int ijack=0;ijack<njacks;ijack++)
+      {
+        (out.jZq)[imom][ijack][0] -= CF*g2*DeltaZ_moms[imom][0];
+      }
+    }
+
+    // Zbil
+    #pragma omp parallel for collapse(3)
+    for(int imom=0;imom<out._bilmoms;imom++)
+    for(int ibil=0;ibil<nbil;ibil++)
+    {
+      for(int ijack=0;ijack<njacks;ijack++)
+      {
+        (out.jZ)[imom][ibil][ijack][0][0] -= CF*g2*DeltaG_moms[imom][ibil+1];
+      }
+    }
+
+  }
+
+  return out;
+}
