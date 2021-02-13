@@ -219,9 +219,11 @@ struct oper_t
 
     // filter momenta
     oper_t filter_moms();
+    oper_t filter_momsZ()
 
     // average of equivalent momenta
     oper_t average_equiv_moms();
+    oper_t average_equiv_momsZ();
 
     // returns the range in which x is contained
     pair<double,double> get_a2p2tilde_range(const int size,const double a2p2_ref,const size_t n=5) const;
