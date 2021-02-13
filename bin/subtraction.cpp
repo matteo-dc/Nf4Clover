@@ -358,7 +358,7 @@ oper_t oper_t::subOainfMartha(const int b, const string &suffix)
         cerr<<"Error opening \""<<path<<"DeltaZ"<<RCs[iRC]<<"\"."<<endl;
         exit(1);
       }
-      while(!DeltaG_file[iRC].eof())
+      while(!DeltaZ_file[iRC].eof())
       {
         for(int imom=0; imom<out._linmoms; imom++)
         DeltaZ_file[iRC]>>DeltaZ_moms[imom][iRC];
