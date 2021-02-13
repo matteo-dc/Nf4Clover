@@ -219,7 +219,7 @@ struct oper_t
 
     // filter momenta
     oper_t filter_moms();
-    oper_t filter_momsZ()
+    oper_t filter_momsZ();
 
     // average of equivalent momenta
     oper_t average_equiv_moms();
