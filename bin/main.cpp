@@ -132,7 +132,7 @@ int main(int narg,char **arg)
 
                        #warning SUB2 IS JUST FOR TESTS
                        /*  perturbative subtraction of O(ainf) à la Martha  */
-                       sub[th][m] = rave[th][m].subOainfMartha(b,"eqmoms");
+                       sub[th][m] = rave[th][m].subOainfMartha(b,"allmoms");
                        sub[th][m].plot("sub_ainf_Martha");
 
                        /*  democratic filter on momenta  */
