@@ -352,8 +352,8 @@ oper_t oper_t::subOainfMartha(const int b, const string &suffix)
     string RCs[6] = {"q","S","V","P","A","T"};
     for(int iRC=0;iRC<6;iRC++)
     {
-      DeltaG_file[iRC].open(path+"DeltaZ"+RCs[iRC]);
-      if(!DeltaG_file[iRC].good())
+      DeltaZ_file[iRC].open(path+"DeltaZ"+RCs[iRC]);
+      if(!DeltaZ_file[iRC].good())
       {
         cerr<<"Error opening \""<<path<<"DeltaZ"<<RCs[iRC]<<"\"."<<endl;
         exit(1);
@@ -382,7 +382,7 @@ oper_t oper_t::subOainfMartha(const int b, const string &suffix)
     {
       for(int ijack=0;ijack<njacks;ijack++)
       {
-        (out.jZ)[imom][ibil][ijack][0][0] -= CF*g2*DeltaG_moms[imom][ibil+1];
+        (out.jZ)[imom][ibil][ijack][0][0] -= CF*g2*DeltaZ_moms[imom][ibil+1];
       }
     }
 
