@@ -117,8 +117,8 @@ int main(int narg,char **arg)
 
                        /*  no sub  */
 
-                       // sub[th][m] = rave[th][m];
-                       // if(!load_ave) sub[th][m].plot("sub_nosub");
+                       sub[th][m] = rave[th][m];
+                       if(!load_ave) sub[th][m].plot("sub_nosub");
 
                        /*  perturbative subtraction of O(a2)  */
 
@@ -130,24 +130,24 @@ int main(int narg,char **arg)
                        // sub[th][m] = rave[th][m].subOainf(b,"allmoms");
                        // if(!load_ave) sub[th][m].plot("sub_ainf");
 
-                       #warning SUB2 IS JUST FOR TESTS
+                       // #warning SUB2 IS JUST FOR TESTS
                        /*  perturbative subtraction of O(ainf) à la Martha  */
-                       sub[th][m] = rave[th][m].subOainfMartha(b,"allmoms");
-                       sub[th][m].plot("sub_ainf_Martha");
+                       // sub[th][m] = rave[th][m].subOainfMartha(b,"allmoms");
+                       // sub[th][m].plot("sub_ainf_Martha");
 
                        /*  democratic filter on momenta  */
 
-                       // filt[th][m] = sub[th][m].filter_moms();
-                       // if(!load_ave)  filt[th][m].plot("filt");
-                       filt[th][m] = sub[th][m].filter_momsZ();
+                       filt[th][m] = sub[th][m].filter_moms();
                        if(!load_ave)  filt[th][m].plot("filt");
+                       // filt[th][m] = sub[th][m].filter_momsZ();
+                       // if(!load_ave)  filt[th][m].plot("filt");
 
                        /*  average over equivalent momenta  */
 
-                       // ave[th][m] = filt[th][m].average_equiv_moms();
-                       // if(!load_ave) ave[th][m].plot("ave");
-                       ave[th][m] = filt[th][m].average_equiv_momsZ();
+                       ave[th][m] = filt[th][m].average_equiv_moms();
                        if(!load_ave) ave[th][m].plot("ave");
+                       // ave[th][m] = filt[th][m].average_equiv_momsZ();
+                       // if(!load_ave) ave[th][m].plot("ave");
 
                        /* store averaged ingredients */
 
