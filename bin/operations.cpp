@@ -802,8 +802,8 @@ oper_t oper_t::chiral_extr()
                                     (out.bval)[ibilmom][ijack][ibil+1]=jG_pars[ijack][1];
                             }
 
-                            //if(ibilmom%20==0 and r1==0 and r2==0)
-                            if(ibilmom<20 and r1==0 and r2==0)
+                            if(ibilmom%20==0 and r1==0 and r2==0)
+                            //if(ibilmom<20 and r1==0 and r2==0)
                             {
                                     plot_bil_chir_extr(ibilmom,ins,ibil,x_bil,G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                             }
@@ -918,7 +918,8 @@ oper_t oper_t::chiral_extr()
                                     (out.bval)[ibilmom][ijack][ibil+1]=jG_pars[ijack][1];
                             }
 
-                            if(ibilmom%20==0 and r1==0 and r2==0)
+                            // if(ibilmom%20==0 and r1==0 and r2==0)
+                            if(ibilmom<20 and r1==0 and r2==0)
                             {
                                 plot_bil_chir_extr(ibilmom,ins,ibil,x_bil,G_ave_r1_r2,G_err_r1_r2,jG_pars,"");   /* (mom,ins,bil,x,y,dy,jpars) */
                             }
