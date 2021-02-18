@@ -820,8 +820,8 @@ oper_t oper_t::chiral_extr()
                             vd_t sqr_G_ave_r1_r2(0.0,_nm);
                             vd_t G_err_r1_r2(0.0,_nm);
 
-                            // for(int m1=0; m1<_nm; m1++)
-                            for(int m1=0; m1<4; m1++)
+                            for(int m1=0; m1<_nm; m1++)
+                            // for(int m1=0; m1<4; m1++)
                             {
                                 int m2=m1;
 
