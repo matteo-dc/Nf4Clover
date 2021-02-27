@@ -829,6 +829,7 @@ oper_t oper_t::chiral_extr()
                             {
                               exit(0);
                             }
+                            cout<<"mshift = "<<mshift<<endl;
 
                             vd_t x_bil(0.0,_nm4);
 
