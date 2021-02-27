@@ -681,7 +681,8 @@ oper_t oper_t::chiral_extr()
     //extrapolate bilinears
 
     vvd_t gbil_pars_QCD(vd_t(0.0,npar_bil_max),njacks);
-    int mshift=0;
+    int mshift=999;
+    int _nm4=4;
 
 //#pragma omp parallel for //collapse(4)
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
@@ -812,7 +813,6 @@ oper_t oper_t::chiral_extr()
                         else  /* for P of if quadratic */
                         {
                           #warning temporaneo
-                            _nm=4;
                             if(strcmp(beta_label[0].c_str(),"A")==0)
                             {
                               mshift=0;
@@ -830,17 +830,17 @@ oper_t oper_t::chiral_extr()
                               exit(0);
                             }
 
-                            vd_t x_bil(0.0,_nm);
+                            vd_t x_bil(0.0,_nm4);
 
-                            vvd_t coord_bil(vd_t(0.0,_nm),npar_bil_max);
+                            vvd_t coord_bil(vd_t(0.0,_nm4),npar_bil_max);
 
-                            vvd_t jG_r1_r2(vd_t(0.0,_nm),njacks);
+                            vvd_t jG_r1_r2(vd_t(0.0,_nm4),njacks);
 
-                            vd_t G_ave_r1_r2(0.0,_nm);
-                            vd_t sqr_G_ave_r1_r2(0.0,_nm);
-                            vd_t G_err_r1_r2(0.0,_nm);
+                            vd_t G_ave_r1_r2(0.0,_nm4);
+                            vd_t sqr_G_ave_r1_r2(0.0,_nm4);
+                            vd_t G_err_r1_r2(0.0,_nm4);
 
-                            for(int m1=0; m1<_nm; m1++)
+                            for(int m1=0; m1<_nm4; m1++)
                             // for(int m1=0; m1<4; m1++)
                             {
                                 int m2=m1;
