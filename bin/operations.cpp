@@ -845,28 +845,28 @@ oper_t oper_t::chiral_extr()
                             {
                                 int m2=m1;
 
-                                int mr1 = r1 + _nr*(m1+shift);
-                                int mr2 = r2 + _nr*(m2+shift);
+                                int mr1 = r1 + _nr*(m1+mshift);
+                                int mr2 = r2 + _nr*(m2+mshift);
 
                                 if(!UseEffMass)
                                 {
-                                    x_bil[m1] = mass_val[m1+shift]+mass_val[m2+shift];
+                                    x_bil[m1] = mass_val[m1+mshift]+mass_val[m2+mshift];
 
                                     if(constant)
                                     {
                                         coord_bil[0][m1] = 1.0;                              // 1
-                                        coord_bil[1][m1] = 1.0/(mass_val[m1+shift]+mass_val[m2+shift]);  // 1/(am1+am2)
+                                        coord_bil[1][m1] = 1.0/(mass_val[m1+mshift]+mass_val[m2+mshift]);  // 1/(am1+am2)
                                     }
                                     else if(linear)
                                     {
                                         coord_bil[0][m1] = 1.0;                        // 1
-                                        coord_bil[1][m1] = mass_val[m1+shift]+mass_val[m2+shift];  // (am1+am2)
+                                        coord_bil[1][m1] = mass_val[m1+mshift]+mass_val[m2+mshift];  // (am1+am2)
                                         coord_bil[2][m1] = 1.0/coord_bil[1][m1];      // 1/(am1+am2)
                                     }
                                     else if(quadratic)
                                     {
                                         coord_bil[0][m1] = 1.0;                                 // 1
-                                        coord_bil[1][m1] = mass_val[m1+shift]+mass_val[m2+shift];           // (am1+am2)
+                                        coord_bil[1][m1] = mass_val[m1+mshift]+mass_val[m2+mshift];           // (am1+am2)
                                         coord_bil[2][m1] = coord_bil[1][m1]*coord_bil[1][m1]; // (am1+am2)^2
                                         coord_bil[3][m1] = 1.0/coord_bil[1][m1];               // 1/(am1+am2)
 
