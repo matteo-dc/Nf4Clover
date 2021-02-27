@@ -681,6 +681,7 @@ oper_t oper_t::chiral_extr()
     //extrapolate bilinears
 
     vvd_t gbil_pars_QCD(vd_t(0.0,npar_bil_max),njacks);
+    int mshift=0;
 
 //#pragma omp parallel for //collapse(4)
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
@@ -810,6 +811,25 @@ oper_t oper_t::chiral_extr()
                         }
                         else  /* for P of if quadratic */
                         {
+                          #warning temporaneo
+                            _nm=4;
+                            if(strcmp(beta_label[0].c_str(),"A")==0)
+                            {
+                              mshift=0;
+                            }
+                            else if(strcmp(beta_label[0].c_str(),"B")==0)
+                            {
+                              mshift=2;
+                            }
+                            else if(strcmp(beta_label[0].c_str(),"C")==0)
+                            {
+                              mshift=1;
+                            }
+                            else
+                            {
+                              exit(0);
+                            }
+
                             vd_t x_bil(0.0,_nm);
 
                             vvd_t coord_bil(vd_t(0.0,_nm),npar_bil_max);
@@ -825,65 +845,65 @@ oper_t oper_t::chiral_extr()
                             {
                                 int m2=m1;
 
-                                int mr1 = r1 + _nr*m1;
-                                int mr2 = r2 + _nr*m2;
+                                int mr1 = r1 + _nr*(m1+shift);
+                                int mr2 = r2 + _nr*(m2+shift);
 
                                 if(!UseEffMass)
                                 {
-                                    x_bil[m1] = mass_val[m1]+mass_val[m2];
+                                    x_bil[m1] = mass_val[m1+shift]+mass_val[m2+shift];
 
                                     if(constant)
                                     {
                                         coord_bil[0][m1] = 1.0;                              // 1
-                                        coord_bil[1][m1] = 1.0/(mass_val[m1]+mass_val[m2]);  // 1/(am1+am2)
+                                        coord_bil[1][m1] = 1.0/(mass_val[m1+shift]+mass_val[m2+shift]);  // 1/(am1+am2)
                                     }
                                     else if(linear)
                                     {
                                         coord_bil[0][m1] = 1.0;                        // 1
-                                        coord_bil[1][m1] = mass_val[m1]+mass_val[m2];  // (am1+am2)
+                                        coord_bil[1][m1] = mass_val[m1+shift]+mass_val[m2+shift];  // (am1+am2)
                                         coord_bil[2][m1] = 1.0/coord_bil[1][m1];      // 1/(am1+am2)
                                     }
                                     else if(quadratic)
                                     {
                                         coord_bil[0][m1] = 1.0;                                 // 1
-                                        coord_bil[1][m1] = mass_val[m1]+mass_val[m2];           // (am1+am2)
+                                        coord_bil[1][m1] = mass_val[m1+shift]+mass_val[m2+shift];           // (am1+am2)
                                         coord_bil[2][m1] = coord_bil[1][m1]*coord_bil[1][m1]; // (am1+am2)^2
                                         coord_bil[3][m1] = 1.0/coord_bil[1][m1];               // 1/(am1+am2)
 
                                     }
                                 }
-                                else if(UseEffMass)
-                                {
-                                    x_bil[m1] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
-
-                                    if(!linear)
-                                    {
-                                        cout<<"Only linear fit implemented when using EffMass!"<<endl;
-                                        exit(0);
-                                    }
-
-                                    coord_bil[0][m1] = 1.0;
-                                    // M^2 (averaged over equivalent combinations)
-                                    coord_bil[1][m1] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
-                                    // 1/M^2
-                                    coord_bil[2][m1] = 1.0/coord_bil[1][m1];
-                                }
+                                // else if(UseEffMass)
+                                // {
+                                //     x_bil[m1] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
+                                //
+                                //     if(!linear)
+                                //     {
+                                //         cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                                //         exit(0);
+                                //     }
+                                //
+                                //     coord_bil[0][m1] = 1.0;
+                                //     // M^2 (averaged over equivalent combinations)
+                                //     coord_bil[1][m1] = pow((M_eff[m1][m2]+M_eff[m2][m1])/2.0,2.0);
+                                //     // 1/M^2
+                                //     coord_bil[2][m1] = 1.0/coord_bil[1][m1];
+                                // }
 
                                 // subtraction of mass correction
-                                if(ins==gbil::QED and UseEffMass)
-                                    for(int ijack=0;ijack<njacks;ijack++)
-                                    {
-                                        double b0 = gbil_pars_QCD[ijack][1];
-                                        double c0 = gbil_pars_QCD[ijack][2];
-
-                                        double jM  = eff_mass[ijack][m1][m2];
-                                        double jdM = eff_mass_corr[ijack][m1][m2];
-
-                                        double varb = 2.0*b0*jM*jdM;
-                                        double varc = -2.0*c0*jdM/(jM*jM*jM);
-
-                                        jG[ibilmom][ins][ibil][ijack][mr1][mr2] -= varb + varc;
-                                    }
+                                // if(ins==gbil::QED and UseEffMass)
+                                //     for(int ijack=0;ijack<njacks;ijack++)
+                                //     {
+                                //         double b0 = gbil_pars_QCD[ijack][1];
+                                //         double c0 = gbil_pars_QCD[ijack][2];
+                                //
+                                //         double jM  = eff_mass[ijack][m1][m2];
+                                //         double jdM = eff_mass_corr[ijack][m1][m2];
+                                //
+                                //         double varb = 2.0*b0*jM*jdM;
+                                //         double varc = -2.0*c0*jdM/(jM*jM*jM);
+                                //
+                                //         jG[ibilmom][ins][ibil][ijack][mr1][mr2] -= varb + varc;
+                                //     }
 
                                 for(int ijack=0;ijack<njacks;ijack++)
                                 {
