@@ -853,6 +853,8 @@ oper_t oper_t::chiral_extr()
                                 {
                                     x_bil[m1] = mass_val[m1+mshift]+mass_val[m2+mshift];
 
+                                    cout<<"a"<<endl;
+
                                     if(constant)
                                     {
                                         coord_bil[0][m1] = 1.0;                              // 1
@@ -872,6 +874,7 @@ oper_t oper_t::chiral_extr()
                                         coord_bil[3][m1] = 1.0/coord_bil[1][m1];               // 1/(am1+am2)
 
                                     }
+                                    cout<<"b"<<endl;
                                 }
                                 // else if(UseEffMass)
                                 // {
@@ -914,9 +917,11 @@ oper_t oper_t::chiral_extr()
                                     sqr_G_ave_r1_r2[m1] += jG_r1_r2[ijack][m1]*jG_r1_r2[ijack][m1]/njacks;
                                 }
                                 G_err_r1_r2[m1] = sqrt((double)(njacks-1))*sqrt(fabs(sqr_G_ave_r1_r2[m1]-G_ave_r1_r2[m1]*G_ave_r1_r2[m1]));
+                                cout<<"c"<<endl;
                             } //masses loop
 
                             vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min_P,x_max_P);
+                            cout<<"d"<<endl;
 
                             //save fit parameters to be used to subtract dM
                             if(ins==gbil::LO)
@@ -931,6 +936,8 @@ oper_t oper_t::chiral_extr()
                                         gbil_pars_QCD[ijack][2]=jG_pars[ijack][2];
 
                                 }
+
+                            cout<<"e"<<endl;
 
                             for(int ijack=0;ijack<njacks;ijack++)
                             {
