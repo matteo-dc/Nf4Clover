@@ -681,8 +681,8 @@ oper_t oper_t::chiral_extr()
     //extrapolate bilinears
 
     vvd_t gbil_pars_QCD(vd_t(0.0,npar_bil_max),njacks);
-    int mshift=999;
-    int _nm4=4;
+    // int mshift=999;
+    // int _nm4=4;
 
 //#pragma omp parallel for //collapse(4)
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
@@ -812,69 +812,66 @@ oper_t oper_t::chiral_extr()
                         }
                         else  /* for P of if quadratic */
                         {
-                          #warning temporaneo
-                            if(strcmp(beta_label[0].c_str(),"A")==0)
-                            {
-                              mshift=0;
-                            }
-                            else if(strcmp(beta_label[0].c_str(),"B")==0)
-                            {
-                              mshift=2;
-                            }
-                            else if(strcmp(beta_label[0].c_str(),"C")==0)
-                            {
-                              mshift=1;
-                            }
-                            else
-                            {
-                              exit(0);
-                            }
-                            cout<<"mshift = "<<mshift<<endl;
+                          // #warning temporaneo
+                          //   if(strcmp(beta_label[0].c_str(),"A")==0)
+                          //   {
+                          //     mshift=0;
+                          //   }
+                          //   else if(strcmp(beta_label[0].c_str(),"B")==0)
+                          //   {
+                          //     mshift=2;
+                          //   }
+                          //   else if(strcmp(beta_label[0].c_str(),"C")==0)
+                          //   {
+                          //     mshift=1;
+                          //   }
+                          //   else
+                          //   {
+                          //     exit(0);
+                          //   }
+                          //   cout<<"mshift = "<<mshift<<endl;
 
-                            vd_t x_bil(0.0,_nm4);
+                            vd_t x_bil(0.0,_nm);
 
-                            vvd_t coord_bil(vd_t(0.0,_nm4),npar_bil_max);
+                            vvd_t coord_bil(vd_t(0.0,_nm),npar_bil_max);
 
-                            vvd_t jG_r1_r2(vd_t(0.0,_nm4),njacks);
+                            vvd_t jG_r1_r2(vd_t(0.0,_nm),njacks);
 
-                            vd_t G_ave_r1_r2(0.0,_nm4);
-                            vd_t sqr_G_ave_r1_r2(0.0,_nm4);
-                            vd_t G_err_r1_r2(0.0,_nm4);
+                            vd_t G_ave_r1_r2(0.0,_nm);
+                            vd_t sqr_G_ave_r1_r2(0.0,_nm);
+                            vd_t G_err_r1_r2(0.0,_nm);
 
-                            for(int m1=0; m1<_nm4; m1++)
+                            for(int m1=0; m1<_nm; m1++)
                             // for(int m1=0; m1<4; m1++)
                             {
                                 int m2=m1;
 
-                                int mr1 = r1 + _nr*(m1+mshift);
-                                int mr2 = r2 + _nr*(m2+mshift);
+                                int mr1 = r1 + _nr*(m1);
+                                int mr2 = r2 + _nr*(m2);
 
                                 if(!UseEffMass)
                                 {
-                                    x_bil[m1] = mass_val[m1+mshift]+mass_val[m2+mshift];
-
-                                    cout<<"a"<<endl;
+                                    x_bil[m1] = mass_val[m1]+mass_val[m2];
 
                                     if(constant)
                                     {
                                         coord_bil[0][m1] = 1.0;                              // 1
-                                        coord_bil[1][m1] = 1.0/(mass_val[m1+mshift]+mass_val[m2+mshift]);  // 1/(am1+am2)
+                                        coord_bil[1][m1] = 1.0/(mass_val[m1]+mass_val[m2]);  // 1/(am1+am2)
                                     }
                                     else if(linear)
                                     {
                                         coord_bil[0][m1] = 1.0;                        // 1
-                                        coord_bil[1][m1] = mass_val[m1+mshift]+mass_val[m2+mshift];  // (am1+am2)
+                                        coord_bil[1][m1] = mass_val[m1]+mass_val[m2];  // (am1+am2)
                                         coord_bil[2][m1] = 1.0/coord_bil[1][m1];      // 1/(am1+am2)
                                     }
                                     else if(quadratic)
                                     {
                                         coord_bil[0][m1] = 1.0;                                 // 1
-                                        coord_bil[1][m1] = mass_val[m1+mshift]+mass_val[m2+mshift];           // (am1+am2)
+                                        coord_bil[1][m1] = mass_val[m1]+mass_val[m2];           // (am1+am2)
                                         coord_bil[2][m1] = coord_bil[1][m1]*coord_bil[1][m1]; // (am1+am2)^2
                                         coord_bil[3][m1] = 1.0/coord_bil[1][m1];               // 1/(am1+am2)
 
                                     }
-                                    cout<<"b"<<endl;
                                 }
                                 // else if(UseEffMass)
                                 // {
@@ -917,11 +914,9 @@ oper_t oper_t::chiral_extr()
                                     sqr_G_ave_r1_r2[m1] += jG_r1_r2[ijack][m1]*jG_r1_r2[ijack][m1]/njacks;
                                 }
                                 G_err_r1_r2[m1] = sqrt((double)(njacks-1))*sqrt(fabs(sqr_G_ave_r1_r2[m1]-G_ave_r1_r2[m1]*G_ave_r1_r2[m1]));
-                                cout<<"c"<<endl;
                             } //masses loop
 
                             vvd_t jG_pars = polyfit(coord_bil,npar_bil[ibil],G_err_r1_r2,jG_r1_r2,x_min_P,x_max_P);
-                            cout<<"d"<<endl;
 
                             //save fit parameters to be used to subtract dM
                             if(ins==gbil::LO)
@@ -936,8 +931,6 @@ oper_t oper_t::chiral_extr()
                                         gbil_pars_QCD[ijack][2]=jG_pars[ijack][2];
 
                                 }
-
-                            cout<<"e"<<endl;
 
                             for(int ijack=0;ijack<njacks;ijack++)
                             {
