@@ -3568,6 +3568,8 @@ void oper_t::plot(const string suffix)
 
     cout<<", Zbil";
 
+    int m_test=1;
+
     for(int ibil=0;ibil<nbil;ibil++)
     {
       Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+".txt");
@@ -3579,8 +3581,8 @@ void oper_t::plot(const string suffix)
 
           if(in._nm>1)
           {
-            Zbil_data[ibil]<<(in.p2_tilde)[imomk]<<"\t"<<Z_ave[imom][ibil][2][2]<<"\t"<<Z_err[imom][ibil][2][2]<<endl;
-            Zbil_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_ave[imom][ibil][2][2]<<"\t"<<Z_err[imom][ibil][2][2]<<endl;
+            Zbil_data[ibil]<<(in.p2_tilde)[imomk]<<"\t"<<Z_ave[imom][ibil][m_test][m_test]<<"\t"<<Z_err[imom][ibil][m_test][m_test]<<endl;
+            Zbil_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_ave[imom][ibil][m_test][m_test]<<"\t"<<Z_err[imom][ibil][m_test][m_test]<<endl;
           }
           else
           {
