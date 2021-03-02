@@ -26,9 +26,11 @@ void oper_t::compute_Zbil()
           {
             for(int ibil=0;ibil<nbil;ibil++)
             {
+              #warning CHANGE AFTER DEBUG
               // LO
               jZ[ibilmom][ibil][ijack][mr_fw][mr_bw] =
-                sqrt(jZq[imom1][ijack][mr_fw]*jZq[imom2][ijack][mr_bw])/
+                // sqrt(jZq[imom1][ijack][mr_fw]*jZq[imom2][ijack][mr_bw])/
+                1.0/
                 jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
             }
             jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
