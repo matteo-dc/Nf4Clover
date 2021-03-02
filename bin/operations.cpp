@@ -3568,7 +3568,7 @@ void oper_t::plot(const string suffix)
 
     cout<<", Zbil";
 
-    int m_test=4;
+    int m_test=2;
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
