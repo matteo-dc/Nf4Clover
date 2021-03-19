@@ -253,6 +253,7 @@ struct oper_t
     // a2p2->0 extrapolation
     oper_t a2p2_extr(int b);
     oper_t a2p2_extr_with_pole(int b);
+    oper_t a2p2_extr_with_p4(int b);
     oper_t a2p2_extr_with_pole_and_p4(int b);
 
     // remove hadronic contamination ~1/p2

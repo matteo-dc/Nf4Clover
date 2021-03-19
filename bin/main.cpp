@@ -222,9 +222,13 @@ int main(int narg,char **arg)
                         M3[th] = evo[th].a2p2_extr_with_pole(b);
                         M3[th].plot("M3");
 
-                        // quadratic + pole 1/p2 extrapolation
+                        // // quadratic + pole 1/p2 extrapolation
                         // M4[th] = evo[th].a2p2_extr_with_pole_and_p4(b);
                         // M4[th].plot("M4");
+
+                        // quadratic
+                        M4[th] = evo[th].a2p2_extr_with_p4(b);
+                        M4[th].plot("M4");
 
                         // /*****/
                         //
