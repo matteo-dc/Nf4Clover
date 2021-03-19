@@ -127,10 +127,9 @@ int main(int narg,char **arg)
 
                        /*  perturbative subtraction of O(ainf)  */
 
-                       // sub[th][m] = rave[th][m].subOainf(b,"allmoms");
-                       // if(!load_ave) sub[th][m].plot("sub_ainf");
+                       sub[th][m] = rave[th][m].subOainf(b,"allmoms");
+                       if(!load_ave) sub[th][m].plot("sub_ainf");
 
-                       // #warning SUB2 IS JUST FOR TESTS
                        /*  perturbative subtraction of O(ainf) à la Martha  */
                        // sub[th][m] = rave[th][m].subOainfMartha(b,"allmoms");
                        // sub[th][m].plot("sub_ainf_Martha");
