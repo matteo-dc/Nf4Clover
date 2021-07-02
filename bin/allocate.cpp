@@ -47,6 +47,8 @@ void oper_t::clear_all()
     jZVoverZA.shrink_to_fit();
     jZPoverZS.clear();
     jZPoverZS.shrink_to_fit();
+    jZAoverZV.clear();
+    jZAoverZV.shrink_to_fit();
 
     bval.clear();
     bval.shrink_to_fit();
@@ -110,13 +112,15 @@ void oper_t::allocate()
     allocate_vec(jZVoverZA,{_bilmoms,1,njacks,_nmr,_nmr});
     // allocate ZP/ZS
     allocate_vec(jZPoverZS,{_bilmoms,1,njacks,_nmr,_nmr});
+    // allocate ZA/ZV
+    allocate_vec(jZAoverZV,{_bilmoms,1,njacks,_nmr,_nmr});
 
     // allocate bval/bsea
     allocate_vec(bval,{_linmoms,njacks,nbil+1});
     allocate_vec(bsea,{_linmoms,njacks,nbil+1});
 
     // allocate stepfunc
-    allocate_vec(stepfunc,{njacks,nbil+1+2});  //nbil+zq+zv/za+zs/zp
+    allocate_vec(stepfunc,{njacks,nbil+1+3});  //nbil+zq+zv/za+zs/zp+za/zv
 
     check_allocation();
 }

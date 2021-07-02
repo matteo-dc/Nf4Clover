@@ -1295,10 +1295,10 @@ oper_t chiral_sea_extr(voper_t in)
 
             }
 
-    // extrapolate ZV/ZA and ZP/ZS
+    // extrapolate ZV/ZA and ZP/ZS and ZA/ZV
 #pragma omp parallel for collapse(2)
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-        for(int iloop=0;iloop<2;iloop++)
+        for(int iloop=0;iloop<3;iloop++)
         {
             vvd_t coord_bil(vd_t(0.0,nmSea),npar_bil_max);
 
@@ -1343,8 +1343,10 @@ oper_t chiral_sea_extr(voper_t in)
 
                 if(iloop==0)
                     jzz=in[msea].jZVoverZA;
-                else
+                else if(iloop==1)
                     jzz=in[msea].jZPoverZS;
+                else
+                    jzz=in[msea].jZAoverZV;
 
                 for(int ijack=0;ijack<njacks;ijack++)
                     y_Z[ijack][msea] = jzz[ibilmom][0][ijack][0][0];
@@ -1360,8 +1362,10 @@ oper_t chiral_sea_extr(voper_t in)
             {
                 if(iloop==0)
                     (out.jZVoverZA)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
-                else
+                else if(iloop==1)
                     (out.jZPoverZS)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
+                else
+                    (out.jZAoverZV)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
             }
 
 //            if(ibilmom%20==0)
@@ -1467,13 +1471,16 @@ voper_t theta_average(vvoper_t in) // in[th][b]
                          (in[1][b].jZ_EM)[0][ibil][ijack][0][0]);
             }
 
-            // ZV/ZA and ZP/ZS
+            // ZV/ZA and ZP/ZS and ZA/ZV
             (out[b].jZVoverZA)[0][0][ijack][0][0] =
             0.5*((in[0][b].jZVoverZA)[0][0][ijack][0][0] +
                  (in[1][b].jZVoverZA)[0][0][ijack][0][0]);
             (out[b].jZPoverZS)[0][0][ijack][0][0] =
             0.5*((in[0][b].jZPoverZS)[0][0][ijack][0][0] +
                  (in[1][b].jZPoverZS)[0][0][ijack][0][0]);
+            (out[b].jZAoverZV)[0][0][ijack][0][0] =
+            0.5*((in[0][b].jZAoverZV)[0][0][ijack][0][0] +
+                 (in[1][b].jZAoverZV)[0][0][ijack][0][0]);
 
             // Z4f
             for(int iop1=0;iop1<nbil;iop1++)
@@ -2641,13 +2648,16 @@ oper_t oper_t::a2p2_extr(int b)
 
       }
 
-    // Interpolating ZVoverZA and ZPoverZS
+    // Interpolating ZVoverZA and ZPoverZS and ZAoverZV
     vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
     vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
     for(int imom=0;imom<_bilmoms;imom++)
     {
@@ -2655,18 +2665,22 @@ oper_t oper_t::a2p2_extr(int b)
         {
             y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
             y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
         }
         dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
         dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
     }
 
     vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,p2min,p2max); // [ijack][ipar]
     vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,p2min,p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,p2min,p2max); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
         (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
     }
 
     return out;
@@ -2789,6 +2803,9 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
     vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
     for(int imom=0;imom<_bilmoms;imom++)
     {
@@ -2796,18 +2813,22 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
         {
             y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
             y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
         }
         dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
         dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
     }
 
     vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
     vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
         (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
     }
 
     return out;
@@ -2935,6 +2956,9 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
     vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
     for(int imom=0;imom<_bilmoms;imom++)
     {
@@ -2942,18 +2966,22 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
         {
             y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
             y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
         }
         dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
         dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
     }
 
     vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
     vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
         (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
     }
 
     return out;
@@ -3076,6 +3104,9 @@ oper_t oper_t::a2p2_extr_with_p4(int b)
     vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
     for(int imom=0;imom<_bilmoms;imom++)
     {
@@ -3083,18 +3114,22 @@ oper_t oper_t::a2p2_extr_with_p4(int b)
         {
             y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
             y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
         }
         dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
         dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
     }
 
     vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
     vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
         (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
     }
 
     return out;
@@ -3110,6 +3145,7 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
     double epsq = 0.0;
     vector<double> eps = {0.0,0.24,0.0,0.226,0.0}; //{S,V,P,A,T}  [GeV^2]
     double epsVA = 0.0;
+    double epsAV = 0.0;
     double epsPS = 0.497;
 
     for(int imom=0;imom<_bilmoms;imom++)
@@ -3120,6 +3156,7 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
           (out.jZ)[imom][ibil][ijack][0][0] -= eps[ibil]/(p2[imom]*_ainv*_ainv);
         (out.jZVoverZA)[imom][0][ijack][0][0] -= epsVA/(p2[imom]*_ainv*_ainv);
         (out.jZPoverZS)[imom][0][ijack][0][0] -= epsPS/(p2[imom]*_ainv*_ainv);
+        (out.jZAoverZV)[imom][0][ijack][0][0] -= epsAV/(p2[imom]*_ainv*_ainv);
       }
 
     return out;
@@ -3166,6 +3203,7 @@ oper_t oper_t::Z_improvement(double _ainv)
     vvvd_t y_Zbil(vvd_t(vd_t(0.0,length),njacks),nbil);       // [njacks][moms]
     vvd_t y_ZVovZA(vd_t(0.0,length),njacks);       // [njacks][moms]
     vvd_t y_ZPovZS(vd_t(0.0,length),njacks);       // [njacks][moms]
+    vvd_t y_ZAovZV(vd_t(0.0,length),njacks);       // [njacks][moms]
 
     int l=0;
     for(int imom=0;imom<_linmoms;imom++)
@@ -3184,6 +3222,7 @@ oper_t oper_t::Z_improvement(double _ainv)
               y_Zbil[ibil][ijack][l] = (jZ[jmom][ibil][ijack][0][0]*p2[jmom]-jZ[imom][ibil][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
               y_ZVovZA[ijack][l] = (jZVoverZA[jmom][0][ijack][0][0]*p2[jmom]-jZVoverZA[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
               y_ZPovZS[ijack][l] = (jZPoverZS[jmom][0][ijack][0][0]*p2[jmom]-jZPoverZS[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
+              y_ZAovZV[ijack][l] = (jZAoverZV[jmom][0][ijack][0][0]*p2[jmom]-jZAoverZV[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
             }
             l++;
           }
@@ -3193,14 +3232,17 @@ oper_t oper_t::Z_improvement(double _ainv)
 
     vd_t dy_ZVovZA = get<1>(ave_err(y_ZVovZA));
     vd_t dy_ZPovZS = get<1>(ave_err(y_ZPovZS));
+    vd_t dy_ZAovZV = get<1>(ave_err(y_ZAovZV));
     vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
     vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
         (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
         (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
     }
 
     for(int ibil=0;ibil<nbil;ibil++)
@@ -3495,6 +3537,8 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
     vd_t  dy_ZVovZA(0.0,nm_Sea_tot);             // [nmseatot]
     vvd_t y_ZPovZS(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
     vd_t  dy_ZPovZS(0.0,nm_Sea_tot);             // [nmseatot]
+    vvd_t y_ZAovZV(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
+    vd_t  dy_ZAovZV(0.0,nm_Sea_tot);             // [nmseatot]
 
     iel=0;
     for(int b=0; b<nb; b++)
@@ -3504,22 +3548,26 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
             {
                 y_ZVovZA[ijack][iel] = in[b][msea].jZVoverZA[0][0][ijack][0][0];
                 y_ZPovZS[ijack][iel] = in[b][msea].jZPoverZS[0][0][ijack][0][0];
+                y_ZAovZV[ijack][iel] = in[b][msea].jZAoverZV[0][0][ijack][0][0];
             }
 
             dy_ZVovZA[iel] = (get<1>(ave_err_Z(in[b][msea].jZVoverZA)))[0][0][0][0];
             dy_ZPovZS[iel] = (get<1>(ave_err_Z(in[b][msea].jZPoverZS)))[0][0][0][0];
+            dy_ZAovZV[iel] = (get<1>(ave_err_Z(in[b][msea].jZAoverZV)))[0][0][0][0];
 
             iel++;
         }
 
     vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0,nm_Sea_tot-1); // [ijack][ipar]
     vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0,nm_Sea_tot-1); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,0,nm_Sea_tot-1); // [ijack][ipar]
 
     for(int b=0; b<nb; b++)
         for(int ijack=0;ijack<njacks;ijack++)
         {
             (out[b].jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][b];
             (out[b].jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][b];
+            (out[b].jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][b];
         }
 
     // extrapolate Z4f
@@ -3661,10 +3709,13 @@ void oper_t::plot(const string suffix)
     // ZV/ZA and ZP/ZS
     Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZVoverZA);
     Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZPoverZS);
+    Zbil_tup ZAovZV_ave_err = ave_err_Z(in.jZAoverZV);
     vvvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
     vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
+    vvvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    //[imom][0][mr1][mr2]
     vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
     vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
+    vvvvd_t ZAovZV_err = get<1>(ZAovZV_ave_err);    //[imom][0][mr1][mr2]
 
     // bval/bsea
     Zq_tup bval_ave_err = ave_err_Zq(in.bval);
@@ -3688,13 +3739,13 @@ void oper_t::plot(const string suffix)
     vector<ofstream> Zbil_data(nbil); //    , Zbil_EM_data(nbil);
     vector<ofstream> Zbil_p2_data(nbil); //    , Zbil_EM_p2_data(nbil);
 
-    ofstream ZVovZA_data, ZPovZS_data;
-    ofstream ZVovZA_p2_data, ZPovZS_p2_data;
+    ofstream ZVovZA_data, ZPovZS_data, ZAovZV_data;
+    ofstream ZVovZA_p2_data, ZPovZS_p2_data, ZAovZV_p2_data;
 
-    vector<ofstream> bval_data(nbil+1), bval_p2_data(nbil+1);
+    vector<ofstream> bval_data(nbil+1), bval_p2_data(nbil+1); // bil + Zq
     vector<ofstream> bsea_data(nbil+1), bsea_p2_data(nbil+1);
 
-    vector<ofstream> stepfunc_p2_data(nbil+1+2);
+    vector<ofstream> stepfunc_p2_data(nbil+1+3); // bil + Zq + ZA/ZV,ZP/ZS,ZV/ZA
 
     Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+".txt");
     Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
@@ -3736,8 +3787,10 @@ void oper_t::plot(const string suffix)
     cout<<", ZV/ZA, ZP/ZS";
     ZVovZA_data.open(path_to_ens+"plots/ZVovZA"+(suffix!=""?("_"+suffix):string(""))+".txt");
     ZPovZS_data.open(path_to_ens+"plots/ZPovZS"+(suffix!=""?("_"+suffix):string(""))+".txt");
+    ZAovZV_data.open(path_to_ens+"plots/ZAovZV"+(suffix!=""?("_"+suffix):string(""))+".txt");
     ZVovZA_p2_data.open(path_to_ens+"plots/ZVovZA"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
     ZPovZS_p2_data.open(path_to_ens+"plots/ZPovZS"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+    ZAovZV_p2_data.open(path_to_ens+"plots/ZAovZV"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
 
     for(int imom=0; imom<in._bilmoms; imom++)
     {
@@ -3748,9 +3801,11 @@ void oper_t::plot(const string suffix)
 
         ZVovZA_data<<(in.p2_tilde)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
         ZPovZS_data<<(in.p2_tilde)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+        ZAovZV_data<<(in.p2_tilde)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0][0]<<"\t"<<ZAovZV_err[imom][0][0][0]<<endl;
 
         ZVovZA_p2_data<<(in.p2)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
         ZPovZS_p2_data<<(in.p2)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+        ZAovZV_p2_data<<(in.p2)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0][0]<<"\t"<<ZAovZV_err[imom][0][0][0]<<endl;
     }
 
     if(suffix=="chir" and strcmp(chir_ansatz_val.c_str(),"linear")==0)
@@ -3789,7 +3844,7 @@ void oper_t::plot(const string suffix)
     }
     if(suffix=="evo" or suffix=="cont")
     {
-     vector<string> bb={"q","S","V","P","A","T","VA","SP"};
+     vector<string> bb={"q","S","V","P","A","T","VA","SP","AV"};
 
      cout<<", stepfunc ";
      for(int ib=0;ib<nbil+1+2;ib++)
@@ -3830,162 +3885,162 @@ void oper_t::plot(const string suffix)
 
 }
 
-void oper_t::plot(const string suffix, int b)
-{
-    oper_t in=(*this);
-
-    // Zq
-    Zq_tup Zq_ave_err = ave_err_Zq(in.jZq);
-//    Zq_tup Zq_EM_ave_err = ave_err_Zq(in.jZq_EM);
-    vvd_t Zq_ave = get<0>(Zq_ave_err);        //[imom][mr]
-//    vvd_t Zq_EM_ave = get<0>(Zq_EM_ave_err);
-    vvd_t Zq_err = get<1>(Zq_ave_err);        //[imom][mr]
-//    vvd_t Zq_EM_err = get<1>(Zq_EM_ave_err);
-
-    // Zbil
-    Zbil_tup Zbil_ave_err = ave_err_Z(in.jZ);
-//    Zbil_tup Zbil_EM_ave_err = ave_err_Z(in.jZ_EM);
-    vvvvd_t Z_ave = get<0>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
-//    vvvvd_t Z_EM_ave = get<0>(Zbil_EM_ave_err);
-    vvvvd_t Z_err = get<1>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
-//    vvvvd_t Z_EM_err = get<1>(Zbil_EM_ave_err);
-
-    // ZV/ZA and ZP/ZS
-    Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZVoverZA);
-    Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZPoverZS);
-    vvvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
-    vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
-    vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
-    vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
-
-    // Z4f
-    Z4f_tup Z_4f_ave_err = ave_err_Z4f(in.jZ_4f);
-//    Z4f_tup Z_4f_EM_ave_err = ave_err_Z4f(in.jZ_4f_EM);
-    vvvvvd_t Z_4f_ave=get<0>(Z_4f_ave_err);  //[imom][iop1][iop2][mr1][mr2];
-//    vvvvvd_t Z_4f_EM_ave=get<0>(Z_4f_EM_ave_err);
-    vvvvvd_t Z_4f_err=get<1>(Z_4f_ave_err);  //[imom][iop1][iop2][mr1][mr2];
-//    vvvvvd_t Z_4f_EM_err=get<1>(Z_4f_EM_ave_err);
-
-    // this choice is relative to the twisted basis
-    vector<string> bil={"S","V","P","A","T"};
-
-    ofstream Zq_data;
-//    , Zq_EM_data;
-    ofstream Zq_p2_data;
-//    , Zq_EM_p2_data;
-
-    vector<ofstream> Zbil_data(nbil);
-//    , Zbil_EM_data(nbil);
-    vector<ofstream> Zbil_p2_data(nbil);
-//    , Zbil_EM_p2_data(nbil);
-
-    ofstream ZVovZA_data, ZPovZS_data;
-    vector<ofstream> Z_4f_data(nbil*nbil);
-//    , Z_4f_EM_data(nbil*nbil);
-
-//    vector<double> p2;
-//    vector<double> p2t;
-
-    double ainv2 = ainv[b]*ainv[b];
-
-//    if(in._linmoms==moms)
-//    {
-//        p2.resize(in._linmoms);
-//        read_vec(p2,path_print+"p2.txt");
-//        p2t.resize(in._linmoms);
-//        read_vec(p2t,path_print+"p2_tilde.txt");
-//    }
-//    else
-//    {
-//        p2.resize(in._linmoms);
-//        read_vec(p2,path_print+"p2_eqmoms.txt");
-//        p2t.resize(in._linmoms);
-//        read_vec(p2t,path_print+"p2_tilde_eqmoms.txt");
-//    }
-
-    Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+".txt");
-//    Zq_EM_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
-    Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
-//    Zq_EM_p2_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
-
-    cout<<"Plotting Zq";
-    for(int imom=0; imom<in._linmoms; imom++)
-    {
-        Zq_data<<(in.p2_tilde)[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
-//        Zq_EM_data<<(in.p2_tilde)[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
-
-        Zq_p2_data<<(in.p2)[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
-//        Zq_EM_p2_data<<(in.p2)[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
-    }
-
-    cout<<", Zbil";
-    for(int ibil=0;ibil<nbil;ibil++)
-    {
-        Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+".txt");
-//        Zbil_EM_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+"_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
-        Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
-//        Zbil_EM_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+"_EM"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
-
-        for(int imom=0; imom<in._bilmoms; imom++)
-        {
-            //            int imomq = in.bilmoms[imom][0];
-            //            cout<<"imomq: "<<imomq<<endl;
-            //            int imomk = in.linmoms[imomq][0];
-            int imomk = imom;   // NB: it works only for RIMOM!
-
-            Zbil_data[ibil]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
-//            Zbil_EM_data[ibil]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
-
-            Zbil_p2_data[ibil]<<(in.p2)[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
-//            Zbil_EM_p2_data[ibil]<<(in.p2)[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
-        }
-    }
-
-    cout<<", ZV/ZA, ZP/ZS";
-    ZVovZA_data.open(path_to_ens+"plots/ZVovZA"+(suffix!=""?("_"+suffix):string(""))+".txt");
-    ZPovZS_data.open(path_to_ens+"plots/ZPovZS"+(suffix!=""?("_"+suffix):string(""))+".txt");
-
-    for(int imom=0; imom<in._bilmoms; imom++)
-    {
-        //            int imomq = in.bilmoms[imom][0];
-        //            cout<<"imomq: "<<imomq<<endl;
-        //            int imomk = in.linmoms[imomq][0];
-        int imomk = imom;   // NB: it works only for RIMOM!
-
-        ZVovZA_data<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
-        ZPovZS_data<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
-    }
-
-    if(compute_4f)
-    {
-        cout<<" and Z4f :"<<endl;
-        for(int i=0;i<nbil*nbil;i++)
-        {
-            int iop2=i%nbil;
-            int iop1=(i-iop2)/nbil;
-
-            Z_4f_data[i].open(path_to_ens+"plots/Z4f_"+to_string(iop1)+"_"+to_string(iop2)+(suffix!=""?("_"+suffix):string(""))+".txt");
-//            Z_4f_EM_data[i].open(path_to_ens+"plots/Z4f_"+to_string(iop1)+"_"+to_string(iop2)+"_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
-
-            for(int imom=0; imom<in._bilmoms; imom++)
-            {
-                //            int imomq = in.bilmoms[imom][0];
-                //            cout<<"imomq: "<<imomq<<endl;
-                //            int imomk = in.linmoms[imomq][0];
-                int imomk = imom;   // NB: it works only for RIMOM!
-
-                Z_4f_data[i]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_4f_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_err[imom][iop1][iop2][0][0]<<endl;
-//                Z_4f_EM_data[i]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_4f_EM_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_EM_err[imom][iop1][iop2][0][0]<<endl;
-            }
-        }
-    }
-    else
-        cout<<" :"<<endl;
-
-    cout<<"\""<<path_to_ens<<"plots\""<<endl;
-
-
-}
+// void oper_t::plot(const string suffix, int b)
+// {
+//     oper_t in=(*this);
+//
+//     // Zq
+//     Zq_tup Zq_ave_err = ave_err_Zq(in.jZq);
+// //    Zq_tup Zq_EM_ave_err = ave_err_Zq(in.jZq_EM);
+//     vvd_t Zq_ave = get<0>(Zq_ave_err);        //[imom][mr]
+// //    vvd_t Zq_EM_ave = get<0>(Zq_EM_ave_err);
+//     vvd_t Zq_err = get<1>(Zq_ave_err);        //[imom][mr]
+// //    vvd_t Zq_EM_err = get<1>(Zq_EM_ave_err);
+//
+//     // Zbil
+//     Zbil_tup Zbil_ave_err = ave_err_Z(in.jZ);
+// //    Zbil_tup Zbil_EM_ave_err = ave_err_Z(in.jZ_EM);
+//     vvvvd_t Z_ave = get<0>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
+// //    vvvvd_t Z_EM_ave = get<0>(Zbil_EM_ave_err);
+//     vvvvd_t Z_err = get<1>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
+// //    vvvvd_t Z_EM_err = get<1>(Zbil_EM_ave_err);
+//
+//     // ZV/ZA and ZP/ZS
+//     Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZVoverZA);
+//     Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZPoverZS);
+//     vvvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
+//     vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
+//     vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
+//     vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
+//
+//     // Z4f
+//     Z4f_tup Z_4f_ave_err = ave_err_Z4f(in.jZ_4f);
+// //    Z4f_tup Z_4f_EM_ave_err = ave_err_Z4f(in.jZ_4f_EM);
+//     vvvvvd_t Z_4f_ave=get<0>(Z_4f_ave_err);  //[imom][iop1][iop2][mr1][mr2];
+// //    vvvvvd_t Z_4f_EM_ave=get<0>(Z_4f_EM_ave_err);
+//     vvvvvd_t Z_4f_err=get<1>(Z_4f_ave_err);  //[imom][iop1][iop2][mr1][mr2];
+// //    vvvvvd_t Z_4f_EM_err=get<1>(Z_4f_EM_ave_err);
+//
+//     // this choice is relative to the twisted basis
+//     vector<string> bil={"S","V","P","A","T"};
+//
+//     ofstream Zq_data;
+// //    , Zq_EM_data;
+//     ofstream Zq_p2_data;
+// //    , Zq_EM_p2_data;
+//
+//     vector<ofstream> Zbil_data(nbil);
+// //    , Zbil_EM_data(nbil);
+//     vector<ofstream> Zbil_p2_data(nbil);
+// //    , Zbil_EM_p2_data(nbil);
+//
+//     ofstream ZVovZA_data, ZPovZS_data;
+//     vector<ofstream> Z_4f_data(nbil*nbil);
+// //    , Z_4f_EM_data(nbil*nbil);
+//
+// //    vector<double> p2;
+// //    vector<double> p2t;
+//
+//     double ainv2 = ainv[b]*ainv[b];
+//
+// //    if(in._linmoms==moms)
+// //    {
+// //        p2.resize(in._linmoms);
+// //        read_vec(p2,path_print+"p2.txt");
+// //        p2t.resize(in._linmoms);
+// //        read_vec(p2t,path_print+"p2_tilde.txt");
+// //    }
+// //    else
+// //    {
+// //        p2.resize(in._linmoms);
+// //        read_vec(p2,path_print+"p2_eqmoms.txt");
+// //        p2t.resize(in._linmoms);
+// //        read_vec(p2t,path_print+"p2_tilde_eqmoms.txt");
+// //    }
+//
+//     Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+".txt");
+// //    Zq_EM_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
+//     Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+// //    Zq_EM_p2_data.open(path_to_ens+"plots/Zq_EM"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+//
+//     cout<<"Plotting Zq";
+//     for(int imom=0; imom<in._linmoms; imom++)
+//     {
+//         Zq_data<<(in.p2_tilde)[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+// //        Zq_EM_data<<(in.p2_tilde)[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
+//
+//         Zq_p2_data<<(in.p2)[imom]*ainv2<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+// //        Zq_EM_p2_data<<(in.p2)[imom]*ainv2<<"\t"<<Zq_EM_ave[imom][0]<<"\t"<<Zq_EM_err[imom][0]<<endl;
+//     }
+//
+//     cout<<", Zbil";
+//     for(int ibil=0;ibil<nbil;ibil++)
+//     {
+//         Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+".txt");
+// //        Zbil_EM_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+"_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
+//         Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+// //        Zbil_EM_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+"_EM"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+//
+//         for(int imom=0; imom<in._bilmoms; imom++)
+//         {
+//             //            int imomq = in.bilmoms[imom][0];
+//             //            cout<<"imomq: "<<imomq<<endl;
+//             //            int imomk = in.linmoms[imomq][0];
+//             int imomk = imom;   // NB: it works only for RIMOM!
+//
+//             Zbil_data[ibil]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+// //            Zbil_EM_data[ibil]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
+//
+//             Zbil_p2_data[ibil]<<(in.p2)[imomk]*ainv2<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+// //            Zbil_EM_p2_data[ibil]<<(in.p2)[imomk]*ainv2<<"\t"<<Z_EM_ave[imom][ibil][0][0]<<"\t"<<Z_EM_err[imom][ibil][0][0]<<endl;
+//         }
+//     }
+//
+//     cout<<", ZV/ZA, ZP/ZS";
+//     ZVovZA_data.open(path_to_ens+"plots/ZVovZA"+(suffix!=""?("_"+suffix):string(""))+".txt");
+//     ZPovZS_data.open(path_to_ens+"plots/ZPovZS"+(suffix!=""?("_"+suffix):string(""))+".txt");
+//
+//     for(int imom=0; imom<in._bilmoms; imom++)
+//     {
+//         //            int imomq = in.bilmoms[imom][0];
+//         //            cout<<"imomq: "<<imomq<<endl;
+//         //            int imomk = in.linmoms[imomq][0];
+//         int imomk = imom;   // NB: it works only for RIMOM!
+//
+//         ZVovZA_data<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
+//         ZPovZS_data<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+//     }
+//
+//     if(compute_4f)
+//     {
+//         cout<<" and Z4f :"<<endl;
+//         for(int i=0;i<nbil*nbil;i++)
+//         {
+//             int iop2=i%nbil;
+//             int iop1=(i-iop2)/nbil;
+//
+//             Z_4f_data[i].open(path_to_ens+"plots/Z4f_"+to_string(iop1)+"_"+to_string(iop2)+(suffix!=""?("_"+suffix):string(""))+".txt");
+// //            Z_4f_EM_data[i].open(path_to_ens+"plots/Z4f_"+to_string(iop1)+"_"+to_string(iop2)+"_EM"+(suffix!=""?("_"+suffix):string(""))+".txt");
+//
+//             for(int imom=0; imom<in._bilmoms; imom++)
+//             {
+//                 //            int imomq = in.bilmoms[imom][0];
+//                 //            cout<<"imomq: "<<imomq<<endl;
+//                 //            int imomk = in.linmoms[imomq][0];
+//                 int imomk = imom;   // NB: it works only for RIMOM!
+//
+//                 Z_4f_data[i]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_4f_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_err[imom][iop1][iop2][0][0]<<endl;
+// //                Z_4f_EM_data[i]<<(in.p2_tilde)[imomk]*ainv2<<"\t"<<Z_4f_EM_ave[imom][iop1][iop2][0][0]<<"\t"<<Z_4f_EM_err[imom][iop1][iop2][0][0]<<endl;
+//             }
+//         }
+//     }
+//     else
+//         cout<<" :"<<endl;
+//
+//     cout<<"\""<<path_to_ens<<"plots\""<<endl;
+//
+//
+// }
 
 
 void test_gamma()
