@@ -2223,15 +2223,15 @@ void oper_t::print(const string suffix)
     print_vec_bin(jpr_meslep,path_print+"jpr_meslep_"+suffix);
 }
 
-// void oper_t::printZ(const string suffix)
-// {
-//     print_vec_bin(jZq,path_print+"jZq_"+suffix);
-//     print_vec_bin(jZ,path_print+"jZ_"+suffix);
-//     print_vec_bin(jZ_4f,path_print+"jZ_4f_"+suffix);
-//     print_vec_bin(jZq_EM,path_print+"jZq_EM_"+suffix);
-//     print_vec_bin(jZ_EM,path_print+"jZ_EM_"+suffix);
-//     print_vec_bin(jZ_4f_EM,path_print+"jZ_4f_EM_"+suffix);
-// }
+void oper_t::printZ(const string suffix)
+{
+    print_vec_bin(jZq,path_print+"jZq_"+suffix);
+    print_vec_bin(jZ,path_print+"jZ_"+suffix);
+    print_vec_bin(jZ_4f,path_print+"jZ_4f_"+suffix);
+    print_vec_bin(jZq_EM,path_print+"jZq_EM_"+suffix);
+    print_vec_bin(jZ_EM,path_print+"jZ_EM_"+suffix);
+    print_vec_bin(jZ_4f_EM,path_print+"jZ_4f_EM_"+suffix);
+}
 
 void oper_t::load(const string suffix)
 {
@@ -2876,9 +2876,9 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
 
     double epsq = 0.0;
     vector<double> eps = {0.0,0.24,0.0,0.226,0.0}; //{S,V,P,A,T}  [GeV^2]
-    double epsVA = 0.0;
-    double epsAV = 0.0;
-    double epsPS = 0.497;
+    // double epsVA = 0.0;
+    // double epsAV = 0.0;
+    // double epsPS = 0.497;
 
     for(int imom=0;imom<_bilmoms;imom++)
       for(int ijack=0;ijack<njacks;ijack++)
