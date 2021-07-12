@@ -3442,12 +3442,12 @@ void oper_t::plot(const string suffix)
     Zbil12_tup ZVovZA_ave_err = ave_err_Z(in.jZ,1,3);
     Zbil12_tup ZPovZS_ave_err = ave_err_Z(in.jZ,2,0);
     Zbil12_tup ZAovZV_ave_err = ave_err_Z(in.jZ,3,1);
-    vvvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][mr1][mr2]
-    vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
-    vvvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    //[imom][mr1][mr2]
-    vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][mr1][mr2]
-    vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
-    vvvvd_t ZAovZV_err = get<1>(ZAovZV_ave_err);    //[imom][mr1][mr2]
+    vvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][mr1][mr2]
+    vvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
+    vvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    //[imom][mr1][mr2]
+    vvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][mr1][mr2]
+    vvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
+    vvvd_t ZAovZV_err = get<1>(ZAovZV_ave_err);    //[imom][mr1][mr2]
 
     // bval/bsea
     Zq_tup bval_ave_err = ave_err_Zq(in.bval);
