@@ -3439,9 +3439,9 @@ void oper_t::plot(const string suffix)
     vvvvd_t Z_err = get<1>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
 
     // ZV/ZA and ZP/ZS and ZA/ZV (S,V,P,A,T)
-    Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZ,1,3);
-    Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZ,2,0);
-    Zbil_tup ZAovZV_ave_err = ave_err_Z(in.jZ,3,1);
+    Zbil12_tup ZVovZA_ave_err = ave_err_Z(in.jZ,1,3);
+    Zbil12_tup ZPovZS_ave_err = ave_err_Z(in.jZ,2,0);
+    Zbil12_tup ZAovZV_ave_err = ave_err_Z(in.jZ,3,1);
     vvvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][mr1][mr2]
     vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
     vvvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    //[imom][mr1][mr2]
