@@ -1430,76 +1430,6 @@ oper_t chiral_sea_extr(voper_t in)
     return out;
 }
 
-voper_t theta_average(vvoper_t in) // in[th][b]
-{
-
-    cout<<endl;
-    cout<<"----- theta average -----"<<endl<<endl;
-
-    int nb  = (int)in[0].size();
-
-    voper_t out(nb);
-
-    for(int b=0; b<nb; b++)
-    {
-        out[b] = in[0][b];
-        out[b].allocate_val();
-        out[b].allocate();
-
-        out[b].path_to_ens = in[0][b].path_to_beta + in[0][b]._beta_label +"/";
-
-        for(int ijack=0;ijack<njacks;ijack++)
-        {
-            // Zq
-            (out[b].jZq)[0][ijack][0] =
-            0.5*((in[0][b].jZq)[0][ijack][0] +
-                 (in[1][b].jZq)[0][ijack][0]);
-
-            (out[b].jZq_EM)[0][ijack][0] =
-                0.5*((in[0][b].jZq_EM)[0][ijack][0] +
-                     (in[1][b].jZq_EM)[0][ijack][0]);
-
-            // Zbil
-            for(int ibil=0;ibil<nbil;ibil++)
-            {
-                (out[b].jZ)[0][ibil][ijack][0][0] =
-                0.5*((in[0][b].jZ)[0][ibil][ijack][0][0] +
-                     (in[1][b].jZ)[0][ibil][ijack][0][0]);
-
-                (out[b].jZ_EM)[0][ibil][ijack][0][0] =
-                    0.5*((in[0][b].jZ_EM)[0][ibil][ijack][0][0] +
-                         (in[1][b].jZ_EM)[0][ibil][ijack][0][0]);
-            }
-
-            // ZV/ZA and ZP/ZS and ZA/ZV
-            (out[b].jZVoverZA)[0][0][ijack][0][0] =
-            0.5*((in[0][b].jZVoverZA)[0][0][ijack][0][0] +
-                 (in[1][b].jZVoverZA)[0][0][ijack][0][0]);
-            (out[b].jZPoverZS)[0][0][ijack][0][0] =
-            0.5*((in[0][b].jZPoverZS)[0][0][ijack][0][0] +
-                 (in[1][b].jZPoverZS)[0][0][ijack][0][0]);
-            (out[b].jZAoverZV)[0][0][ijack][0][0] =
-            0.5*((in[0][b].jZAoverZV)[0][0][ijack][0][0] +
-                 (in[1][b].jZAoverZV)[0][0][ijack][0][0]);
-
-            // Z4f
-            for(int iop1=0;iop1<nbil;iop1++)
-                for(int iop2=0;iop2<nbil;iop2++)
-                {
-                    (out[b].jZ_4f)[0][iop1][iop2][ijack][0][0] =
-                    0.5*((in[0][b].jZ_4f)[0][iop1][iop2][ijack][0][0] +
-                         (in[1][b].jZ_4f)[0][iop1][iop2][ijack][0][0]);
-
-                    (out[b].jZ_4f_EM)[0][iop1][iop2][ijack][0][0] =
-                        0.5*((in[0][b].jZ_4f_EM)[0][iop1][iop2][ijack][0][0] +
-                             (in[1][b].jZ_4f_EM)[0][iop1][iop2][ijack][0][0]);
-                }
-        }
-    }
-
-    return out;
-}
-
 
 int mom_list_xyz(vector<coords_t> &mom_list, const size_t imom)
 {
@@ -2152,139 +2082,139 @@ oper_t oper_t::average_equiv_momsZ()
 
 /////////////
 
-oper_t compute_eta(voper_t in) // in[loop]
-{
-    cout<<endl;
-    cout<<"----- eta -----"<<endl<<endl;
+// oper_t compute_eta(voper_t in) // in[loop]
+// {
+//     cout<<endl;
+//     cout<<"----- eta -----"<<endl<<endl;
 
-    oper_t out=in[0]; // out
+//     oper_t out=in[0]; // out
 
-    out._nmr = in[1]._nmr;  // using nmr of free theory
-    out._linmoms = in[0]._linmoms;
-    out._bilmoms = in[0]._bilmoms;
-    out._meslepmoms = in[0]._meslepmoms;
+//     out._nmr = in[1]._nmr;  // using nmr of free theory
+//     out._linmoms = in[0]._linmoms;
+//     out._bilmoms = in[0]._bilmoms;
+//     out._meslepmoms = in[0]._meslepmoms;
 
-    out.allocate_val();
-    out.allocate();
+//     out.allocate_val();
+//     out.allocate();
 
-    out.eff_mass=in[0].eff_mass;
-    out.eff_mass_sea=in[0].eff_mass_sea;
+//     out.eff_mass=in[0].eff_mass;
+//     out.eff_mass_sea=in[0].eff_mass_sea;
 
-    out.path_to_ens = in[0].path_to_beta + in[0].ensemble_name + "/";
+//     out.path_to_ens = in[0].path_to_beta + in[0].ensemble_name + "/";
 
-    // Zq
-    for(int imom=0;imom<out._linmoms;imom++)
-        for(int ijack=0;ijack<njacks;ijack++)
-            for(int mr=0;mr<out._nmr;mr++)
-            {
-                (out.jZq)[imom][ijack][mr] =
-                    (in[0].jZq)[imom][ijack][mr];
+//     // Zq
+//     for(int imom=0;imom<out._linmoms;imom++)
+//         for(int ijack=0;ijack<njacks;ijack++)
+//             for(int mr=0;mr<out._nmr;mr++)
+//             {
+//                 (out.jZq)[imom][ijack][mr] =
+//                     (in[0].jZq)[imom][ijack][mr];
 
-                (out.jZq_EM)[imom][ijack][mr] =
-                    (in[0].jZq_EM)[imom][ijack][mr] -
-                    (in[1].jZq_EM)[imom][ijack][mr];
-            }
-    // Zbil
-    for(int imom=0;imom<out._bilmoms;imom++)
-        for(int ibil=0;ibil<nbil;ibil++)
-            for(int ijack=0;ijack<njacks;ijack++)
-                for(int mr1=0;mr1<out._nmr;mr1++)
-                    for(int mr2=0;mr2<out._nmr;mr2++)
-                    {
-                        (out.jZ)[imom][ibil][ijack][mr1][mr2] =
-                            (in[0].jZ)[imom][ibil][ijack][mr1][mr2];
+//                 (out.jZq_EM)[imom][ijack][mr] =
+//                     (in[0].jZq_EM)[imom][ijack][mr] -
+//                     (in[1].jZq_EM)[imom][ijack][mr];
+//             }
+//     // Zbil
+//     for(int imom=0;imom<out._bilmoms;imom++)
+//         for(int ibil=0;ibil<nbil;ibil++)
+//             for(int ijack=0;ijack<njacks;ijack++)
+//                 for(int mr1=0;mr1<out._nmr;mr1++)
+//                     for(int mr2=0;mr2<out._nmr;mr2++)
+//                     {
+//                         (out.jZ)[imom][ibil][ijack][mr1][mr2] =
+//                             (in[0].jZ)[imom][ibil][ijack][mr1][mr2];
 
-                        (out.jZ_EM)[imom][ibil][ijack][mr1][mr2] =
-                            (in[0].jZ_EM)[imom][ibil][ijack][mr1][mr2] -
-                            (in[1].jZ_EM)[imom][ibil][ijack][mr1][mr2];
-                    }
+//                         (out.jZ_EM)[imom][ibil][ijack][mr1][mr2] =
+//                             (in[0].jZ_EM)[imom][ibil][ijack][mr1][mr2] -
+//                             (in[1].jZ_EM)[imom][ibil][ijack][mr1][mr2];
+//                     }
 
-    // Z4f
-    for(int imom=0;imom<out._meslepmoms;imom++)
-        for(int iop1=0;iop1<nbil;iop1++)
-            for(int iop2=0;iop2<nbil;iop2++)
-                for(int ijack=0;ijack<njacks;ijack++)
-                    for(int mr1=0;mr1<out._nmr;mr1++)
-                        for(int mr2=0;mr2<out._nmr;mr2++)
-                        {
-                            (out.jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2] =
-                                (in[0].jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2];
+//     // Z4f
+//     for(int imom=0;imom<out._meslepmoms;imom++)
+//         for(int iop1=0;iop1<nbil;iop1++)
+//             for(int iop2=0;iop2<nbil;iop2++)
+//                 for(int ijack=0;ijack<njacks;ijack++)
+//                     for(int mr1=0;mr1<out._nmr;mr1++)
+//                         for(int mr2=0;mr2<out._nmr;mr2++)
+//                         {
+//                             (out.jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2] =
+//                                 (in[0].jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2];
 
-                            (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
-                                (in[0].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] -
-                                (in[1].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2];
-                        }
-
-
-    return out;
-}
-
-oper_t compute_eta_uncorr(voper_t in1,voper_t in2)
-{
-    cout<<endl;
-    cout<<"----- eta **uncorrelated photons** -----"<<endl<<endl;
-
-    oper_t out=in1[0]; // out
-
-    out._nmr = in1[1]._nmr;  // using nmr of free theory
-    out._linmoms = in1[0]._linmoms;
-    out._bilmoms = in1[0]._bilmoms;
-    out._meslepmoms = in1[0]._meslepmoms;
-
-    out.allocate_val();
-    out.allocate();
-
-    out.eff_mass=in1[0].eff_mass;
-    out.eff_mass_sea=in1[0].eff_mass_sea;
-
-    out.path_to_ens = in1[0].path_to_beta + in1[0].ensemble_name + "/";
-
-    // Zq
-    for(int imom=0;imom<out._linmoms;imom++)
-        for(int ijack=0;ijack<njacks;ijack++)
-            for(int mr=0;mr<out._nmr;mr++)
-            {
-                (out.jZq)[imom][ijack][mr] =
-                (in1[0].jZq)[imom][ijack][mr];
-
-                (out.jZq_EM)[imom][ijack][mr] =
-                (in1[0].jZq_EM)[imom][ijack][mr] -
-                (in2[1].jZq_EM)[imom][ijack][mr];
-            }
-    // Zbil
-    for(int imom=0;imom<out._bilmoms;imom++)
-        for(int ibil=0;ibil<nbil;ibil++)
-            for(int ijack=0;ijack<njacks;ijack++)
-                for(int mr1=0;mr1<out._nmr;mr1++)
-                    for(int mr2=0;mr2<out._nmr;mr2++)
-                    {
-                        (out.jZ)[imom][ibil][ijack][mr1][mr2] =
-                        (in1[0].jZ)[imom][ibil][ijack][mr1][mr2];
-
-                        (out.jZ_EM)[imom][ibil][ijack][mr1][mr2] =
-                        (in1[0].jZ_EM)[imom][ibil][ijack][mr1][mr2] -
-                        (in2[1].jZ_EM)[imom][ibil][ijack][mr1][mr2];
-                    }
-
-    // Z4f
-    for(int imom=0;imom<out._meslepmoms;imom++)
-        for(int iop1=0;iop1<nbil;iop1++)
-            for(int iop2=0;iop2<nbil;iop2++)
-                for(int ijack=0;ijack<njacks;ijack++)
-                    for(int mr1=0;mr1<out._nmr;mr1++)
-                        for(int mr2=0;mr2<out._nmr;mr2++)
-                        {
-                            (out.jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2] =
-                            (in1[0].jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2];
-
-                            (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
-                            (in1[0].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] -
-                            (in2[1].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2];
-                        }
+//                             (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
+//                                 (in[0].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] -
+//                                 (in[1].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2];
+//                         }
 
 
-    return out;
-}
+//     return out;
+// }
+
+// oper_t compute_eta_uncorr(voper_t in1,voper_t in2)
+// {
+//     cout<<endl;
+//     cout<<"----- eta **uncorrelated photons** -----"<<endl<<endl;
+
+//     oper_t out=in1[0]; // out
+
+//     out._nmr = in1[1]._nmr;  // using nmr of free theory
+//     out._linmoms = in1[0]._linmoms;
+//     out._bilmoms = in1[0]._bilmoms;
+//     out._meslepmoms = in1[0]._meslepmoms;
+
+//     out.allocate_val();
+//     out.allocate();
+
+//     out.eff_mass=in1[0].eff_mass;
+//     out.eff_mass_sea=in1[0].eff_mass_sea;
+
+//     out.path_to_ens = in1[0].path_to_beta + in1[0].ensemble_name + "/";
+
+//     // Zq
+//     for(int imom=0;imom<out._linmoms;imom++)
+//         for(int ijack=0;ijack<njacks;ijack++)
+//             for(int mr=0;mr<out._nmr;mr++)
+//             {
+//                 (out.jZq)[imom][ijack][mr] =
+//                 (in1[0].jZq)[imom][ijack][mr];
+
+//                 (out.jZq_EM)[imom][ijack][mr] =
+//                 (in1[0].jZq_EM)[imom][ijack][mr] -
+//                 (in2[1].jZq_EM)[imom][ijack][mr];
+//             }
+//     // Zbil
+//     for(int imom=0;imom<out._bilmoms;imom++)
+//         for(int ibil=0;ibil<nbil;ibil++)
+//             for(int ijack=0;ijack<njacks;ijack++)
+//                 for(int mr1=0;mr1<out._nmr;mr1++)
+//                     for(int mr2=0;mr2<out._nmr;mr2++)
+//                     {
+//                         (out.jZ)[imom][ibil][ijack][mr1][mr2] =
+//                         (in1[0].jZ)[imom][ibil][ijack][mr1][mr2];
+
+//                         (out.jZ_EM)[imom][ibil][ijack][mr1][mr2] =
+//                         (in1[0].jZ_EM)[imom][ibil][ijack][mr1][mr2] -
+//                         (in2[1].jZ_EM)[imom][ibil][ijack][mr1][mr2];
+//                     }
+
+//     // Z4f
+//     for(int imom=0;imom<out._meslepmoms;imom++)
+//         for(int iop1=0;iop1<nbil;iop1++)
+//             for(int iop2=0;iop2<nbil;iop2++)
+//                 for(int ijack=0;ijack<njacks;ijack++)
+//                     for(int mr1=0;mr1<out._nmr;mr1++)
+//                         for(int mr2=0;mr2<out._nmr;mr2++)
+//                         {
+//                             (out.jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2] =
+//                             (in1[0].jZ_4f)[imom][iop1][iop2][ijack][mr1][mr2];
+
+//                             (out.jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] =
+//                             (in1[0].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2] -
+//                             (in2[1].jZ_4f_EM)[imom][iop1][iop2][ijack][mr1][mr2];
+//                         }
+
+
+//     return out;
+// }
 
 void oper_t::print(const string suffix)
 {
@@ -2293,15 +2223,15 @@ void oper_t::print(const string suffix)
     print_vec_bin(jpr_meslep,path_print+"jpr_meslep_"+suffix);
 }
 
-void oper_t::printZ(const string suffix)
-{
-    print_vec_bin(jZq,path_print+"jZq_"+suffix);
-    print_vec_bin(jZ,path_print+"jZ_"+suffix);
-    print_vec_bin(jZ_4f,path_print+"jZ_4f_"+suffix);
-    print_vec_bin(jZq_EM,path_print+"jZq_EM_"+suffix);
-    print_vec_bin(jZ_EM,path_print+"jZ_EM_"+suffix);
-    print_vec_bin(jZ_4f_EM,path_print+"jZ_4f_EM_"+suffix);
-}
+// void oper_t::printZ(const string suffix)
+// {
+//     print_vec_bin(jZq,path_print+"jZq_"+suffix);
+//     print_vec_bin(jZ,path_print+"jZ_"+suffix);
+//     print_vec_bin(jZ_4f,path_print+"jZ_4f_"+suffix);
+//     print_vec_bin(jZq_EM,path_print+"jZq_EM_"+suffix);
+//     print_vec_bin(jZ_EM,path_print+"jZ_EM_"+suffix);
+//     print_vec_bin(jZ_4f_EM,path_print+"jZ_4f_EM_"+suffix);
+// }
 
 void oper_t::load(const string suffix)
 {
@@ -2353,204 +2283,6 @@ void oper_t::load(const string suffix)
     if(compute_4f)
         (*this).compute_Z4f();
 }
-
-//voper_t a2p2_extr_combined_on_betas(voper_t in /*, const int LO_or_EM*/)  // M1 method
-//{
-//    voper_t out;
-//
-//    //    int neq_moms = (out.jZq).size();
-//    int _linmoms=in[0]._linmoms;
-//    int _bilmoms=in[0]._bilmoms;
-//
-//    vector<double> p2_tilde_eqmoms(_linmoms);
-//    read_vec(p2_tilde_eqmoms,in[0].path_print+"p2_tilde_eqmoms.txt");
-//
-//    double b0 = in[1]._beta; // b0 is the 'central' value of beta.
-//    vd_t b(nbeta);
-//    for(auto &i : b)
-//    {
-//        b[i] = in[i]._beta;
-//    }
-//
-//    for(int ibeta=0; ibeta<nbeta; ibeta++)
-//    {
-//        out[ibeta]=in[ibeta];
-//
-//        out[ibeta]._linmoms=1;
-//        out[ibeta]._bilmoms=1;
-//
-//        out[ibeta].allocate();
-//
-//        for(int LO_or_EM=0; LO_or_EM<2; LO_or_EM++)
-//        {
-//            vvd_t jZq_out(vd_t(0.0,_linmoms),njacks);
-//            vvvd_t jZ_out(vvd_t(vd_t(0.0,_bilmoms),njacks),nbil);
-//
-//            vd_t Zq_err(0.0,_linmoms);
-//            vvd_t Z_err(vd_t(0.0,_bilmoms),nbil);
-//
-//            if(LO_or_EM==0)
-//            {
-//                cout<<"-- Leading Order --"<<endl;
-//
-//#pragma omp parallel for collapse(2)
-//                for(int imom=0; imom<_linmoms; imom++)
-//                    for(int ijack=0; ijack<njacks; ijack++)
-//                        jZq_out[ijack][imom] = in[ibeta].jZq[imom][ijack][0];
-//
-//#pragma omp parallel for collapse(3)
-//                for(int imom=0; imom<_bilmoms; imom++)
-//                    for(int ijack=0; ijack<njacks; ijack++)
-//                        for(int ibil=0; ibil<nbil; ibil++)
-//                            jZ_out[ibil][ijack][imom] = in[ibeta].jZ[imom][ibil][ijack][0][0];
-//
-//                vvd_t Zq_err_tmp = get<1>(ave_err(in[ibeta].jZq));
-//                vvvvd_t Z_err_tmp = get<1>(ave_err(in[ibeta].jZ));
-//
-//                for(int imom=0; imom<_linmoms; imom++)
-//                    Zq_err[imom] = Zq_err_tmp[imom][0];
-//
-//                for(int imom=0; imom<_bilmoms; imom++)
-//                    for(int ibil=0; ibil<nbil; ibil++)
-//                        Z_err[ibil][imom] = Z_err_tmp[imom][ibil][0][0];
-//
-//            }
-//            else if(LO_or_EM==1)
-//            {
-//                cout<<"-- EM Correction --"<<endl;
-//
-//#pragma omp parallel for collapse(2)
-//                for(int imom=0; imom<_linmoms; imom++)
-//                    for(int ijack=0; ijack<njacks; ijack++)
-//                        jZq_out[ijack][imom] = in[ibeta].jZq_EM[imom][ijack][0];
-//
-//#pragma omp parallel for collapse(3)
-//                for(int imom=0; imom<_bilmoms; imom++)
-//                    for(int ijack=0; ijack<njacks; ijack++)
-//                        for(int ibil=0; ibil<nbil; ibil++)
-//                            jZ_out[ibil][ijack][imom] = in[ibeta].jZ_EM[imom][ibil][ijack][0][0];
-//
-//                vvd_t Zq_err_tmp = get<1>(ave_err(in[ibeta].jZq_EM));
-//                vvvvd_t Z_err_tmp = get<1>(ave_err(in[ibeta].jZ_EM));
-//
-//                for(int imom=0; imom<_linmoms; imom++)
-//                    Zq_err[imom] = Zq_err_tmp[imom][0];
-//
-//                for(int imom=0; imom<_bilmoms; imom++)
-//                    for(int ibil=0; ibil<nbil; ibil++)
-//                        Z_err[ibil][imom] = Z_err_tmp[imom][ibil][0][0];
-//            }
-//
-//            // Simultaneous extrapolation: y = A + B(g2)*a2p2
-//            //  B(g^2) = B(g0^2) + C*(g^2 - g0^2)  where g0 is the 'central' value of the coupling constant
-//            //         = B(g0^2) + C*6*(b0 - b)/(b0*b)
-//            int npar = 3;
-//
-//            //linear fit Zq
-//            int range_min=0;  //a2p2~1
-//            int range_max=_linmoms;
-//            double p_min_value=p2min;
-//
-//            vvd_t coord_lin_linear(vd_t(0.0,_linmoms),npar);
-//
-//            for(int i=0; i<range_max; i++)
-//            {
-//                coord_lin_linear[0][i] = 1.0;  //costante
-//                coord_lin_linear[1][i] = p2_tilde_eqmoms[i];   //p^2
-//                coord_lin_linear[2][i] = p2_tilde_eqmoms[i]*6.0*(b0-b[ibeta])/(b0*b[ibeta]);
-//            }
-//
-//            vd_t jZq_out_par_ijack(0.0,npar);
-//
-//            double Zq_ave_cont=0.0, sqr_Zq_ave_cont=0.0, Zq_err_cont=0.0;
-//
-//            for(int ijack=0; ijack<njacks; ijack++)
-//            {
-//                jZq_out_par_ijack=fit_continuum(coord_lin_linear,Zq_err,jZq_out[ijack],range_min,range_max,p_min_value);
-//
-//                Zq_ave_cont += jZq_out_par_ijack[0]/njacks;
-//                sqr_Zq_ave_cont += jZq_out_par_ijack[0]*jZq_out_par_ijack[0]/njacks;
-//
-//                if(LO_or_EM==0)
-//                {
-//                    (out[ibeta].jZq)[0][ijack][0] = jZq_out_par_ijack[0];
-//                }
-//                else if(LO_or_EM==1)
-//                {
-//                    (out[ibeta].jZq_EM)[0][ijack][0] = jZq_out_par_ijack[0];
-//                }
-//            }
-//
-//            Zq_err_cont=sqrt((double)(njacks-1))*sqrt(sqr_Zq_ave_cont-Zq_ave_cont*Zq_ave_cont);
-//
-//            cout<<"ZQ = "<<Zq_ave_cont<<" +/- "<<Zq_err_cont<<endl;
-//
-//            //linear fit Z
-//            range_min=0;  //a2p2~1
-//            range_max=_bilmoms;
-//
-//            vvd_t coord_bil_linear(vd_t(0.0,_bilmoms),npar);
-//
-//            for(int i=0; i<range_max; i++)
-//            {
-//                //        int imomk = (out.bilmoms)[i][0];
-//                int imomk = i;      /// it will work temporarily only for RIMOM (!!!!!!!)
-//
-//                coord_bil_linear[0][i] = 1.0;  //costante
-//                coord_bil_linear[1][i] = p2_tilde_eqmoms[imomk];   //p^2
-//                coord_bil_linear[2][i] = p2_tilde_eqmoms[imomk]*6.0*(b0-b[ibeta])/(b0*b[ibeta]);
-//            }
-//
-//            vvd_t jZ_out_par_ijack(vd_t(0.0,npar),nbil);
-//            vd_t Z_ave_cont(0.0,nbil), sqr_Z_ave_cont(0.0,nbil), Z_err_cont(0.0,nbil);
-//
-//            for(int ijack=0; ijack<njacks; ijack++)
-//                for(int ibil=0; ibil<nbil; ibil++)
-//                {
-//                    jZ_out_par_ijack[ibil]=fit_continuum(coord_bil_linear,Z_err[ibil],jZ_out[ibil][ijack],range_min,range_max,p_min_value);
-//
-//                    Z_ave_cont[ibil] += jZ_out_par_ijack[ibil][0]/njacks;
-//                    sqr_Z_ave_cont[ibil] += jZ_out_par_ijack[ibil][0]*jZ_out_par_ijack[ibil][0]/njacks;
-//
-//                    if(LO_or_EM==0)
-//                    {
-//                        (out[ibeta].jZ)[0][ibil][ijack][0][0] = jZ_out_par_ijack[ibil][0];
-//                    }
-//                    else if(LO_or_EM==1)
-//                    {
-//                        (out[ibeta].jZ_EM)[0][ibil][ijack][0][0] = jZ_out_par_ijack[ibil][0];
-//                    }
-//                }
-//
-//            for(int ibil=0; ibil<nbil;ibil++)
-//                Z_err_cont[ibil]=sqrt((double)(njacks-1))*sqrt(fabs(sqr_Z_ave_cont[ibil]-Z_ave_cont[ibil]*Z_ave_cont[ibil]));
-//
-//            vector<string> bil={"S","A","P","V","T"};
-//
-//            for(int ibil=0; ibil<nbil;ibil++)
-//            {
-//                cout<<"Z"<<bil[ibil]<<" = "<<Z_ave_cont[ibil]<<" +/- "<<Z_err_cont[ibil]<<endl;
-//            }
-//
-//            //    vector<double> pert={-0.0695545,-0.100031,-0.118281,-0.130564,-0.108664}; // Martinelli-Zhang
-//            //
-//            //    if(LO_or_EM==1)
-//            //    {
-//            //        cout<<"Z divided by the perturbative estimates (to be evolved in MSbar"
-//            //    for(int ibil=0;i<nbil;ibil++)
-//            //    {
-//            //        cout<<"Z"<<bil[ibil]<<"(fact) = "<<A_bil[ibil]/pert[ibil]<<" +/- "<<A_err[ibil]/pert[ibil]<<endl;
-//            //    }
-//            //    }
-//
-//            cout<<endl;
-//
-//#warning missing a2p2 extrapolation for 4f
-//
-//        } // close LO_or_EM loop
-//    }// close beta loop
-//    return out;
-//}
 
 oper_t oper_t::a2p2_extr(int b)
 {
@@ -3570,41 +3302,41 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
             (out[b].jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][b];
         }
 
-    // extrapolate Z4f
-    vvd_t y_Z4f(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_Z4f(0.0,nm_Sea_tot);             // [nmseatot]
-    vvd_t y_Z4f_EM(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_Z4f_EM(0.0,nm_Sea_tot);             // [nmseatot]
+    // // extrapolate Z4f
+    // vvd_t y_Z4f(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
+    // vd_t  dy_Z4f(0.0,nm_Sea_tot);             // [nmseatot]
+    // vvd_t y_Z4f_EM(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
+    // vd_t  dy_Z4f_EM(0.0,nm_Sea_tot);             // [nmseatot]
 
-    for(int iop1=0; iop1<nbil;iop1++)
-        for(int iop2=0; iop2<nbil;iop2++)
-        {
-            iel=0;
-            for(int b=0; b<nb; b++)
-                for(int msea=0; msea<nm[b]; msea++)
-                {
-                    for(int ijack=0;ijack<njacks;ijack++)
-                    {
-                        y_Z4f[ijack][iel] = in[b][msea].jZ_4f[0][iop1][iop2][ijack][0][0];
-                        y_Z4f_EM[ijack][iel] = in[b][msea].jZ_4f_EM[0][iop1][iop2][ijack][0][0];
-                    }
+    // for(int iop1=0; iop1<nbil;iop1++)
+    //     for(int iop2=0; iop2<nbil;iop2++)
+    //     {
+    //         iel=0;
+    //         for(int b=0; b<nb; b++)
+    //             for(int msea=0; msea<nm[b]; msea++)
+    //             {
+    //                 for(int ijack=0;ijack<njacks;ijack++)
+    //                 {
+    //                     y_Z4f[ijack][iel] = in[b][msea].jZ_4f[0][iop1][iop2][ijack][0][0];
+    //                     y_Z4f_EM[ijack][iel] = in[b][msea].jZ_4f_EM[0][iop1][iop2][ijack][0][0];
+    //                 }
 
-                    dy_Z4f[iel] = (get<1>(ave_err_Z4f(in[b][msea].jZ_4f)))[0][iop1][iop2][0][0];
-                    dy_Z4f_EM[iel] = (get<1>(ave_err_Z4f(in[b][msea].jZ_4f_EM)))[0][iop1][iop2][0][0];
+    //                 dy_Z4f[iel] = (get<1>(ave_err_Z4f(in[b][msea].jZ_4f)))[0][iop1][iop2][0][0];
+    //                 dy_Z4f_EM[iel] = (get<1>(ave_err_Z4f(in[b][msea].jZ_4f_EM)))[0][iop1][iop2][0][0];
 
-                    iel++;
-                }
+    //                 iel++;
+    //             }
 
-            vvd_t jZ4f_pars = polyfit(coord,npar,dy_Z4f,y_Z4f,0,nm_Sea_tot-1); // [ijack][ipar]
-            vvd_t jZ4f_EM_pars = polyfit(coord,npar,dy_Z4f_EM,y_Z4f_EM,0,nm_Sea_tot-1); // [ijack][ipar]
+    //         vvd_t jZ4f_pars = polyfit(coord,npar,dy_Z4f,y_Z4f,0,nm_Sea_tot-1); // [ijack][ipar]
+    //         vvd_t jZ4f_EM_pars = polyfit(coord,npar,dy_Z4f_EM,y_Z4f_EM,0,nm_Sea_tot-1); // [ijack][ipar]
 
-            for(int b=0; b<nb; b++)
-                for(int ijack=0;ijack<njacks;ijack++)
-                {
-                    (out[b].jZ_4f)[0][iop1][iop2][ijack][0][0] = jZ4f_pars[ijack][b];
-                    (out[b].jZ_4f_EM)[0][iop1][iop2][ijack][0][0] = jZ4f_EM_pars[ijack][b];
-                }
-        }
+    //         for(int b=0; b<nb; b++)
+    //             for(int ijack=0;ijack<njacks;ijack++)
+    //             {
+    //                 (out[b].jZ_4f)[0][iop1][iop2][ijack][0][0] = jZ4f_pars[ijack][b];
+    //                 (out[b].jZ_4f_EM)[0][iop1][iop2][ijack][0][0] = jZ4f_EM_pars[ijack][b];
+    //             }
+    //     }
 
 
     return out;
