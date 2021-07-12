@@ -105,13 +105,12 @@ tuple<vvvd_t,vvvd_t> ave_err_Z(vector<jZbil_t> jZ, const int ibil1, const int ib
                     Z_ave[imom][mrA][mrB]+=jZratio/_njacks;
                     sqr_Z_ave[imom][mrA][mrB]+=(jZratio*jZratio)/_njacks;
                 }
-#pragma omp parallel for collapse(3)
-        for(int ibil=0;ibil<_nbil;ibil++)
-            for(int mrA=0;mrA<_nmr;mrA++)
-                for(int mrB=0;mrB<_nmr;mrB++)
-                {
-                    Z_err[imom][mrA][mrB]=sqrt((double)(njacks-1))*sqrt(fabs(sqr_Z_ave[imom][mrA][mrB]-Z_ave[imom][mrA][mrB]*Z_ave[imom][mrA][mrB]));
-                }
+#pragma omp parallel for collapse(2)
+        for(int mrA=0;mrA<_nmr;mrA++)
+            for(int mrB=0;mrB<_nmr;mrB++)
+            {
+                Z_err[imom][mrA][mrB]=sqrt((double)(njacks-1))*sqrt(fabs(sqr_Z_ave[imom][mrA][mrB]-Z_ave[imom][mrA][mrB]*Z_ave[imom][mrA][mrB]));
+            }
     }
 
     tuple<vvvd_t,vvvd_t> tuple_ave_err(Z_ave,Z_err);

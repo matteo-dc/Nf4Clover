@@ -31,11 +31,11 @@ void oper_t::compute_Zbil()
                 sqrt(jZq[imom1][ijack][mr_fw]*jZq[imom2][ijack][mr_bw])/
                 jG[ibilmom][gbil::LO][ibil][ijack][mr_fw][mr_bw];
             }
-            jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
-              jZ[ibilmom][1][ijack][mr_fw][mr_bw]/ jZ[ibilmom][3][ijack][mr_fw][mr_bw];
-            jZPoverZS[ibilmom][0][ijack][mr_fw][mr_bw]=
-              jZ[ibilmom][2][ijack][mr_fw][mr_bw]/ jZ[ibilmom][0][ijack][mr_fw][mr_bw];
-            jZAoverZV[ibilmom][0][ijack][mr_fw][mr_bw]=1.0/jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw];
+            // jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw]=
+            //   jZ[ibilmom][1][ijack][mr_fw][mr_bw]/ jZ[ibilmom][3][ijack][mr_fw][mr_bw];
+            // jZPoverZS[ibilmom][0][ijack][mr_fw][mr_bw]=
+            //   jZ[ibilmom][2][ijack][mr_fw][mr_bw]/ jZ[ibilmom][0][ijack][mr_fw][mr_bw];
+            // jZAoverZV[ibilmom][0][ijack][mr_fw][mr_bw]=1.0/jZVoverZA[ibilmom][0][ijack][mr_fw][mr_bw];
           }
 
     }// close mom loop
