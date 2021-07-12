@@ -82,6 +82,43 @@ tuple<vvvvd_t,vvvvd_t> ave_err_Z(vector<jZbil_t> jZ)
     return tuple_ave_err;
 }
 
+// average ratios of Zbil[ibil1]/Zbil[ibil2]
+tuple<vvvd_t,vvvd_t> ave_err_Z(vector<jZbil_t> jZ, const int ibil1, const int ibil2)
+{
+    int _bilmoms=(int)jZ.size();
+    int _nbil=(int)jZ[0].size();
+    int _njacks=(int)jZ[0][0].size();
+    int _nmr=(int)jZ[0][0][0].size();
+
+    vvvd_t Z_ave(vvd_t(vd_t(0.0,_nmr),_nmr),_bilmoms);
+    vvvd_t sqr_Z_ave=Z_ave;
+    vvvd_t Z_err=Z_ave;
+
+    for(int imom=0;imom<_bilmoms;imom++)
+    {
+#pragma omp parallel for collapse(2)
+        for(int mrA=0;mrA<_nmr;mrA++)
+            for(int mrB=0;mrB<_nmr;mrB++)
+                for(int ijack=0;ijack<_njacks;ijack++)
+                {
+                    double jZratio = (jZ[imom][ibil1][ijack][mrA][mrB]/jZ[imom][ibil2][ijack][mrA][mrB]);
+                    Z_ave[imom][mrA][mrB]+=jZratio/_njacks;
+                    sqr_Z_ave[imom][mrA][mrB]+=(jZratio*jZratio)/_njacks;
+                }
+#pragma omp parallel for collapse(3)
+        for(int ibil=0;ibil<_nbil;ibil++)
+            for(int mrA=0;mrA<_nmr;mrA++)
+                for(int mrB=0;mrB<_nmr;mrB++)
+                {
+                    Z_err[imom][mrA][mrB]=sqrt((double)(njacks-1))*sqrt(fabs(sqr_Z_ave[imom][mrA][mrB]-Z_ave[imom][mrA][mrB]*Z_ave[imom][mrA][mrB]));
+                }
+    }
+
+    tuple<vvvd_t,vvvd_t> tuple_ave_err(Z_ave,Z_err);
+
+    return tuple_ave_err;
+}
+
 // average sigma
 tuple<vvvvd_t,vvvvd_t> ave_err(vector<vvvvd_t> sig)
 {
