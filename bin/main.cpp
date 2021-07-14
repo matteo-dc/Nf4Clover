@@ -222,6 +222,13 @@ int main(int narg,char **arg)
                         M3[th] = evo[th].a2p2_extr_with_pole(b);
                         M3[th].plot("M3");
 
+                        cout<<"-----------ZA/ZV-----------"<<endl;
+                        for(int ijack=0;ijack<_njacks;ijack++)
+                        {
+                            cout<< (M3[th].jZ[0][3][ijack][0][0]/M3[th].jZ[0][1][ijack][0][0]);
+                        }
+                        cout<<"--------------------------"<<endl;
+
                         // // quadratic + pole 1/p2 extrapolation
                         // M4[th] = evo[th].a2p2_extr_with_pole_and_p4(b);
                         // M4[th].plot("M4");
