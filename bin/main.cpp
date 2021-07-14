@@ -223,9 +223,9 @@ int main(int narg,char **arg)
                         M3[th].plot("M3");
 
                         cout<<"-----------ZA/ZV-----------"<<endl;
-                        for(int ijack=0;ijack<_njacks;ijack++)
+                        for(int ijack=0;ijack<njacks;ijack++)
                         {
-                            cout<< (M3[th].jZ[0][3][ijack][0][0]/M3[th].jZ[0][1][ijack][0][0]);
+                            cout<< (M3[th].jZ[0][3][ijack][0][0]/M3[th].jZ[0][1][ijack][0][0])<<endl;
                         }
                         cout<<"--------------------------"<<endl;
 
