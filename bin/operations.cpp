@@ -3115,7 +3115,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   vector<string> str_bil={"S","V","P","A","T"};
   for(int ibil=0; ibil<nbil; ibil++)
   {
-    vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Zbil[ibil],0,300); // [ijack][ipar]
+    vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Zbil[ibil],0,_linmoms_tot-1); // [ijack][ipar]
 
     //vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
 
