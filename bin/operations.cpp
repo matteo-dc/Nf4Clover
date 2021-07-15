@@ -3072,11 +3072,11 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
-        y_Zq[ijack][j_tot] = in[b].jZq[j][ijack][0];
+        y_Zq[ijack][j_tot] = (in[b].jZq)[j][ijack][0];
 
         for(int ibil=0;ibil<nbil;ibil++)
         {
-          y_Zbil[ibil][ijack][j_tot] = in[b].jZ[j][ibil][ijack][0][0];
+          y_Zbil[ibil][ijack][j_tot] = (in[b].jZ)[j][ibil][ijack][0][0];
         }
       }
 
@@ -3087,6 +3087,9 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
       j_tot++;
     }
   }
+
+    for(int i=0; i<dy_Zq.size(); i++)
+        cout<<"*** "<<dy_Zq[i]<<endl;
 
   vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,300); // [ijack][ipar]
 
