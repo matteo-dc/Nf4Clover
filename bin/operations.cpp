@@ -2442,7 +2442,7 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
     double ainv2 = ainv[b]*ainv[b];
 
     double _p2min = 4;  //GeV^2
-    double _p2max = 20;
+    double _p2max = 25;
     // if(fabs(ainv[b]-2.1218)<1e-10)
     //   _p2max = 20;
     // else if(fabs(ainv[b]-2.4635)<1e-10)
@@ -3069,7 +3069,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
       coord[nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
       coord[nbeta+1][j_tot] = 1.0/(in[b].p2[j]*ainv2); // 1/GeV^2
 
-      cout<<j_tot<<" "<<coord[0][j_tot]<<" "<<coord[1][j_tot]<<" "<<coord[2][j_tot]<<" "<<coord[3][j_tot]<<" "<<ainv2*coord[3][j_tot]<<" "<<coord[4][j_tot]<<endl;
+    //   cout<<j_tot<<" "<<coord[0][j_tot]<<" "<<coord[1][j_tot]<<" "<<coord[2][j_tot]<<" "<<coord[3][j_tot]<<" "<<ainv2*coord[3][j_tot]<<" "<<coord[4][j_tot]<<endl;
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
