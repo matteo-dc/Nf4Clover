@@ -3091,7 +3091,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
     for(int i=0; i<dy_Zq.size(); i++)
         cout<<"*** "<<y_Zq[0][i]<<"-"<<y_Zq[10][i]<<" "<<dy_Zq[i]<<endl;
 
-  vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,300); // [ijack][ipar]
+  vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,_linmoms_tot-1); // [ijack][ipar]
 
   vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
 
