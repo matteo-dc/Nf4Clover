@@ -3017,7 +3017,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
 
   double _p2min = 4;  //GeV^2
 //   double _p2max[] = {20,25,30};
-  double _p2max[] = {30,30,30};
+  double _p2max[] = {25,25,25};
 
   // count all the momenta respecting the above criteria of p2min&p2max
   int _linmoms_tot=0;
