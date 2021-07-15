@@ -79,7 +79,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
         for(int i=0; i<count; i++)
             chi2[ijack] += (y_in_range[ijack][i]-poly[ijack][i])*(y_in_range[ijack][i]-poly[ijack][i])/(err_in_range[ijack][i]*err_in_range[ijack][i]);
     
-        jvpars[ijack][n_par] = chi2[ijack]/n_par; /* chi2/dof */
+        jvpars[ijack][n_par] = chi2[ijack];///n_par; /* chi2/dof */
     }
     
         
@@ -98,7 +98,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
 vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, const int range_min, const int range_max)
 {
 //    int njacks = y.size();
-    
+
     MatrixXd S(n_par,n_par);
     vXd_t Sy(VectorXd(n_par),njacks);
     vXd_t jpars(VectorXd(n_par),njacks);
@@ -162,7 +162,7 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
         for(int i=0; i<count; i++)
             chi2[ijack] += (y_in_range[ijack][i]-poly[ijack][i])*(y_in_range[ijack][i]-poly[ijack][i])/(err_in_range[ijack][i]*err_in_range[ijack][i]);
         
-        jvpars[ijack][n_par] = chi2[ijack]/n_par; /* chi2/dof */
+        jvpars[ijack][n_par] = chi2[ijack];///n_par; /* chi2/dof */
     }
     
     
