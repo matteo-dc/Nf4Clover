@@ -3035,7 +3035,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   }
   cout<<"tot moms = "<<_linmoms_tot<<"/"<<_linmoms_tot_complete<<endl;
 
-  int npar=nbeta+2;
+  int npar=nbeta+2; // {ZA,ZB,ZC}+{linear}+{pole}
 
   // for(int b=0; b<nbeta;b++)
   //   _linmoms_tot += in[b]._linmoms;
@@ -3048,6 +3048,9 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   vvd_t  dy_Zbil(vd_t(0.0,_linmoms_tot),nbil);                   // [nbil][moms]
 
   int j_tot=0;
+
+  cout<<"i"<<" "<<"b1"<<" "<<"b2"<<" "<<"b3"<<" "<<"a2p2"<<" "<<"p2"<<" "<<"1/p2"<<endl;
+
   for(int b=0; b<nbeta;b++)
   {
     double ainv2 = ainv[b]*ainv[b];
@@ -3065,7 +3068,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
       coord[nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
       coord[nbeta+1][j_tot] = 1.0/(in[b].p2[j]*ainv2); // 1/GeV^2
 
-      cout<<j_tot<<" "<<coord[0][j_tot]<<" "<<coord[1][j_tot]<<" "<<coord[2][j_tot]<<" "<<coord[3][j_tot]<<" "<<coord[4][j_tot]<<endl;
+      cout<<j_tot<<" "<<coord[0][j_tot]<<" "<<coord[1][j_tot]<<" "<<coord[2][j_tot]<<" "<<coord[3][j_tot]<<" "<<ainv2*coord[3][j_tot]<<" "<<coord[4][j_tot]<<endl;
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
