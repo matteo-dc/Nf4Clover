@@ -3264,7 +3264,7 @@ voper_t combined_M4(voper_t in)  // M3 method combined on all betas
           (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
         jlincoeff[ijack] = jZ_pars[ijack][nbeta];
         jpole[ijack] = jZ_pars[ijack][nbeta+1];
-        jsqrcoeff[ijack] = jZq_pars[ijack][nbeta+2];
+        jsqrcoeff[ijack] = jZ_pars[ijack][nbeta+2];
         /**/
         jchisq[ijack] = jZ_pars[ijack][npar];
       }
