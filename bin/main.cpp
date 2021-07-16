@@ -263,12 +263,17 @@ int main(int narg,char **arg)
     } //close nloop
 
     voper_t M3combo(nbeta);
+    voper_t M4combo(nbeta);
 
     if(!only_basic && nbeta>1)
     {
       M3combo = combined_M3(all);
       for(int b=0;b<nbeta;b++)
         M3combo[b].plot("M3comb");
+
+      M4combo = combined_M4(all);
+      for(int b=0;b<nbeta;b++)
+        M4combo[b].plot("M4comb");
     }
 
 

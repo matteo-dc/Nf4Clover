@@ -92,6 +92,8 @@ extern vector<string> path_analysis;
 extern string path_to_ens;
 // add suffix to analysis folder
 extern string an_suffix;
+// p2max value for M3 and M4 (Gev^2)
+extern vector<double> p2max_M3_M4;
 
 // use Sigma1 parameter
 extern int UseSigma1;

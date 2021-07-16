@@ -22,6 +22,7 @@ vector<double> csw;
 int conf_init, conf_step, nm, neq, neq2, nmr, delta_tmin, delta_tmax;
 double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref, stepfunc_min, stepfunc_max;
 vector<double> mass_val;
+vector<double> p2max_M3_M4;
 string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz_val, chir_ansatz_sea;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
@@ -98,6 +99,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,chir_ansatz_sea_tag)==0) return CHIR_ANSATZ_SEA_TK;
     if(strcasecmp(tok,stepfunc_min_tag)==0) return STEPFUNC_MIN_TK;
     if(strcasecmp(tok,stepfunc_max_tag)==0) return STEPFUNC_MAX_TK;
+    if(strcasecmp(tok,p2max_M3_M4_tag)==0) return P2MAX_M3_M4_TK;
 
     return VALUE_GLB_TK;
 }
@@ -478,6 +480,11 @@ void read_input_glb(const char path[])
             case STEPFUNC_MAX_TK:
                 get_value_glb(fin,stepfunc_max);
                 break;
+            case P2MAX_M3_M4_TK:
+                p2max_M3_M4.resize(nbeta);
+                for(int b=0;b<nbeta;b++)
+                    get_value_glb(fin,p2max_M3_M4[b]);
+                break;
 
             case FEOF_GLB_TK:
                 break;
@@ -532,6 +539,7 @@ void read_input_glb(const char path[])
     check_str_par(chir_ansatz_sea,chir_ansatz_sea_tag);
     check_double_par(stepfunc_min,stepfunc_min_tag);
     check_double_par(stepfunc_max,stepfunc_max_tag);
+    for(auto &p : p2max_M3_M4) check_double_par(p,p2max_M3_M4_tag);
 
     fclose(fin);
 
@@ -630,7 +638,8 @@ void read_input_glb(const char path[])
     printf(" Continuum limit range: p2 = [%.1lf,%.1lf]\n\n",p2min,p2max);
 
     printf(" Evolution at the scale: p2ref = %.1lf\n",p2ref);
-    printf(" Step scaling test: (%.2lf,%.2lf) GeV^2 (Z[p2_max]/Z[p2_min])\n\n",stepfunc_min,stepfunc_max);
+    printf(" Step scaling test: (%.2lf,%.2lf) GeV^2 (Z[p2_max]/Z[p2_min])\n",stepfunc_min,stepfunc_max);
+    printf(" p2-range for M3 and M4 methods: [4-%lf], [4-%lf], [4-%lf] GeV^2\n\n",p2max_M3_M4[0],p2max_M3_M4[1],p2max_M3_M4[2]);
 
     printf(" %s = %s  --  %s = %d  -- %s = %d -- %s = %.3lf \n",act_tag,action.c_str(),Nf_tag,Nf,Nc_tag,Nc,LambdaQCD_tag,LambdaQCD);
     printf(" %s = %d  (%d njacks) \n",nconfs_tag,nconfs,njacks);
