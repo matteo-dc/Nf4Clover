@@ -2444,11 +2444,11 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
     double _p2min = 4;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
-      _p2max = 20;
+      _p2max = p2max_M3_M4[0];
     else if(fabs(ainv[b]-2.4635)<1e-10)
-      _p2max = 25;
+      _p2max = p2max_M3_M4[1];
     else if(fabs(ainv[b]-2.8934)<1e-10)
-      _p2max = 30;
+      _p2max = p2max_M3_M4[2];
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
 
@@ -2592,11 +2592,11 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
     double _p2min = 4;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
-      _p2max = 20;
+      _p2max = p2max_M3_M4[0];
     else if(fabs(ainv[b]-2.4635)<1e-10)
-      _p2max = 25;
+      _p2max = p2max_M3_M4[1];
     else if(fabs(ainv[b]-2.8934)<1e-10)
-      _p2max = 30;
+      _p2max = p2max_M3_M4[2];
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
 
@@ -2742,14 +2742,14 @@ oper_t oper_t::a2p2_extr_with_p4(int b)
 
     double ainv2 = ainv[b]*ainv[b];
 
-    double _p2min = 15;  //GeV^2
+    double _p2min = 4;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
-      _p2max = 20;
+      _p2max = p2max_M3_M4[0];
     else if(fabs(ainv[b]-2.4635)<1e-10)
-      _p2max = 25;
+      _p2max = p2max_M3_M4[1];
     else if(fabs(ainv[b]-2.8934)<1e-10)
-      _p2max = 30;
+      _p2max = p2max_M3_M4[2];
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
 
@@ -3016,8 +3016,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   }
 
   double _p2min = 4;  //GeV^2
-  double _p2max[] = {20,25,30};
-//   double _p2max[] = {30,30,30}; 
+  double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[0],p2max_M3_M4[0]};
 
   // count all the momenta respecting the above criteria of p2min&p2max
   int _linmoms_tot=0;
@@ -3163,8 +3162,7 @@ voper_t combined_M4(voper_t in)  // M3 method combined on all betas
   }
 
   double _p2min = 4;  //GeV^2
-  double _p2max[] = {20,25,30};
-//   double _p2max[] = {30,30,30}; 
+  double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[0],p2max_M3_M4[0]};
 
   // count all the momenta respecting the above criteria of p2min&p2max
   int _linmoms_tot=0;
