@@ -3322,7 +3322,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
   }
   cout<<"tot moms = "<<_linmoms_tot<<"/"<<_linmoms_tot_complete<<endl;
 
-  int npar=nbeta+4; // {ZA,ZB,ZC}+{linear}+{quadratic}+{pole}+{pole a2}
+  int npar=2*nbeta+2; // {ZA,ZB,ZC}+{linear}+{quadratic}+{poleA,poleB,poleC}
 
   vvd_t coord(vd_t(0.0,_linmoms_tot),npar);
 
@@ -3346,11 +3346,12 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
       // coord[1][j_tot] = (b==1)? 1.0 : 0.0; //Zb
       // coord[2][j_tot] = (b==2)? 1.0 : 0.0; //Zc
       for(int bb=0; bb<nbeta;bb++)
+      {
         coord[bb][j_tot]     = (bb==b)? 1.0 : 0.0;   //Constant: Za,Zb,Zc
-      coord[nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
-      coord[nbeta+1][j_tot] = 1.0/(in[b].p2[j]*ainv2); // 1/GeV^2
-      coord[nbeta+2][j_tot] = coord[nbeta][j_tot]*coord[nbeta][j_tot]; // (a2p2)^2 (lattice units)
-      coord[nbeta+3][j_tot] = 1.0/(in[b].p2[j]*ainv2)/ainv2; // 1/GeV^2
+        coord[bb+nbeta][j_tot] = (bb==b)? 1.0/(in[bb].p2[j]*ainv2) : 0.0; // 1/GeV^2
+      }
+      coord[2*nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
+      coord[2*nbeta+1][j_tot] = (in[b].p2[j])*(in[b].p2[j]); // (a2p2)^2 (lattice units)
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
@@ -3372,7 +3373,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
 
   vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,_linmoms_tot-1); // [ijack][ipar]
 
-  vd_t jpole(0.0,njacks), jpole2(0.0,njacks), jlincoeff(0.0,njacks), jsqrcoeff(0.0,njacks), jchisq(0.0,njacks);
+  vd_t jpoleA(0.0,njacks), jpoleB(0.0,njacks), jpoleC(0.0,njacks), jlincoeff(0.0,njacks), jsqrcoeff(0.0,njacks), jchisq(0.0,njacks);
 
     for(int b=0; b<nbeta;b++)
       cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
@@ -3380,16 +3381,18 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
     {
       for(int b=0; b<nbeta;b++)
         (out[b].jZq)[0][ijack][0] = jZq_pars[ijack][b];
-      jlincoeff[ijack] = jZq_pars[ijack][nbeta];
-      jpole[ijack] = jZq_pars[ijack][nbeta+1];
-      jpole2[ijack] = jZq_pars[ijack][nbeta+3];
-      jsqrcoeff[ijack] = jZq_pars[ijack][nbeta+2];
+      jpoleA[ijack] = jZq_pars[ijack][nbeta];
+      jpoleB[ijack] = jZq_pars[ijack][nbeta+1];
+      jpoleC[ijack] = jZq_pars[ijack][nbeta+2];
+      jlincoeff[ijack] = jZq_pars[ijack][2*nbeta];
+      jsqrcoeff[ijack] = jZq_pars[ijack][2*nbeta+1];
       /**/
       jchisq[ijack] = jZq_pars[ijack][npar];
     }
 
-    cout<<"  -- pole[q] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
-    cout<<"  -- pole2[q] = "<<get<0>(ave_err(jpole2))<<"+/-"<<get<1>(ave_err(jpole2))<<endl;
+    cout<<"  -- poleA[q] = "<<get<0>(ave_err(jpoleA))<<"+/-"<<get<1>(ave_err(jpoleA))<<endl;
+    cout<<"  -- poleB[q] = "<<get<0>(ave_err(jpoleB))<<"+/-"<<get<1>(ave_err(jpoleB))<<endl;
+    cout<<"  -- poleC[q] = "<<get<0>(ave_err(jpoleC))<<"+/-"<<get<1>(ave_err(jpoleC))<<endl;
     cout<<"  -- lincoeff[q] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
     cout<<"  -- sqrcoeff[q] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
     cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
@@ -3406,19 +3409,21 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
       {
         for(int b=0; b<nbeta;b++)
           (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
-        jlincoeff[ijack] = jZ_pars[ijack][nbeta];
-        jpole[ijack] = jZ_pars[ijack][nbeta+1];
-        jpole2[ijack] = jZ_pars[ijack][nbeta+3];
-        jsqrcoeff[ijack] = jZ_pars[ijack][nbeta+2];
+        jpoleA[ijack] = jZ_pars[ijack][nbeta];
+      jpoleB[ijack] = jZ_pars[ijack][nbeta+1];
+      jpoleC[ijack] = jZ_pars[ijack][nbeta+2];
+      jlincoeff[ijack] = jZ_pars[ijack][2*nbeta];
+      jsqrcoeff[ijack] = jZ_pars[ijack][2*nbeta+1];
         /**/
         jchisq[ijack] = jZ_pars[ijack][npar];
       }
 
-      cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
-      cout<<"  -- pole2["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole2))<<"+/-"<<get<1>(ave_err(jpole2))<<endl;
-      cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
-      cout<<"  -- sqrcoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
-      cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
+    cout<<"  -- poleA["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpoleA))<<"+/-"<<get<1>(ave_err(jpoleA))<<endl;
+    cout<<"  -- poleB["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpoleB))<<"+/-"<<get<1>(ave_err(jpoleB))<<endl;
+    cout<<"  -- poleC["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpoleC))<<"+/-"<<get<1>(ave_err(jpoleC))<<endl;
+    cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+    cout<<"  -- sqrcoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
+    cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
   }
 
    return out;
