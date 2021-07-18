@@ -264,6 +264,7 @@ int main(int narg,char **arg)
 
     voper_t M3combo(nbeta);
     voper_t M4combo(nbeta);
+    voper_t M5combo(nbeta);
 
     if(!only_basic && nbeta>1)
     {
@@ -274,6 +275,10 @@ int main(int narg,char **arg)
       M4combo = combined_M4(all);
       for(int b=0;b<nbeta;b++)
         M4combo[b].plot("M4comb");
+
+     M5combo = combined_M5(all);
+      for(int b=0;b<nbeta;b++)
+        M5combo[b].plot("M5comb");
     }
 
 
