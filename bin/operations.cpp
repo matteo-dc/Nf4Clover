@@ -3322,7 +3322,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
   }
   cout<<"tot moms = "<<_linmoms_tot<<"/"<<_linmoms_tot_complete<<endl;
 
-  int npar=2*nbeta+2; // {ZA,ZB,ZC}+{linear}+{quadratic}+{poleA,poleB,poleC}
+  int npar=2*nbeta+1; // {ZA,ZB,ZC}+{linear}+{poleA,poleB,poleC}
 
   vvd_t coord(vd_t(0.0,_linmoms_tot),npar);
 
@@ -3351,7 +3351,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
         coord[bb+nbeta][j_tot] = (bb==b)? 1.0/(in[bb].p2[j]*ainv2) : 0.0; // 1/GeV^2
       }
       coord[2*nbeta][j_tot]   = in[b].p2[j];       // a2p2 (lattice units)
-      coord[2*nbeta+1][j_tot] = (in[b].p2[j])*(in[b].p2[j]); // (a2p2)^2 (lattice units)
+    //   coord[2*nbeta+1][j_tot] = (in[b].p2[j])*(in[b].p2[j]); // (a2p2)^2 (lattice units)
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
@@ -3373,7 +3373,8 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
 
   vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,_linmoms_tot-1); // [ijack][ipar]
 
-  vd_t jpoleA(0.0,njacks), jpoleB(0.0,njacks), jpoleC(0.0,njacks), jlincoeff(0.0,njacks), jsqrcoeff(0.0,njacks), jchisq(0.0,njacks);
+  vd_t jpoleA(0.0,njacks), jpoleB(0.0,njacks), jpoleC(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
+//   , jsqrcoeff(0.0,njacks)
 
     for(int b=0; b<nbeta;b++)
       cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
@@ -3385,7 +3386,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
       jpoleB[ijack] = jZq_pars[ijack][nbeta+1];
       jpoleC[ijack] = jZq_pars[ijack][nbeta+2];
       jlincoeff[ijack] = jZq_pars[ijack][2*nbeta];
-      jsqrcoeff[ijack] = jZq_pars[ijack][2*nbeta+1];
+    //   jsqrcoeff[ijack] = jZq_pars[ijack][2*nbeta+1];
       /**/
       jchisq[ijack] = jZq_pars[ijack][npar];
     }
@@ -3394,7 +3395,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
     cout<<"  -- poleB[q] = "<<get<0>(ave_err(jpoleB))<<"+/-"<<get<1>(ave_err(jpoleB))<<endl;
     cout<<"  -- poleC[q] = "<<get<0>(ave_err(jpoleC))<<"+/-"<<get<1>(ave_err(jpoleC))<<endl;
     cout<<"  -- lincoeff[q] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
-    cout<<"  -- sqrcoeff[q] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
+    // cout<<"  -- sqrcoeff[q] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
     cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
 
 
@@ -3413,7 +3414,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
       jpoleB[ijack] = jZ_pars[ijack][nbeta+1];
       jpoleC[ijack] = jZ_pars[ijack][nbeta+2];
       jlincoeff[ijack] = jZ_pars[ijack][2*nbeta];
-      jsqrcoeff[ijack] = jZ_pars[ijack][2*nbeta+1];
+    //   jsqrcoeff[ijack] = jZ_pars[ijack][2*nbeta+1];
         /**/
         jchisq[ijack] = jZ_pars[ijack][npar];
       }
@@ -3422,7 +3423,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
     cout<<"  -- poleB["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpoleB))<<"+/-"<<get<1>(ave_err(jpoleB))<<endl;
     cout<<"  -- poleC["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpoleC))<<"+/-"<<get<1>(ave_err(jpoleC))<<endl;
     cout<<"  -- lincoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
-    cout<<"  -- sqrcoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
+    // cout<<"  -- sqrcoeff["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jsqrcoeff))<<"+/-"<<get<1>(ave_err(jsqrcoeff))<<endl;
     cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
   }
 
