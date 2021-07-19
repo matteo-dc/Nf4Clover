@@ -279,6 +279,10 @@ int main(int narg,char **arg)
      M5combo = combined_M5(all);
       for(int b=0;b<nbeta;b++)
         M5combo[b].plot("M5comb");
+    
+     M5_logcombo = combined_M5_log(all);
+      for(int b=0;b<nbeta;b++)
+        M5combo[b].plot("M5logcomb");
     }
 
 

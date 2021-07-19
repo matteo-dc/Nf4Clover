@@ -3424,7 +3424,153 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
    return out;
 }
 
+voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
+{
 
+  cout<<endl;
+  cout<<"----- Combined M5 fit on all the curves -----"<<endl<<endl;
+
+  voper_t out(nbeta);
+
+  for(int b=0;b<nbeta;b++)
+  {
+    out[b] = in[b];
+
+    out[b].linmoms=vector<array<int,1>>{{0}};
+    out[b].bilmoms=vector<array<int,3>>{{0,0,0}};
+    out[b].meslepmoms=out[b].bilmoms;
+
+    out[b]._linmoms=1;
+    out[b]._bilmoms=1;
+    out[b]._meslepmoms=1;
+
+    out[b].allocate_val();
+    out[b].allocate();
+  }
+
+  double _p2min = 4;  //GeV^2
+  double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[1],p2max_M3_M4[2]};
+
+  // count all the momenta respecting the above criteria of p2min&p2max
+  int _linmoms_tot=0;
+  for(int b=0; b<nbeta;b++)
+  {
+    double ainv2 = ainv[b]*ainv[b];
+    for(int j=0; j<in[b]._linmoms; j++)
+      if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+        _linmoms_tot ++;
+  }
+
+  int _linmoms_tot_complete=0;
+  for(int b=0; b<nbeta;b++)
+  {
+    _linmoms_tot_complete += in[b]._linmoms;
+  }
+  cout<<"tot moms = "<<_linmoms_tot<<"/"<<_linmoms_tot_complete<<endl;
+
+  int npar=nbeta+4; // {ZA,ZB,ZC}+{pole}+{linear}+{linear/log}+{linear/log^2}
+
+  vvd_t coord(vd_t(0.0,_linmoms_tot),npar);
+
+  vvd_t y_Zq(vd_t(0.0,_linmoms_tot),njacks);       // [njacks][moms]
+  vd_t  dy_Zq(0.0,_linmoms_tot);                   // [moms]
+  vvvd_t y_Zbil(vvd_t(vd_t(0.0,_linmoms_tot),njacks),nbil);       // [nbil][njacks][moms]
+  vvd_t  dy_Zbil(vd_t(0.0,_linmoms_tot),nbil);                   // [nbil][moms]
+
+  int j_tot=0;
+
+  for(int b=0; b<nbeta;b++)
+  {
+    double ainv2 = ainv[b]*ainv[b];
+    vvd_t dy_Zq_tmp = get<1>(ave_err_Zq(in[b].jZq));
+    vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ)); // [moms][nbil][nmr][nmr]
+
+    for(int j=0; j<in[b]._linmoms; j++)
+    if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+    {
+      // coord[0][j_tot] = (b==0)? 1.0 : 0.0; //Za
+      // coord[1][j_tot] = (b==1)? 1.0 : 0.0; //Zb
+      // coord[2][j_tot] = (b==2)? 1.0 : 0.0; //Zc
+      for(int bb=0; bb<nbeta;bb++)
+      {
+        coord[bb][j_tot]     = (bb==b)? 1.0 : 0.0;   //Constant: Za,Zb,Zc
+      }
+      coord[nbeta][j_tot] = 1.0/(in[b].p2[j]*ainv2);       // GeV^-2
+      coord[nbeta+1][j_tot] = in[b].p2[j]; // a2p2 [lattice units]
+      coord[nbeta+2][j_tot] = in[b].p2[j]*log(in[b].p2[j]); // a2p2*log(a2p2) [lattice units]
+      coord[nbeta+3][j_tot] = in[b].p2[j]*log(in[b].p2[j])*log(in[b].p2[j]); // a2p2*log^2(a2p2) [lattice units]
+
+      for(int ijack=0;ijack<njacks;ijack++)
+      {
+        y_Zq[ijack][j_tot] = (in[b].jZq)[j][ijack][0];
+
+        for(int ibil=0;ibil<nbil;ibil++)
+        {
+          y_Zbil[ibil][ijack][j_tot] = (in[b].jZ)[j][ibil][ijack][0][0];
+        }
+      }
+
+      dy_Zq[j_tot] = dy_Zq_tmp[j][0];
+      for(int ibil=0;ibil<nbil;ibil++)
+        dy_Zbil[ibil][j_tot] = dy_Zbil_tmp[j][ibil][0][0];
+
+      j_tot++;
+    }
+  }
+
+  vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,_linmoms_tot-1); // [ijack][ipar]
+
+  vd_t jd2(0.0,njacks), jd2L(0.0,njacks), jd2LL(0.0,njacks), jpole(0.0,njacks), jchisq(0.0,njacks);
+
+    for(int b=0; b<nbeta;b++)
+      cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+      for(int b=0; b<nbeta;b++)
+        (out[b].jZq)[0][ijack][0] = jZq_pars[ijack][b];
+      jpole[ijack] = jZq_pars[ijack][nbeta];
+      jd2[ijack] = jZq_pars[ijack][nbeta+1];
+      jd2L[ijack] = jZq_pars[ijack][nbeta+2];
+      jd2LL[ijack] = jZq_pars[ijack][nbeta+3];
+      /**/
+      jchisq[ijack] = jZq_pars[ijack][npar];
+    }
+
+    cout<<"  -- pole[q] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+    cout<<"  -- d2[q] = "<<get<0>(ave_err(jd2))<<"+/-"<<get<1>(ave_err(jd2))<<endl;
+    cout<<"  -- d2L[q] = "<<get<0>(ave_err(jd2L))<<"+/-"<<get<1>(ave_err(jd2L))<<endl;
+    cout<<"  -- d2LL[q] = "<<get<0>(ave_err(jd2LL))<<"+/-"<<get<1>(ave_err(jd2LL))<<endl;
+    cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
+
+
+  vector<string> str_bil={"S","V","P","A","T"};
+  for(int ibil=0; ibil<nbil; ibil++)
+  {
+    vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil[ibil],y_Zbil[ibil],0,_linmoms_tot-1); // [ijack][ipar]
+
+    //vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
+
+      for(int ijack=0;ijack<njacks;ijack++)
+      {
+        for(int b=0; b<nbeta;b++)
+          (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
+        jpole[ijack] = jZ_pars[ijack][nbeta];
+        jd2[ijack] = jZ_pars[ijack][nbeta+1];
+        jd2L[ijack] = jZ_pars[ijack][nbeta+2];
+        jd2LL[ijack] = jZ_pars[ijack][nbeta+3];
+        /**/
+        jchisq[ijack] = jZ_pars[ijack][npar];
+      }
+
+    cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+    cout<<"  -- d2["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jd2))<<"+/-"<<get<1>(ave_err(jd2))<<endl;
+    cout<<"  -- d2L["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jd2L))<<"+/-"<<get<1>(ave_err(jd2L))<<endl;
+    cout<<"  -- d2LL["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jd2LL))<<"+/-"<<get<1>(ave_err(jd2LL))<<endl;
+    cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
+  }
+
+   return out;
+}
 
 voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
 {
