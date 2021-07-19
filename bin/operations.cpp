@@ -3448,7 +3448,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
     out[b].allocate();
   }
 
-  double _p2min = 4;  //GeV^2
+  double _p2min = 8;  //GeV^2
   double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[1],p2max_M3_M4[2]};
 
   // count all the momenta respecting the above criteria of p2min&p2max
