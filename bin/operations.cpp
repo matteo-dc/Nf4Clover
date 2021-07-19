@@ -3468,7 +3468,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
   }
   cout<<"tot moms = "<<_linmoms_tot<<"/"<<_linmoms_tot_complete<<endl;
 
-  int npar=nbeta+3; // {ZA,ZB,ZC}+{linear}+{linear/log}+{linear/log^2}//+{pole}
+  int npar=nbeta+2; // {ZA,ZB,ZC}+{linear}+{linear/log}+{linear/log^2}//+{pole}
 
   vvd_t coord(vd_t(0.0,_linmoms_tot),npar);
 
@@ -3498,7 +3498,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
     //   coord[nbeta][j_tot] = 1.0/(in[b].p2[j]*ainv2);       // GeV^-2
       coord[nbeta][j_tot] = in[b].p2[j]; // a2p2 [lattice units]
       coord[nbeta+1][j_tot] = in[b].p2[j]*log(in[b].p2[j]); // a2p2*log(a2p2) [lattice units]
-      coord[nbeta+2][j_tot] = in[b].p2[j]*log(in[b].p2[j])*log(in[b].p2[j]); // a2p2*log^2(a2p2) [lattice units]
+    //   coord[nbeta+2][j_tot] = in[b].p2[j]*log(in[b].p2[j])*log(in[b].p2[j]); // a2p2*log^2(a2p2) [lattice units]
 
       for(int ijack=0;ijack<njacks;ijack++)
       {
@@ -3531,7 +3531,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
     //   jpole[ijack] = jZq_pars[ijack][nbeta];
       jd2[ijack] = jZq_pars[ijack][nbeta];
       jd2L[ijack] = jZq_pars[ijack][nbeta+1];
-      jd2LL[ijack] = jZq_pars[ijack][nbeta+2];
+    //   jd2LL[ijack] = jZq_pars[ijack][nbeta+2];
       /**/
       jchisq[ijack] = jZq_pars[ijack][npar];
     }
@@ -3539,7 +3539,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
     // cout<<"  -- pole[q] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
     cout<<"  -- d2[q] = "<<get<0>(ave_err(jd2))<<"+/-"<<get<1>(ave_err(jd2))<<endl;
     cout<<"  -- d2L[q] = "<<get<0>(ave_err(jd2L))<<"+/-"<<get<1>(ave_err(jd2L))<<endl;
-    cout<<"  -- d2LL[q] = "<<get<0>(ave_err(jd2LL))<<"+/-"<<get<1>(ave_err(jd2LL))<<endl;
+    // cout<<"  -- d2LL[q] = "<<get<0>(ave_err(jd2LL))<<"+/-"<<get<1>(ave_err(jd2LL))<<endl;
     cout<<"    ** chisqr[q] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
 
 
@@ -3557,7 +3557,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
         // jpole[ijack] = jZ_pars[ijack][nbeta];
         jd2[ijack] = jZ_pars[ijack][nbeta];
         jd2L[ijack] = jZ_pars[ijack][nbeta+1];
-        jd2LL[ijack] = jZ_pars[ijack][nbeta+2];
+        // jd2LL[ijack] = jZ_pars[ijack][nbeta+2];
         /**/
         jchisq[ijack] = jZ_pars[ijack][npar];
       }
@@ -3565,7 +3565,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
     // cout<<"  -- pole["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
     cout<<"  -- d2["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jd2))<<"+/-"<<get<1>(ave_err(jd2))<<endl;
     cout<<"  -- d2L["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jd2L))<<"+/-"<<get<1>(ave_err(jd2L))<<endl;
-    cout<<"  -- d2LL["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jd2LL))<<"+/-"<<get<1>(ave_err(jd2LL))<<endl;
+    // cout<<"  -- d2LL["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jd2LL))<<"+/-"<<get<1>(ave_err(jd2LL))<<endl;
     cout<<"    ** chisqr["<<str_bil[ibil]<<"] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
   }
 
