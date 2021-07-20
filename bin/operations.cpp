@@ -2441,14 +2441,23 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 
     double ainv2 = ainv[b]*ainv[b];
 
-    double _p2min = 4;  //GeV^2
+    double _p2min = 0;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
+    {
+      _p2min = p2min_M3_M4[0];
       _p2max = p2max_M3_M4[0];
+    }
     else if(fabs(ainv[b]-2.4635)<1e-10)
+      {
+      _p2min = p2min_M3_M4[1];
       _p2max = p2max_M3_M4[1];
+    }
     else if(fabs(ainv[b]-2.8934)<1e-10)
+      {
+      _p2min = p2min_M3_M4[2];
       _p2max = p2max_M3_M4[2];
+    }
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
 
@@ -2589,14 +2598,23 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
 
     double ainv2 = ainv[b]*ainv[b];
 
-    double _p2min = 4;  //GeV^2
+    double _p2min = 0;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
+    {
+      _p2min = p2min_M3_M4[0];
       _p2max = p2max_M3_M4[0];
+    }
     else if(fabs(ainv[b]-2.4635)<1e-10)
+    {
+      _p2min = p2min_M3_M4[1];
       _p2max = p2max_M3_M4[1];
+    }
     else if(fabs(ainv[b]-2.8934)<1e-10)
+    {
+      _p2min = p2min_M3_M4[2];
       _p2max = p2max_M3_M4[2];
+    }
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
 
@@ -2742,14 +2760,23 @@ oper_t oper_t::a2p2_extr_with_p4(int b)
 
     double ainv2 = ainv[b]*ainv[b];
 
-    double _p2min = 4;  //GeV^2
+    double _p2min = 0;  //GeV^2
     double _p2max = 0;
     if(fabs(ainv[b]-2.1218)<1e-10)
+     {
+      _p2min = p2min_M3_M4[0];
       _p2max = p2max_M3_M4[0];
+    }
     else if(fabs(ainv[b]-2.4635)<1e-10)
+    {
+      _p2min = p2min_M3_M4[1];
       _p2max = p2max_M3_M4[1];
+    }
     else if(fabs(ainv[b]-2.8934)<1e-10)
+     {
+      _p2min = p2min_M3_M4[2];
       _p2max = p2max_M3_M4[2];
+    }
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;
 
@@ -3015,7 +3042,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
     out[b].allocate();
   }
 
-  double _p2min = 4;  //GeV^2
+  double _p2min[] = {p2min_M3_M4[0],p2min_M3_M4[1],p2min_M3_M4[2]};  //GeV^2
   double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[1],p2max_M3_M4[2]};
 
   // count all the momenta respecting the above criteria of p2min&p2max
@@ -3024,7 +3051,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   {
     double ainv2 = ainv[b]*ainv[b];
     for(int j=0; j<in[b]._linmoms; j++)
-      if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+      if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
         _linmoms_tot ++;
   }
 
@@ -3058,7 +3085,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ)); // [moms][nbil][nmr][nmr]
 
     for(int j=0; j<in[b]._linmoms; j++)
-    if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+    if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
     {
       // coord[0][j_tot] = (b==0)? 1.0 : 0.0; //Za
       // coord[1][j_tot] = (b==1)? 1.0 : 0.0; //Zb
@@ -3096,7 +3123,7 @@ voper_t combined_M3(voper_t in)  // M3 method combined on all betas
   vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jchisq(0.0,njacks);
 
     for(int b=0; b<nbeta;b++)
-      cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
+      cout<<"p2 range (physical units):   "<<_p2min[b]<<" - "<<_p2max[b]<<endl;
     for(int ijack=0;ijack<njacks;ijack++)
     {
       for(int b=0; b<nbeta;b++)
@@ -3161,7 +3188,7 @@ voper_t combined_M4(voper_t in)  // M3 method combined on all betas
     out[b].allocate();
   }
 
-  double _p2min = 4;  //GeV^2
+  double _p2min[] = {p2min_M3_M4[0],p2min_M3_M4[1],p2min_M3_M4[2]};  //GeV^2
   double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[1],p2max_M3_M4[2]};
 
   // count all the momenta respecting the above criteria of p2min&p2max
@@ -3170,7 +3197,7 @@ voper_t combined_M4(voper_t in)  // M3 method combined on all betas
   {
     double ainv2 = ainv[b]*ainv[b];
     for(int j=0; j<in[b]._linmoms; j++)
-      if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+      if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
         _linmoms_tot ++;
   }
 
@@ -3199,7 +3226,7 @@ voper_t combined_M4(voper_t in)  // M3 method combined on all betas
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ)); // [moms][nbil][nmr][nmr]
 
     for(int j=0; j<in[b]._linmoms; j++)
-    if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+    if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
     {
       // coord[0][j_tot] = (b==0)? 1.0 : 0.0; //Za
       // coord[1][j_tot] = (b==1)? 1.0 : 0.0; //Zb
@@ -3233,7 +3260,7 @@ voper_t combined_M4(voper_t in)  // M3 method combined on all betas
   vd_t jpole(0.0,njacks), jlincoeff(0.0,njacks), jsqrcoeff(0.0,njacks), jchisq(0.0,njacks);
 
     for(int b=0; b<nbeta;b++)
-      cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
+      cout<<"p2 range (physical units):   "<<_p2min[b]<<" - "<<_p2max[b]<<endl;
     for(int ijack=0;ijack<njacks;ijack++)
     {
       for(int b=0; b<nbeta;b++)
@@ -3302,7 +3329,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
     out[b].allocate();
   }
 
-  double _p2min = 4;  //GeV^2
+  double _p2min[] = {p2min_M3_M4[0],p2min_M3_M4[1],p2min_M3_M4[2]};  //GeV^2
   double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[1],p2max_M3_M4[2]};
 
   // count all the momenta respecting the above criteria of p2min&p2max
@@ -3311,7 +3338,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
   {
     double ainv2 = ainv[b]*ainv[b];
     for(int j=0; j<in[b]._linmoms; j++)
-      if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+      if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
         _linmoms_tot ++;
   }
 
@@ -3340,7 +3367,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ)); // [moms][nbil][nmr][nmr]
 
     for(int j=0; j<in[b]._linmoms; j++)
-    if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+    if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
     {
       // coord[0][j_tot] = (b==0)? 1.0 : 0.0; //Za
       // coord[1][j_tot] = (b==1)? 1.0 : 0.0; //Zb
@@ -3375,7 +3402,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
   vd_t jlinA(0.0,njacks), jlinB(0.0,njacks), jlinC(0.0,njacks), jpole(0.0,njacks), jchisq(0.0,njacks);
 
     for(int b=0; b<nbeta;b++)
-      cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
+      cout<<"p2 range (physical units):   "<<_p2min[b]<<" - "<<_p2max[b]<<endl;
     for(int ijack=0;ijack<njacks;ijack++)
     {
       for(int b=0; b<nbeta;b++)
@@ -3406,7 +3433,7 @@ voper_t combined_M5(voper_t in)  // M3 method combined on all betas
       {
         for(int b=0; b<nbeta;b++)
           (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
-       jlinA[ijack] = jZ_pars[ijack][nbeta];
+      jlinA[ijack] = jZ_pars[ijack][nbeta];
       jlinB[ijack] = jZ_pars[ijack][nbeta+1];
       jlinC[ijack] = jZ_pars[ijack][nbeta+2];
       jpole[ijack] = jZ_pars[ijack][2*nbeta];
@@ -3448,7 +3475,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
     out[b].allocate();
   }
 
-  double _p2min = 8;  //GeV^2
+  double _p2min[] = {p2min_M3_M4[0],p2min_M3_M4[1],p2min_M3_M4[2]};  //GeV^2
   double _p2max[] = {p2max_M3_M4[0],p2max_M3_M4[1],p2max_M3_M4[2]};
 
   // count all the momenta respecting the above criteria of p2min&p2max
@@ -3457,7 +3484,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
   {
     double ainv2 = ainv[b]*ainv[b];
     for(int j=0; j<in[b]._linmoms; j++)
-      if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+      if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
         _linmoms_tot ++;
   }
 
@@ -3486,7 +3513,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z(in[b].jZ)); // [moms][nbil][nmr][nmr]
 
     for(int j=0; j<in[b]._linmoms; j++)
-    if(in[b].p2[j]*ainv2 >= _p2min && in[b].p2[j]*ainv2 <= _p2max[b])
+    if(in[b].p2[j]*ainv2 >= _p2min[b] && in[b].p2[j]*ainv2 <= _p2max[b])
     {
       // coord[0][j_tot] = (b==0)? 1.0 : 0.0; //Za
       // coord[1][j_tot] = (b==1)? 1.0 : 0.0; //Zb
@@ -3523,7 +3550,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
   vd_t jd2(0.0,njacks), jd2L(0.0,njacks), jd2LL(0.0,njacks)/*, jpole(0.0,njacks)*/, jchisq(0.0,njacks);
 
     for(int b=0; b<nbeta;b++)
-      cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max[b]<<endl;
+      cout<<"p2 range (physical units):   "<<_p2min[b]<<" - "<<_p2max[b]<<endl;
     for(int ijack=0;ijack<njacks;ijack++)
     {
       for(int b=0; b<nbeta;b++)
