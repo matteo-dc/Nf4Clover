@@ -265,6 +265,7 @@ int main(int narg,char **arg)
     voper_t M3combo(nbeta);
     voper_t M4combo(nbeta);
     voper_t M5combo(nbeta);
+    voper_t M5_quadcombo(nbeta);
     voper_t M5_logcombo(nbeta);
 
     if(!only_basic && nbeta>1)
@@ -280,6 +281,10 @@ int main(int narg,char **arg)
      M5combo = combined_M5(all);
       for(int b=0;b<nbeta;b++)
         M5combo[b].plot("M5comb");
+
+     M5_quadcombo = combined_M5_quadratic(all);
+      for(int b=0;b<nbeta;b++)
+        M5_quadcombo[b].plot("M5quadcomb");        
     
      M5_logcombo = combined_M5_log(all);
       for(int b=0;b<nbeta;b++)
