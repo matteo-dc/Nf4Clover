@@ -3532,7 +3532,7 @@ voper_t combined_M5_quadratic(voper_t in)
 
         for(int ibil=0;ibil<nbil;ibil++)
         {
-          y_Zbil[ibil][ijack][j_tot] = (in[b].jZ)[j][ibil][ijack][0][0]-0.059/(in[b].p2[j]*ainv2);
+          y_Zbil[ibil][ijack][j_tot] = (in[b].jZ)[j][ibil][ijack][0][0];//-0.059/(in[b].p2[j]*ainv2);
         }
       }
 
@@ -3674,7 +3674,7 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
 
         for(int ibil=0;ibil<nbil;ibil++)
         {
-          y_Zbil[ibil][ijack][j_tot] = (in[b].jZ)[j][ibil][ijack][0][0]-0.059/(in[b].p2[j]*ainv2);
+          y_Zbil[ibil][ijack][j_tot] = (in[b].jZ)[j][ibil][ijack][0][0];//-0.059/(in[b].p2[j]*ainv2);
         }
       }
 
