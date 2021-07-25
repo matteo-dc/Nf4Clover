@@ -1296,77 +1296,77 @@ oper_t chiral_sea_extr(voper_t in)
             }
 
     // extrapolate ZV/ZA and ZP/ZS and ZA/ZV
-// #pragma omp parallel for collapse(2)
-//     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-//         for(int iloop=0;iloop<3;iloop++)
-//         {
-//             vvd_t coord_bil(vd_t(0.0,nmSea),npar_bil_max);
+#pragma omp parallel for collapse(2)
+    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
+        for(int iloop=0;iloop<3;iloop++)
+        {
+            vvd_t coord_bil(vd_t(0.0,nmSea),npar_bil_max);
 
-//             vvd_t y_Z(vd_t(0.0,nmSea),njacks);
-//             vd_t dy_Z(0.0,nmSea);
-//             vd_t y_Z_ave(0.0,nmSea);
+            vvd_t y_Z(vd_t(0.0,nmSea),njacks);
+            vd_t dy_Z(0.0,nmSea);
+            vd_t y_Z_ave(0.0,nmSea);
 
-//             vector<jZbil_t> jzz;
+            vector<jZbil_t> jzz;
 
-//             for(int msea=0; msea<nmSea; msea++)
-//             {
-//                 coord_bil[0][msea] = 1.0;
-//                 if(!UseEffMass)
-//                 {
-//                     if(constant)
-//                     {
-//                         coord_bil[0][msea] = 1.0;      // 1
-//                     }
-//                     else if(linear)
-//                     {
-//                         coord_bil[0][msea] = 1.0;      // 1
-//                         coord_bil[1][msea] = x[msea];  // (amsea)
-//                     }
-//                     else if(quadratic)
-//                     {
-//                         coord_bil[0][msea] = 1.0;               // 1
-//                         coord_bil[1][msea] = x[msea];           // (amsea)
-//                         coord_bil[2][msea] = x[msea]*x[msea];   // (amsea)^2
-//                     }
+            for(int msea=0; msea<nmSea; msea++)
+            {
+                coord_bil[0][msea] = 1.0;
+                if(!UseEffMass)
+                {
+                    if(constant)
+                    {
+                        coord_bil[0][msea] = 1.0;      // 1
+                    }
+                    else if(linear)
+                    {
+                        coord_bil[0][msea] = 1.0;      // 1
+                        coord_bil[1][msea] = x[msea];  // (amsea)
+                    }
+                    else if(quadratic)
+                    {
+                        coord_bil[0][msea] = 1.0;               // 1
+                        coord_bil[1][msea] = x[msea];           // (amsea)
+                        coord_bil[2][msea] = x[msea]*x[msea];   // (amsea)^2
+                    }
 
-//                 }
-//                 else if(UseEffMass)
-//                 {
-//                     if(!linear)
-//                     {
-//                         cout<<"Only linear fit implemented when using EffMass!"<<endl;
-//                         exit(0);
-//                     }
+                }
+                else if(UseEffMass)
+                {
+                    if(!linear)
+                    {
+                        cout<<"Only linear fit implemented when using EffMass!"<<endl;
+                        exit(0);
+                    }
 
-//                     coord_bil[1][msea] = pow(x[msea],2.0);
-//                 }
+                    coord_bil[1][msea] = pow(x[msea],2.0);
+                }
 
-//                 if(iloop==0)
-//                     jzz=in[msea].jZVoverZA;
-//                 else if(iloop==1)
-//                     jzz=in[msea].jZPoverZS;
-//                 else
-//                     jzz=in[msea].jZAoverZV;
+                if(iloop==0)
+                    jzz=in[msea].jZVoverZA;
+                else if(iloop==1)
+                    jzz=in[msea].jZPoverZS;
+                else
+                    jzz=in[msea].jZAoverZV;
 
-//                 for(int ijack=0;ijack<njacks;ijack++)
-//                     y_Z[ijack][msea] = jzz[ibilmom][0][ijack][0][0];
+                for(int ijack=0;ijack<njacks;ijack++)
+                    y_Z[ijack][msea] = jzz[ibilmom][0][ijack][0][0];
 
 
-//                 y_Z_ave[msea] = (get<0>(ave_err_Z(jzz)))[ibilmom][0][0][0];
-//                 dy_Z[msea] = (get<1>(ave_err_Z(jzz)))[ibilmom][0][0][0];
-//             }
+                y_Z_ave[msea] = (get<0>(ave_err_Z(jzz)))[ibilmom][0][0][0];
+                dy_Z[msea] = (get<1>(ave_err_Z(jzz)))[ibilmom][0][0][0];
+            }
 
-//             vvd_t jZ_pars = polyfit(coord_bil,npar_bil_max,dy_Z,y_Z,x_min,x_max);
+            vvd_t jZ_pars = polyfit(coord_bil,npar_bil_max,dy_Z,y_Z,x_min,x_max);
 
-            // for(int ijack=0;ijack<njacks;ijack++)
-            // {
-            //     if(iloop==0)
-            //         (out.jZVoverZA)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
-            //     else if(iloop==1)
-            //         (out.jZPoverZS)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
-            //     else
-            //         (out.jZAoverZV)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
-            // }
+            for(int ijack=0;ijack<njacks;ijack++)
+            {
+                if(iloop==0)
+                    (out.jZVoverZA)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
+                else if(iloop==1)
+                    (out.jZPoverZS)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
+                else
+                    (out.jZAoverZV)[ibilmom][0][ijack][0][0] = jZ_pars[ijack][0];
+            }
 
 //            if(ibilmom%20==0)
 //            {
@@ -2287,7 +2287,7 @@ void oper_t::load(const string suffix)
 oper_t oper_t::a2p2_extr(int b)
 {
     cout<<endl;
-    cout<<"----- extrapolation to p2 = 0 -----"<<endl<<endl;
+    cout<<"----- [M1]  extrapolation to p2 = 0 -----"<<endl<<endl;
 
     oper_t out=(*this);
 
@@ -2381,39 +2381,39 @@ oper_t oper_t::a2p2_extr(int b)
       }
 
     // Interpolating ZVoverZA and ZPoverZS and ZAoverZV
-    // vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
-    // for(int imom=0;imom<_bilmoms;imom++)
-    // {
-    //     for(int ijack=0;ijack<njacks;ijack++)
-    //     {
-    //         y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
-    //         y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
-    //         y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
-    //     }
-    //     dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
-    //     dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
-    //     dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
-    // }
+    for(int imom=0;imom<_bilmoms;imom++)
+    {
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
+            y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
+        }
+        dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
+        dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
+    }
 
-    // vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,p2min,p2max); // [ijack][ipar]
-    // vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,p2min,p2max); // [ijack][ipar]
-    // vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,p2min,p2max); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,p2min,p2max); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,p2min,p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,p2min,p2max); // [ijack][ipar]
 
-    // for(int ijack=0;ijack<njacks;ijack++)
-    // {
-    //     (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
-    //     (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
-    //     (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
-    // }
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
+    }
 
     return out;
 }
@@ -2421,7 +2421,7 @@ oper_t oper_t::a2p2_extr(int b)
 oper_t oper_t::a2p2_extr_with_pole(int b)
 {
     cout<<endl;
-    cout<<"----- extrapolation to p2 = 0 [with pole 1/p2] -----"<<endl<<endl;
+    cout<<"----- [M3] extrapolation to p2 = 0 [with pole 1/p2] -----"<<endl<<endl;
 
     oper_t out=(*this);
 
@@ -2538,39 +2538,39 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
     }
 
     // Interpolating ZVoverZA and ZPoverZS
-    // vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
-    // for(int imom=0;imom<_bilmoms;imom++)
-    // {
-    //     for(int ijack=0;ijack<njacks;ijack++)
-    //     {
-    //         y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
-    //         y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
-    //         y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
-    //     }
-    //     dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
-    //     dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
-    //     dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
-    // }
+    for(int imom=0;imom<_bilmoms;imom++)
+    {
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
+            y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
+        }
+        dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
+        dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
+    }
 
-    // vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
-    // vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
-    // vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
 
-    // for(int ijack=0;ijack<njacks;ijack++)
-    // {
-    //     (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
-    //     (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
-    //     (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
-    // }
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
+    }
 
     return out;
 }
@@ -2578,7 +2578,7 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
 {
     cout<<endl;
-    cout<<"----- extrapolation to p2 = 0 [with pole 1/p2 + quadratic] -----"<<endl<<endl;
+    cout<<"----- [M4] extrapolation to p2 = 0 [with pole 1/p2 + quadratic] -----"<<endl<<endl;
 
     oper_t out=(*this);
 
@@ -2700,39 +2700,39 @@ oper_t oper_t::a2p2_extr_with_pole_and_p4(int b)
     }
 
     // Interpolating ZVoverZA and ZPoverZS
-    // vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
-    // for(int imom=0;imom<_bilmoms;imom++)
-    // {
-    //     for(int ijack=0;ijack<njacks;ijack++)
-    //     {
-    //         y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
-    //         y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
-    //         y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
-    //     }
-    //     dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
-    //     dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
-    //     dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
-    // }
+    for(int imom=0;imom<_bilmoms;imom++)
+    {
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
+            y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
+        }
+        dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
+        dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
+    }
 
-    // vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
-    // vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
-    // vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
 
-    // for(int ijack=0;ijack<njacks;ijack++)
-    // {
-    //     (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
-    //     (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
-    //     (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
-    // }
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
+    }
 
     return out;
 }
@@ -2857,39 +2857,39 @@ oper_t oper_t::a2p2_extr_with_p4(int b)
     }
 
     // Interpolating ZVoverZA and ZPoverZS
-    // vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
-    // vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    // vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
-    // vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZVovZA(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZVovZA(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZVovZA_tmp = get<1>(ave_err_Z((*this).jZVoverZA)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZPovZS(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZPovZS(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZPovZS_tmp = get<1>(ave_err_Z((*this).jZPoverZS)); // [moms][nbil][nmr][nmr]
+    vvd_t y_ZAovZV(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
+    vd_t  dy_ZAovZV(0.0,_bilmoms);                   // [moms]
+    vvvvd_t dy_ZAovZV_tmp = get<1>(ave_err_Z((*this).jZAoverZV)); // [moms][nbil][nmr][nmr]
 
-    // for(int imom=0;imom<_bilmoms;imom++)
-    // {
-    //     for(int ijack=0;ijack<njacks;ijack++)
-    //     {
-    //         y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
-    //         y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
-    //         y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
-    //     }
-    //     dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
-    //     dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
-    //     dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
-    // }
+    for(int imom=0;imom<_bilmoms;imom++)
+    {
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            y_ZVovZA[ijack][imom] = jZVoverZA[imom][0][ijack][0][0];
+            y_ZPovZS[ijack][imom] = jZPoverZS[imom][0][ijack][0][0];
+            y_ZAovZV[ijack][imom] = jZAoverZV[imom][0][ijack][0][0];
+        }
+        dy_ZVovZA[imom] = dy_ZVovZA_tmp[imom][0][0][0];
+        dy_ZPovZS[imom] = dy_ZPovZS_tmp[imom][0][0][0];
+        dy_ZAovZV[imom] = dy_ZAovZV_tmp[imom][0][0][0];
+    }
 
-    // vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
-    // vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
-    // vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,_p2min,_p2max); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,_p2min,_p2max); // [ijack][ipar]
 
-    // for(int ijack=0;ijack<njacks;ijack++)
-    // {
-    //     (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
-    //     (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
-    //     (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
-    // }
+    for(int ijack=0;ijack<njacks;ijack++)
+    {
+        (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
+    }
 
     return out;
 }
@@ -2903,9 +2903,9 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
 
     double epsq = 0.0;
     vector<double> eps = {0.0,0.24,0.0,0.226,0.0}; //{S,V,P,A,T}  [GeV^2]
-    // double epsVA = 0.0;
-    // double epsAV = 0.0;
-    // double epsPS = 0.497;
+    double epsVA = 0.0;
+    double epsAV = 0.0;
+    double epsPS = 0.497;
 
     for(int imom=0;imom<_bilmoms;imom++)
       for(int ijack=0;ijack<njacks;ijack++)
@@ -2913,9 +2913,9 @@ oper_t oper_t::remove_hadr_cont(double _ainv)
         (out.jZq)[imom][ijack][0] -= epsq/(p2[imom]*_ainv*_ainv);
         for(int ibil=0;ibil<nbil;ibil++)
           (out.jZ)[imom][ibil][ijack][0][0] -= eps[ibil]/(p2[imom]*_ainv*_ainv);
-        // (out.jZVoverZA)[imom][0][ijack][0][0] -= epsVA/(p2[imom]*_ainv*_ainv);
-        // (out.jZPoverZS)[imom][0][ijack][0][0] -= epsPS/(p2[imom]*_ainv*_ainv);
-        // (out.jZAoverZV)[imom][0][ijack][0][0] -= epsAV/(p2[imom]*_ainv*_ainv);
+        (out.jZVoverZA)[imom][0][ijack][0][0] -= epsVA/(p2[imom]*_ainv*_ainv);
+        (out.jZPoverZS)[imom][0][ijack][0][0] -= epsPS/(p2[imom]*_ainv*_ainv);
+        (out.jZAoverZV)[imom][0][ijack][0][0] -= epsAV/(p2[imom]*_ainv*_ainv);
       }
 
     return out;
@@ -2960,9 +2960,9 @@ oper_t oper_t::Z_improvement(double _ainv)
     // Interpolating Z's
     vvd_t y_Zq(vd_t(0.0,length),njacks);       // [njacks][moms]
     vvvd_t y_Zbil(vvd_t(vd_t(0.0,length),njacks),nbil);       // [njacks][moms]
-    // vvd_t y_ZVovZA(vd_t(0.0,length),njacks);       // [njacks][moms]
-    // vvd_t y_ZPovZS(vd_t(0.0,length),njacks);       // [njacks][moms]
-    // vvd_t y_ZAovZV(vd_t(0.0,length),njacks);       // [njacks][moms]
+    vvd_t y_ZVovZA(vd_t(0.0,length),njacks);       // [njacks][moms]
+    vvd_t y_ZPovZS(vd_t(0.0,length),njacks);       // [njacks][moms]
+    vvd_t y_ZAovZV(vd_t(0.0,length),njacks);       // [njacks][moms]
 
     int l=0;
     for(int imom=0;imom<_linmoms;imom++)
@@ -2979,9 +2979,9 @@ oper_t oper_t::Z_improvement(double _ainv)
               y_Zq[ijack][l] = (jZq[jmom][ijack][0]*p2[jmom]-jZq[imom][ijack][0]*p2[imom])/(p2[jmom]-p2[imom]);
               for(int ibil=0;ibil<nbil;ibil++)
               y_Zbil[ibil][ijack][l] = (jZ[jmom][ibil][ijack][0][0]*p2[jmom]-jZ[imom][ibil][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
-            //   y_ZVovZA[ijack][l] = (jZVoverZA[jmom][0][ijack][0][0]*p2[jmom]-jZVoverZA[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
-            //   y_ZPovZS[ijack][l] = (jZPoverZS[jmom][0][ijack][0][0]*p2[jmom]-jZPoverZS[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
-            //   y_ZAovZV[ijack][l] = (jZAoverZV[jmom][0][ijack][0][0]*p2[jmom]-jZAoverZV[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
+              y_ZVovZA[ijack][l] = (jZVoverZA[jmom][0][ijack][0][0]*p2[jmom]-jZVoverZA[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
+              y_ZPovZS[ijack][l] = (jZPoverZS[jmom][0][ijack][0][0]*p2[jmom]-jZPoverZS[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
+              y_ZAovZV[ijack][l] = (jZAoverZV[jmom][0][ijack][0][0]*p2[jmom]-jZAoverZV[imom][0][ijack][0][0]*p2[imom])/(p2[jmom]-p2[imom]);
             }
             l++;
           }
@@ -2989,19 +2989,19 @@ oper_t oper_t::Z_improvement(double _ainv)
     vd_t dy_Zq = get<1>(ave_err(y_Zq));
     vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
 
-    // vd_t dy_ZVovZA = get<1>(ave_err(y_ZVovZA));
-    // vd_t dy_ZPovZS = get<1>(ave_err(y_ZPovZS));
-    // vd_t dy_ZAovZV = get<1>(ave_err(y_ZAovZV));
-    // vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
-    // vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
-    // vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
+    vd_t dy_ZVovZA = get<1>(ave_err(y_ZVovZA));
+    vd_t dy_ZPovZS = get<1>(ave_err(y_ZPovZS));
+    vd_t dy_ZAovZV = get<1>(ave_err(y_ZAovZV));
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,0.0,100.0/*p2min,p2max*/); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
-        // (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
-        // (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
-        // (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
+        (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
+        (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
+        (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
     }
 
     for(int ibil=0;ibil<nbil;ibil++)
@@ -3871,42 +3871,42 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
     }
 
     // extrapolate ZV/ZA and ZP/ZS
-    // vvd_t y_ZVovZA(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    // vd_t  dy_ZVovZA(0.0,nm_Sea_tot);             // [nmseatot]
-    // vvd_t y_ZPovZS(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    // vd_t  dy_ZPovZS(0.0,nm_Sea_tot);             // [nmseatot]
-    // vvd_t y_ZAovZV(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    // vd_t  dy_ZAovZV(0.0,nm_Sea_tot);             // [nmseatot]
+    vvd_t y_ZVovZA(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
+    vd_t  dy_ZVovZA(0.0,nm_Sea_tot);             // [nmseatot]
+    vvd_t y_ZPovZS(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
+    vd_t  dy_ZPovZS(0.0,nm_Sea_tot);             // [nmseatot]
+    vvd_t y_ZAovZV(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
+    vd_t  dy_ZAovZV(0.0,nm_Sea_tot);             // [nmseatot]
 
-    // iel=0;
-    // for(int b=0; b<nb; b++)
-    //     for(int msea=0; msea<nm[b]; msea++)
-    //     {
-    //         for(int ijack=0;ijack<njacks;ijack++)
-    //         {
-    //             y_ZVovZA[ijack][iel] = in[b][msea].jZVoverZA[0][0][ijack][0][0];
-    //             y_ZPovZS[ijack][iel] = in[b][msea].jZPoverZS[0][0][ijack][0][0];
-    //             y_ZAovZV[ijack][iel] = in[b][msea].jZAoverZV[0][0][ijack][0][0];
-    //         }
+    iel=0;
+    for(int b=0; b<nb; b++)
+        for(int msea=0; msea<nm[b]; msea++)
+        {
+            for(int ijack=0;ijack<njacks;ijack++)
+            {
+                y_ZVovZA[ijack][iel] = in[b][msea].jZVoverZA[0][0][ijack][0][0];
+                y_ZPovZS[ijack][iel] = in[b][msea].jZPoverZS[0][0][ijack][0][0];
+                y_ZAovZV[ijack][iel] = in[b][msea].jZAoverZV[0][0][ijack][0][0];
+            }
 
-    //         dy_ZVovZA[iel] = (get<1>(ave_err_Z(in[b][msea].jZVoverZA)))[0][0][0][0];
-    //         dy_ZPovZS[iel] = (get<1>(ave_err_Z(in[b][msea].jZPoverZS)))[0][0][0][0];
-    //         dy_ZAovZV[iel] = (get<1>(ave_err_Z(in[b][msea].jZAoverZV)))[0][0][0][0];
+            dy_ZVovZA[iel] = (get<1>(ave_err_Z(in[b][msea].jZVoverZA)))[0][0][0][0];
+            dy_ZPovZS[iel] = (get<1>(ave_err_Z(in[b][msea].jZPoverZS)))[0][0][0][0];
+            dy_ZAovZV[iel] = (get<1>(ave_err_Z(in[b][msea].jZAoverZV)))[0][0][0][0];
 
-    //         iel++;
-    //     }
+            iel++;
+        }
 
-    // vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0,nm_Sea_tot-1); // [ijack][ipar]
-    // vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0,nm_Sea_tot-1); // [ijack][ipar]
-    // vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,0,nm_Sea_tot-1); // [ijack][ipar]
+    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0,nm_Sea_tot-1); // [ijack][ipar]
+    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0,nm_Sea_tot-1); // [ijack][ipar]
+    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,0,nm_Sea_tot-1); // [ijack][ipar]
 
-    // for(int b=0; b<nb; b++)
-    //     for(int ijack=0;ijack<njacks;ijack++)
-    //     {
-    //         (out[b].jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][b];
-    //         (out[b].jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][b];
-    //         (out[b].jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][b];
-    //     }
+    for(int b=0; b<nb; b++)
+        for(int ijack=0;ijack<njacks;ijack++)
+        {
+            (out[b].jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][b];
+            (out[b].jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][b];
+            (out[b].jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][b];
+        }
 
     // // extrapolate Z4f
     // vvd_t y_Z4f(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
@@ -4045,15 +4045,25 @@ void oper_t::plot(const string suffix)
     vvvvd_t Z_err = get<1>(Zbil_ave_err);    //[imom][ibil][mr1][mr2]
 
     // ZV/ZA and ZP/ZS and ZA/ZV (S,V,P,A,T)
-    Zbil12_tup ZVovZA_ave_err = ave_err_Z(in.jZ,1,3);
-    Zbil12_tup ZPovZS_ave_err = ave_err_Z(in.jZ,2,0);
-    Zbil12_tup ZAovZV_ave_err = ave_err_Z(in.jZ,3,1);
-    vvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][mr1][mr2]
-    vvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
-    vvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    //[imom][mr1][mr2]
-    vvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][mr1][mr2]
-    vvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
-    vvvd_t ZAovZV_err = get<1>(ZAovZV_ave_err);    //[imom][mr1][mr2]
+    // Zbil12_tup ZVovZA_ave_err = ave_err_Z(in.jZ,1,3);
+    // Zbil12_tup ZPovZS_ave_err = ave_err_Z(in.jZ,2,0);
+    // Zbil12_tup ZAovZV_ave_err = ave_err_Z(in.jZ,3,1);
+    Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZVoverZA); 
+    Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZPoverZS); 
+    Zbil_tup ZAovZV_ave_err = ave_err_Z(in.jZAoverZV); 
+
+    // vvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][mr1][mr2]
+    // vvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
+    // vvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    //[imom][mr1][mr2]
+    // vvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][mr1][mr2]
+    // vvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
+    // vvvd_t ZAovZV_err = get<1>(ZAovZV_ave_err);    //[imom][mr1][mr2]
+    vvvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][0][mr1][mr2]
+    vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
+    vvvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    
+    vvvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    
+    vvvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
+    vvvvd_t ZAovZV_err = get<1>(ZAovZV_ave_err);    
 
     // bval/bsea
     Zq_tup bval_ave_err = ave_err_Zq(in.bval);
@@ -4137,13 +4147,21 @@ void oper_t::plot(const string suffix)
         //            int imomk = in.linmoms[imomq][0];
         int imomk = imom;   // NB: it works only for RIMOM!
 
-        ZVovZA_data<<(in.p2_tilde)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0]<<"\t"<<ZVovZA_err[imom][0][0]<<endl;
-        ZPovZS_data<<(in.p2_tilde)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0]<<"\t"<<ZPovZS_err[imom][0][0]<<endl;
-        ZAovZV_data<<(in.p2_tilde)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0]<<"\t"<<ZAovZV_err[imom][0][0]<<endl;
+        // ZVovZA_data<<(in.p2_tilde)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0]<<"\t"<<ZVovZA_err[imom][0][0]<<endl;
+        // ZPovZS_data<<(in.p2_tilde)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0]<<"\t"<<ZPovZS_err[imom][0][0]<<endl;
+        // ZAovZV_data<<(in.p2_tilde)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0]<<"\t"<<ZAovZV_err[imom][0][0]<<endl;
 
-        ZVovZA_p2_data<<(in.p2)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0]<<"\t"<<ZVovZA_err[imom][0][0]<<endl;
-        ZPovZS_p2_data<<(in.p2)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0]<<"\t"<<ZPovZS_err[imom][0][0]<<endl;
-        ZAovZV_p2_data<<(in.p2)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0]<<"\t"<<ZAovZV_err[imom][0][0]<<endl;
+        // ZVovZA_p2_data<<(in.p2)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0]<<"\t"<<ZVovZA_err[imom][0][0]<<endl;
+        // ZPovZS_p2_data<<(in.p2)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0]<<"\t"<<ZPovZS_err[imom][0][0]<<endl;
+        // ZAovZV_p2_data<<(in.p2)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0]<<"\t"<<ZAovZV_err[imom][0][0]<<endl;
+
+        ZVovZA_data<<(in.p2_tilde)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
+        ZPovZS_data<<(in.p2_tilde)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+        ZAovZV_data<<(in.p2_tilde)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0][0]<<"\t"<<ZAovZV_err[imom][0][0][0]<<endl;
+
+        ZVovZA_p2_data<<(in.p2)[imomk]<<"\t"<<ZVovZA_ave[imom][0][0][0]<<"\t"<<ZVovZA_err[imom][0][0][0]<<endl;
+        ZPovZS_p2_data<<(in.p2)[imomk]<<"\t"<<ZPovZS_ave[imom][0][0][0]<<"\t"<<ZPovZS_err[imom][0][0][0]<<endl;
+        ZAovZV_p2_data<<(in.p2)[imomk]<<"\t"<<ZAovZV_ave[imom][0][0][0]<<"\t"<<ZAovZV_err[imom][0][0][0]<<endl;
     }
 
     if(suffix=="chir" and strcmp(chir_ansatz_val.c_str(),"linear")==0)
