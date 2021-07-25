@@ -2570,7 +2570,17 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
         (out.jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][0];
         (out.jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][0];
         (out.jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][0];
+
+        // parameters for ZA/ZV
+        jlincoeff[ijack] = jZAovZV_pars[ijack][1];
+            jpole[ijack] = jZAovZV_pars[ijack][2];
+            /**/
+            jchisq[ijack] = jZAovZV_pars[ijack][npar];
     }
+
+    cout<<"  -- pole[A/V] = "<<get<0>(ave_err(jpole))<<"+/-"<<get<1>(ave_err(jpole))<<endl;
+    cout<<"  -- lincoeff[A/V] = "<<get<0>(ave_err(jlincoeff))<<"+/-"<<get<1>(ave_err(jlincoeff))<<endl;
+    cout<<"    ** chisqr[A/V] = "<<get<0>(ave_err(jchisq))<<"+/-"<<get<1>(ave_err(jchisq))<<endl<<endl;
 
     return out;
 }
