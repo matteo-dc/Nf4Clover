@@ -95,6 +95,8 @@ extern string an_suffix;
 // p2min and p2max values for M3 and M4 (Gev^2)
 extern vector<double> p2min_M3_M4;
 extern vector<double> p2max_M3_M4;
+// load label
+extern string load_label;
 
 // use Sigma1 parameter
 extern int UseSigma1;

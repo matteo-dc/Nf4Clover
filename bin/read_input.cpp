@@ -24,6 +24,7 @@ double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref, stepfun
 vector<double> mass_val;
 vector<double> p2max_M3_M4,p2min_M3_M4;
 string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz_val, chir_ansatz_sea;
+string load_label;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
 vector<string> volume_label;  // volume_label[Nbeta]
@@ -101,6 +102,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,stepfunc_max_tag)==0) return STEPFUNC_MAX_TK;
     if(strcasecmp(tok,p2max_M3_M4_tag)==0) return P2MAX_M3_M4_TK;
     if(strcasecmp(tok,p2min_M3_M4_tag)==0) return P2MIN_M3_M4_TK;
+    if(strcasecmp(tok,load_label_tag)==0) return LOAD_LABEL_TK;
 
     return VALUE_GLB_TK;
 }
@@ -296,7 +298,7 @@ void read_input_glb(const char path[])
     chir_ansatz_sea=DEFAULT_STR_VAL;
     stepfunc_min=DEFAULT_DOUBLE_VAL;
     stepfunc_max=DEFAULT_DOUBLE_VAL;
-
+    load_label=DEFAULT_STR_VAL;
 
 //    for(auto &bl : beta_label) bl=DEFAULT_STR_VAL;
 //    //        for(auto &l : L) l=DEFAULT_INT_VAL;
@@ -491,6 +493,9 @@ void read_input_glb(const char path[])
                 for(int b=0;b<nbeta;b++)
                     get_value_glb(fin,p2min_M3_M4[b]);
                 break;
+            case LOAD_LABEL_TK:
+                get_value_glb(fin,load_label);
+                break;
 
             case FEOF_GLB_TK:
                 break;
@@ -547,6 +552,7 @@ void read_input_glb(const char path[])
     check_double_par(stepfunc_max,stepfunc_max_tag);
     for(auto &p : p2max_M3_M4) check_double_par(p,p2max_M3_M4_tag);
     for(auto &p : p2min_M3_M4) check_double_par(p,p2min_M3_M4_tag);
+    check_str_par(load_label_lep,load_label_tag);
 
     fclose(fin);
 
@@ -698,7 +704,9 @@ void read_input_glb(const char path[])
         printf(" Computing only basic quantities. \n");
 
     if(load_ave)
-        printf(" Loading averaged quantities. \n");
+        printf(" Loading averaged quantities: '%s' \n",load_label.c_str());
+    else
+        printf(" Saving averaged quantities as '%s' \n",load_label.c_str());
 
     // define global variables from input
     clust_size=nconfs/njacks;

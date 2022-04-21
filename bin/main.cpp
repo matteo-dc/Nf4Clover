@@ -150,13 +150,15 @@ int main(int narg,char **arg)
 
                        /* store averaged ingredients */
 
-                        if(!load_ave) ave[th][m].print("ave_mdc");        // printing on other file:    04/22 [new projectors]
+                        if(!load_ave) ave[th][m].print(load_label);
+                        // if(!load_ave) ave[th][m].print("ave_mdc");        // printing on other file:    04/22 [new projectors]
                         // if(!load_ave) ave[th][m].print("ave_Enr028");  // latest working version: 10/03/22
                         // if(!load_ave) ave[th][m].print("ave_Martha");
 
                         /* load averaged ingredients if needed */
 
-                        if(load_ave) ave[th][m].load("ave_Enr028");  // latest working version: 10/03/22
+                        if(load_ave) ave[th][m].load(load_label);
+                        // if(load_ave) ave[th][m].load("ave_Enr028");  // latest working version: 10/03/22
                         // if(load_ave) ave[th][m].load("ave_Martha");
 
 
