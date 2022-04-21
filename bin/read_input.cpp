@@ -552,7 +552,7 @@ void read_input_glb(const char path[])
     check_double_par(stepfunc_max,stepfunc_max_tag);
     for(auto &p : p2max_M3_M4) check_double_par(p,p2max_M3_M4_tag);
     for(auto &p : p2min_M3_M4) check_double_par(p,p2min_M3_M4_tag);
-    check_str_par(load_label_lep,load_label_tag);
+    check_str_par(load_label,load_label_tag);
 
     fclose(fin);
 
