@@ -2443,20 +2443,28 @@ oper_t oper_t::a2p2_extr_with_pole(int b)
 
     double _p2min = 0;  //GeV^2
     double _p2max = 0;
-    if(fabs(ainv[b]-2.1218)<1e-10)
+    if(nbeta==1)
     {
       _p2min = p2min_M3_M4[0];
       _p2max = p2max_M3_M4[0];
     }
-    else if(fabs(ainv[b]-2.4635)<1e-10)
-      {
-      _p2min = p2min_M3_M4[1];
-      _p2max = p2max_M3_M4[1];
-    }
-    else if(fabs(ainv[b]-2.8934)<1e-10)
-      {
-      _p2min = p2min_M3_M4[2];
-      _p2max = p2max_M3_M4[2];
+    else if(nbeta==3)
+    {
+        if(fabs(ainv[b]-2.1218)<1e-10)
+        {
+          _p2min = p2min_M3_M4[0];
+          _p2max = p2max_M3_M4[0];
+        }
+        else if(fabs(ainv[b]-2.4635)<1e-10)
+          {
+          _p2min = p2min_M3_M4[1];
+          _p2max = p2max_M3_M4[1];
+        }
+        else if(fabs(ainv[b]-2.8934)<1e-10)
+          {
+          _p2min = p2min_M3_M4[2];
+          _p2max = p2max_M3_M4[2];
+        }
     }
 
     cout<<"p2 range (physical units):   "<<_p2min<<" - "<<_p2max<<endl;

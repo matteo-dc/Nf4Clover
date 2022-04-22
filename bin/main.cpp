@@ -271,7 +271,7 @@ int main(int narg,char **arg)
     voper_t M5_quadcombo(nbeta);
     voper_t M5_logcombo(nbeta);
 
-    if(!only_basic && nbeta>1)
+    if(!only_basic && nbeta==3)
     {
       M3combo = combined_M3(all);
       for(int b=0;b<nbeta;b++)

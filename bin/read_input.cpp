@@ -652,8 +652,10 @@ void read_input_glb(const char path[])
 
     printf(" Evolution at the scale: p2ref = %.1lf\n",p2ref);
     printf(" Step scaling test: (%.2lf,%.2lf) GeV^2 (Z[p2_max]/Z[p2_min])\n",stepfunc_min,stepfunc_max);
-    printf(" p2-range for M3 and M4 methods: [%.1lf-%.1lf], [%.1lf-%.1lf], [%.1lf-%.1lf] GeV^2\n\n",
-            p2min_M3_M4[0],p2max_M3_M4[0],p2min_M3_M4[1],p2max_M3_M4[1],p2min_M3_M4[2],p2max_M3_M4[2]);
+    printf(" p2-range for M3 and M4 methods: ");
+    for(int b=0;b<nbeta;b++)
+        printf("[%.1lf-%.1lf] GeV2  ",p2min_M3_M4[b],p2max_M3_M4[b]);
+    printf("\n\n");
 
     printf(" %s = %s  --  %s = %d  -- %s = %d -- %s = %.3lf \n",act_tag,action.c_str(),Nf_tag,Nf,Nc_tag,Nc,LambdaQCD_tag,LambdaQCD);
     printf(" %s = %d  (%d njacks) \n",nconfs_tag,nconfs,njacks);
