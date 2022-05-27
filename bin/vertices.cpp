@@ -224,28 +224,29 @@ jproj_t compute_pr_bil( vvvprop_t &jpropOUT_inv,  valarray<jvert_t> &jVert,  vvv
                                              jVert[iv[k]][ijack][mr_fw][mr_bw][igam]*
                                              GAMMA[5]*(jpropIN_inv[i2[k]][ijack][mr_bw]).adjoint()*GAMMA[5];
 
+
                         if( ibil_of_igam[igam]==1 )  /* V */
                         {
                             // igam = {1,2,3,4}
-                            int ig = igam-1; // {0,1,2,3}
+                            int ig = igam; // ig = {1,2,3,4}
 
                             /* Projector for RI" scheme - compatible with WI: change in vector and axial current */
-                            for(int ig2=0; ig2<4; ig2++)
+                            for(int ig2=1; ig2<=4; ig2++)
                             {
                                 pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                                   (lambda_igam*Proj[1+ig2]*(4.0/3.0)*( (ig==ig2?1.0:0.0) - p[ig]*p[ig2]/p2 )).trace().real()/12.0;
+                                    ( lambda_igam * Proj[ig2] * (4.0/3.0) * ( (ig==ig2?1.0:0.0) - p[ig%4]*p[ig2%4]/p2 ) ).trace().real()/12.0;
                             }
                         }
                         else if( ibil_of_igam[igam]==3 )  /* A */
                         {
                             // igam = {6,7,8,9}
-                            int ig = igam-6; // {0,1,2,3}
+                            int ig = igam-5;  // ig = {1,2,3,4}
 
                             /* Projector for RI" scheme - compatible with WI: change in vector and axial current */
-                            for(int ig2=0; ig2<4; ig2++)
+                            for(int ig2=1; ig2<=4; ig2++)
                             {
                                 pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                                   (lambda_igam*Proj[6+ig2]*(4.0/3.0)*( (ig==ig2?1.0:0.0) - p[ig]*p[ig2]/p2 )).trace().real()/12.0;
+                                    ( lambda_igam * Proj[ig2+5] * (4.0/3.0) * ( (ig==ig2?1.0:0.0) - p[ig%4]*p[ig2%4]/p2 ) ).trace().real()/12.0;
                             }
                         }
                         else
@@ -385,8 +386,8 @@ void oper_t::compute_bil()
             // jG[ibilmom] = compute_pr_bil(jS1_inv,jVert,jS2_inv);
 
             //      using the RI" projectors for vector and axial currents
-            jG[ibilmom] = compute_pr_bil(jS1_inv,jVert,jS2_inv,p[ibilmom],p2[ibilmom]);
-            // jG[ibilmom] = compute_pr_bil(jS1_inv,jVert,jS2_inv,p_tilde[ibilmom],p2_tilde[ibilmom]);
+            // jG[ibilmom] = compute_pr_bil(jS1_inv,jVert,jS2_inv,p[ibilmom],p2[ibilmom]);
+            jG[ibilmom] = compute_pr_bil(jS1_inv,jVert,jS2_inv,p_tilde[ibilmom],p2_tilde[ibilmom]);
             
             high_resolution_clock::time_point t1=high_resolution_clock::now();
             duration<double> t_span = duration_cast<duration<double>>(t1-t0);
