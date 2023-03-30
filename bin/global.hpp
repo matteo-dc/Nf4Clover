@@ -146,6 +146,8 @@ extern int QCD_on_the_right;
 extern int sub_boosted;
 // bool for subtraction with p2tilde
 extern int sub_ptilde;
+// bool for cut-off subtraction procedure
+extern int subtraction;
 // bool for recomputing basic
 extern bool recompute_basic;
 // reference p2
