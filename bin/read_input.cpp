@@ -9,7 +9,7 @@
 #define DEFAULT_DOUBLE_VAL 1.2345
 
 // define global variables
-int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta, ntheta, compute_4f,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted, sub_ptilde;
+int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta, ntheta, compute_4f,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted, sub_ptilde, subtraction;
 int clust_size, nbil, combo, combo_lep, ntypes_lep;
 vector<double> beta;
 vector<int> nm_Sea;
@@ -96,6 +96,7 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,QCD_on_the_right_tag)==0) return QCDONTHERIGHT_TK;
     if(strcasecmp(tok,sub_boosted_tag)==0) return SUB_BOOSTED_TK;
     if(strcasecmp(tok,sub_ptilde_tag)==0) return SUB_PTILDE_TK;
+    if(strcasecmp(tok,subtraction_tag)==0) return SUBTRACTION_TK;
     if(strcasecmp(tok,chir_ansatz_val_tag)==0) return CHIR_ANSATZ_VAL_TK;
     if(strcasecmp(tok,chir_ansatz_sea_tag)==0) return CHIR_ANSATZ_SEA_TK;
     if(strcasecmp(tok,stepfunc_min_tag)==0) return STEPFUNC_MIN_TK;
@@ -294,6 +295,7 @@ void read_input_glb(const char path[])
     QCD_on_the_right=DEFAULT_INT_VAL;
     sub_boosted=DEFAULT_INT_VAL;
     sub_ptilde=DEFAULT_INT_VAL;
+    subtraction=DEFAULT_INT_VAL;
     chir_ansatz_val=DEFAULT_STR_VAL;
     chir_ansatz_sea=DEFAULT_STR_VAL;
     stepfunc_min=DEFAULT_DOUBLE_VAL;
@@ -471,6 +473,9 @@ void read_input_glb(const char path[])
             case SUB_PTILDE_TK:
                 get_value_glb(fin,sub_ptilde);
                 break;
+            case SUBTRACTION_TK:
+                get_value_glb(fin,subtraction);
+                break;
             case CHIR_ANSATZ_VAL_TK:
                 get_value_glb(fin,chir_ansatz_val);
                 break;
@@ -546,6 +551,7 @@ void read_input_glb(const char path[])
     check_int_par(QCD_on_the_right,QCD_on_the_right_tag);
     check_int_par(sub_boosted,sub_boosted_tag);
     check_int_par(sub_ptilde,sub_ptilde_tag);
+    check_int_par(subtraction,subtraction_tag);
     check_str_par(chir_ansatz_val,chir_ansatz_val_tag);
     check_str_par(chir_ansatz_sea,chir_ansatz_sea_tag);
     check_double_par(stepfunc_min,stepfunc_min_tag);
@@ -689,13 +695,26 @@ void read_input_glb(const char path[])
     if(QCD_on_the_right) printf("RIGHT. \n");
     else printf("LEFT. \n");
 
-    printf(" Perturbative subtraction done with ");
-    if(sub_boosted) printf("g^2[boosted] = g0^2/<Plaq>  (g0^2 = 6/beta) ");
-    else printf("g0^2 = 6/beta ");
-    printf("and using ");
-    if(sub_ptilde) printf("p2tilde.\n");
-    else printf("p2.\n");
-
+    if(subtraction==0) printf(" No perturbative subtraction.\n");
+    else if(subtraction>0 && subtraction<3)
+    {
+        printf(" Perturbative subtraction done at order ");
+        if(subtraction==1) printf("O(g2a2)");
+        else if(subtraction==2) printf("O(g2ainf)");
+        printf(" with ");
+        if(sub_boosted) printf("g^2[boosted] = g0^2/<Plaq>  (g0^2 = 6/beta)");
+        else printf("g0^2 = 6/beta");
+        printf(" and using ");
+        if(sub_ptilde) printf("p2tilde.\n");
+        else printf("p2.\n");
+    }
+    else{
+        printf(" Input parameter not valid. Choose between:\n");
+        printf("   0: no subtraction\n");
+        printf("   1: O(g2a2)\n");
+        printf("   2: O(g2ainf)\n\n");
+        exit(0);
+    }
     printf(" Using [%s] Ansatz for valence chiral extrapolation.\n",chir_ansatz_val.c_str());
     printf(" Using [%s] Ansatz for sea chiral extrapolation.\n",chir_ansatz_sea.c_str());
 

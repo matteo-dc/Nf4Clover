@@ -108,47 +108,56 @@ int main(int narg,char **arg)
                     if(!only_basic)
                     {
 
-                        /* ///////  ENRICO  /////// */
-
                         /*  average r  */
 
-                       rave[th][m] = basic[th][m].average_r();
-                       if(!load_ave) rave[th][m].plot("rave");
+                        rave[th][m] = basic[th][m].average_r();
+                        if(!load_ave) rave[th][m].plot("rave");
 
-                       /*  no sub  */
 
-                       sub[th][m] = rave[th][m];
-                       if(!load_ave) sub[th][m].plot("sub_nosub");
+                        /*  no sub  */
 
-                       /*  perturbative subtraction of O(a2)  */
+                        if(subtraction == 0)
+                        {
+                            sub[th][m] = rave[th][m];
+                            if(!load_ave) sub[th][m].plot("sub_nosub");
+                        }
 
-                       //sub[th][m] = rave[th][m].subOa2(b);
-                       //if(!load_ave) sub[th][m].plot("sub_a2");
+                        /*  perturbative subtraction of O(a2)  */
 
-                       /*  perturbative subtraction of O(ainf)  */
+                        if(subtraction == 1)
+                        {
+                            sub[th][m] = rave[th][m].subOa2(b);
+                            if(!load_ave) sub[th][m].plot("sub_a2");
+                        }
 
-                       sub[th][m] = rave[th][m].subOainf(b,"allmoms");
-                       if(!load_ave) sub[th][m].plot("sub_ainf");
+                        /*  perturbative subtraction of O(ainf)  */
 
-                       /*  perturbative subtraction of O(ainf) à la Martha  */
-                       // sub[th][m] = rave[th][m].subOainfMartha(b,"allmoms");
-                       // sub[th][m].plot("sub_ainf_Martha");
+                        if(subtraction == 2)
+                        {
+                            sub[th][m] = rave[th][m].subOainf(b,"allmoms");
+                            if(!load_ave) sub[th][m].plot("sub_ainf");
 
-                       /*  democratic filter on momenta  */
+                            /*  perturbative subtraction of O(ainf) à la Martha  */
 
-                       filt[th][m] = sub[th][m].filter_moms();
-                       if(!load_ave)  filt[th][m].plot("filt");
-                       // filt[th][m] = sub[th][m].filter_momsZ();
-                       // if(!load_ave)  filt[th][m].plot("filt");
+                            // sub[th][m] = rave[th][m].subOainfMartha(b,"allmoms");
+                            // sub[th][m].plot("sub_ainf_Martha");
+                        }
 
-                       /*  average over equivalent momenta  */
+                        /*  democratic filter on momenta  */
 
-                       ave[th][m] = filt[th][m].average_equiv_moms();
-                       if(!load_ave) ave[th][m].plot("ave");
-                       // ave[th][m] = filt[th][m].average_equiv_momsZ();
-                       // if(!load_ave) ave[th][m].plot("ave");
+                        filt[th][m] = sub[th][m].filter_moms();
+                        if(!load_ave)  filt[th][m].plot("filt");
+                        // filt[th][m] = sub[th][m].filter_momsZ();
+                        // if(!load_ave)  filt[th][m].plot("filt");
 
-                       /* store averaged ingredients */
+                        /*  average over equivalent momenta  */
+
+                        ave[th][m] = filt[th][m].average_equiv_moms();
+                        if(!load_ave) ave[th][m].plot("ave");
+                        // ave[th][m] = filt[th][m].average_equiv_momsZ();
+                        // if(!load_ave) ave[th][m].plot("ave");
+
+                        /* store averaged ingredients */
 
                         if(!load_ave) ave[th][m].print(load_label);
                         // if(!load_ave) ave[th][m].print("ave_mdc");        // printing on other file:    04/22 [new projectors]
