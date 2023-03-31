@@ -4113,15 +4113,22 @@ void oper_t::plot(const string suffix)
 
     vector<ofstream> stepfunc_p2_data(nbil+1+3); // bil + Zq + ZA/ZV,ZP/ZS,ZV/ZA
 
-    Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+".txt");
-    Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+    
 
 
     cout<<"Plotting Zq";
-    for(int imom=0; imom<in._linmoms; imom++)
+
+    for(int m=0; m<in._nm;m++)
     {
-        Zq_data<<(in.p2_tilde)[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
-        Zq_p2_data<<(in.p2)[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+        Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_m"+m+".txt");
+        Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+        for(int imom=0; imom<in._linmoms; imom++)
+        {
+            Zq_data<<(in.p2_tilde)[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+            Zq_p2_data<<(in.p2)[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
+        }
+        Zq_data.close();
+        Zq_p2_data.close();
     }
 
     cout<<", Zbil";
