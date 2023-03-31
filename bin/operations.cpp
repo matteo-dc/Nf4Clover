@@ -4138,7 +4138,7 @@ void oper_t::plot(const string suffix)
         for(int ibil=0;ibil<nbil;ibil++)
         {
         Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+to_string(m)+".txt");
-        Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))"_p2"+to_string(m)+".txt");
+        Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2"+to_string(m)+".txt");
 
         for(int imom=0; imom<in._bilmoms; imom++)
         {
