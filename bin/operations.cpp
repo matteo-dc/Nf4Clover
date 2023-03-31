@@ -4133,28 +4133,32 @@ void oper_t::plot(const string suffix)
 
     cout<<", Zbil";
 
-    int m_test=2;
-
-    for(int ibil=0;ibil<nbil;ibil++)
+    for(int m=0;m<in._nm;m++)
     {
-      Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+".txt");
-      Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+        for(int ibil=0;ibil<nbil;ibil++)
+        {
+        Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+to_string(m)+".txt");
+        Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))"_p2"+to_string(m)+".txt");
 
-      for(int imom=0; imom<in._bilmoms; imom++)
-      {
-          int imomk = imom;   // NB: it works only for RIMOM!
+        for(int imom=0; imom<in._bilmoms; imom++)
+        {
+            int imomk = imom;   // NB: it works only for RIMOM!
 
-          if(in._nm>1)
-          {
-            Zbil_data[ibil]<<(in.p2_tilde)[imomk]<<"\t"<<Z_ave[imom][ibil][m_test][m_test]<<"\t"<<Z_err[imom][ibil][m_test][m_test]<<endl;
-            Zbil_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_ave[imom][ibil][m_test][m_test]<<"\t"<<Z_err[imom][ibil][m_test][m_test]<<endl;
-          }
-          else
-          {
-            Zbil_data[ibil]<<(in.p2_tilde)[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
-            Zbil_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
-          }
-      }
+            if(in._nm>1)
+            {
+                Zbil_data[ibil]<<(in.p2_tilde)[imomk]<<"\t"<<Z_ave[imom][ibil][m][m]<<"\t"<<Z_err[imom][ibil][m][m]<<endl;
+                Zbil_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_ave[imom][ibil][m][m]<<"\t"<<Z_err[imom][ibil][m][m]<<endl;
+            }
+            else
+            {
+                Zbil_data[ibil]<<(in.p2_tilde)[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+                Zbil_p2_data[ibil]<<(in.p2)[imomk]<<"\t"<<Z_ave[imom][ibil][0][0]<<"\t"<<Z_err[imom][ibil][0][0]<<endl;
+            }
+        }
+
+        Zbil_data[ibil].close();
+        Zbil_p2_data[ibil].close();
+        }
     }
 
     cout<<", ZV/ZA, ZP/ZS and ZA/ZV";
