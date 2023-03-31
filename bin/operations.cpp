@@ -4120,8 +4120,8 @@ void oper_t::plot(const string suffix)
 
     for(int m=0; m<in._nm;m++)
     {
-        Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_m"+m+".txt");
-        Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2.txt");
+        Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string(m)+".txt");
+        Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string(m)+".txt");
         for(int imom=0; imom<in._linmoms; imom++)
         {
             Zq_data<<(in.p2_tilde)[imom]<<"\t"<<Zq_ave[imom][0]<<"\t"<<Zq_err[imom][0]<<endl;
