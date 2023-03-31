@@ -213,7 +213,7 @@ jproj_t compute_pr_bil( vvvprop_t &jpropOUT_inv,  valarray<jvert_t> &jVert,  vvv
     
     const int ibil_of_igam[/*gbil::nGamma*/16]={0,1,1,1,1,2,3,3,3,3,4,4,4,4,4,4};
     
-#pragma omp parallel for collapse(5)
+    #pragma omp parallel for collapse(5)
     for(int ijack=0;ijack<njacks;ijack++)
         for(int mr_fw=0;mr_fw<nmr;mr_fw++)
             for(int mr_bw=0;mr_bw<nmr;mr_bw++)
@@ -247,6 +247,30 @@ jproj_t compute_pr_bil( vvvprop_t &jpropOUT_inv,  valarray<jvert_t> &jVert,  vvv
                             {
                                 pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
                                     ( lambda_igam * Proj[ig2+5] * (4.0/3.0) * ( (ig==ig2?1.0:0.0) - p[ig%4]*p[ig2%4]/p2 ) ).trace().real()/12.0;
+                            }
+                        }
+                        else if( ibil_of_igam[igam]==4 )  /* T */
+                        {
+                            // igam = {10,...,15}
+                            int ig = igam-9;  // ig = {1,...,6}
+
+                            size_t ind1[6]={4,4,4,2,3,1};
+                            size_t ind2[6]={1,2,3,3,1,2};
+                            
+                            /* Projector for RI" scheme */
+                            for(int ig2=1; ig2<=6; ig2++)
+                            {
+                                pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+                                    ( lambda_igam * Proj[ig2+9] * (6.0/3.0) * (
+
+                                        p2 * (ind1[ig-1]==ind1[ig2-1]?1.0:0.0)*(ind2[ig-1]==ind2[ig2-1]?1.0:0.0)    -
+                                        p[ind1[ig2-1]%4] * (  (ind2[ig-1]==ind2[ig2-1]?1.0:0.0)*p[ind1[ig-1]%4]     - 
+                                                              (ind1[ig-1]==ind2[ig2-1]?1.0:0.0)*p[ind2[ig-1]%4] )   +
+                                        p[ind2[ig2-1]%4] * (  (ind2[ig-1]==ind1[ig2-1]?1.0:0.0)*p[ind1[ig-1]%4]     - 
+                                                              (ind1[ig-1]==ind1[ig2-1]?1.0:0.0)*p[ind2[ig-1]%4] )
+                                    )/p2
+
+                                    ).trace().real()/12.0;
                             }
                         }
                         else
