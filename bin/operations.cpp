@@ -4113,6 +4113,7 @@ void oper_t::plot(const string suffix)
 
     vector<ofstream> stepfunc_p2_data(nbil+1+3); // bil + Zq + ZA/ZV,ZP/ZS,ZV/ZA
 
+    int m_tmp = 0;
 
     cout<<"Plotting Zq";
 
@@ -4120,8 +4121,10 @@ void oper_t::plot(const string suffix)
     {
         for(int m=0; m<in._nm;m++)
         {
-            Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string((int)mass_val[m]*10000)+".txt");
-            Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string((int)mass_val[m]*10000)+".txt");
+            m_tmp = mass_val[m]*10000;
+
+            Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string(m_tmp)+".txt");
+            Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string(m_tmp)+".txt");
             
             for(int imom=0; imom<in._linmoms; imom++)
             {
@@ -4154,10 +4157,12 @@ void oper_t::plot(const string suffix)
     {
         for(int m=0;m<in._nm;m++)
         {
+            m_tmp = mass_val[m]*10000;
+
             for(int ibil=0;ibil<nbil;ibil++)
             {
-                Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string((int)mass_val[m]*10000)+".txt");
-                Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string((int)mass_val[m]*10000)+".txt");
+                Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string(m_tmp)+".txt");
+                Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string(m_tmp)+".txt");
 
                 for(int imom=0; imom<in._bilmoms; imom++)
                 {
