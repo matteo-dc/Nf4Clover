@@ -4120,8 +4120,8 @@ void oper_t::plot(const string suffix)
     {
         for(int m=0; m<in._nm;m++)
         {
-            Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string(mass_val[m]*10000)+".txt");
-            Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string(mass_val[m]*10000)+".txt");
+            Zq_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string((int)mass_val[m]*10000)+".txt");
+            Zq_p2_data.open(path_to_ens+"plots/Zq"+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string((int)mass_val[m]*10000)+".txt");
             
             for(int imom=0; imom<in._linmoms; imom++)
             {
@@ -4156,8 +4156,8 @@ void oper_t::plot(const string suffix)
         {
             for(int ibil=0;ibil<nbil;ibil++)
             {
-                Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string(mass_val[m]*10000)+".txt");
-                Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string(mass_val[m]*10000)+".txt");
+                Zbil_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_m"+to_string((int)mass_val[m]*10000)+".txt");
+                Zbil_p2_data[ibil].open(path_to_ens+"plots/Z"+bil[ibil]+(suffix!=""?("_"+suffix):string(""))+"_p2_m"+to_string((int)mass_val[m]*10000)+".txt");
 
                 for(int imom=0; imom<in._bilmoms; imom++)
                 {
