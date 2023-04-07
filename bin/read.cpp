@@ -446,7 +446,7 @@ prop_t read_prop(FILE* input, const string &path, const int imom)
 vvvprop_t read_qprop_mom(FILE* input[],const vector<string> v_path,const int i_in_clust,const int ihit,const int imom)
 {
     vvvprop_t S(vvprop_t(vprop_t(prop_t::Zero(),nmr),ntypes),njacks);
-    printf("test: %d  %d  %d\n", i_in_clust, ihit, imom);
+
 #pragma omp parallel for
     for(int ilin=0;ilin<nm*nr*ntypes*njacks;ilin++)
     {
