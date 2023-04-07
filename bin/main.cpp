@@ -147,15 +147,11 @@ int main(int narg,char **arg)
 
                         filt[th][m] = sub[th][m].filter_moms();
                         if(!load_ave)  filt[th][m].plot("filt");
-                        // filt[th][m] = sub[th][m].filter_momsZ();
-                        // if(!load_ave)  filt[th][m].plot("filt");
 
                         /*  average over equivalent momenta  */
 
                         ave[th][m] = filt[th][m].average_equiv_moms();
                         if(!load_ave) ave[th][m].plot("ave");
-                        // ave[th][m] = filt[th][m].average_equiv_momsZ();
-                        // if(!load_ave) ave[th][m].plot("ave");
 
                         /* store averaged ingredients */
 
