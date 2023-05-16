@@ -10,7 +10,7 @@
 
 // define global variables
 int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted, sub_ptilde, subtraction;
-int clust_size, nbil, combo, combo_lep, ntypes_lep;
+int clust_size, nbil, combo;
 vector<double> beta;
 vector<int> nm_Sea;
 int nm_Sea_max;
@@ -23,7 +23,7 @@ int conf_init, conf_step, nm, neq, neq2, nmr, delta_tmin, delta_tmax;
 double kappa, mu_sea, plaquette, LambdaQCD, p2min, p2max, thresh, p2ref, stepfunc_min, stepfunc_max;
 vector<double> mass_val;
 vector<double> p2max_M3_M4,p2min_M3_M4;
-string mom_path, action, path_folder, scheme, BC, out_hadr, out_lep, analysis, clover, path_ensemble, an_suffix, chir_ansatz_val, chir_ansatz_sea;
+string mom_path, action, path_folder, scheme, BC, out_hadr, analysis, clover, path_ensemble, an_suffix, chir_ansatz_val, chir_ansatz_sea;
 string load_label;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
@@ -80,7 +80,6 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,p2max_tag)==0) return P2MAX_TK;
     if(strcasecmp(tok,thresh_tag)==0) return THRESH_TK;
     if(strcasecmp(tok,out_hadr_tag)==0) return OUT_HADR_TK;
-    if(strcasecmp(tok,out_lep_tag)==0) return OUT_LEP_TK;
     if(strcasecmp(tok,only_basic_tag)==0) return ONLY_BASIC_TK;
     if(strcasecmp(tok,compute_mpcac_tag)==0) return COMPUTE_MPCAC_TK;
     if(strcasecmp(tok,analysis_tag)==0) return ANALYSIS_TK;
@@ -278,7 +277,6 @@ void read_input_glb(const char path[])
     p2max=DEFAULT_DOUBLE_VAL;
     thresh=DEFAULT_DOUBLE_VAL;
     out_hadr=DEFAULT_STR_VAL;
-    out_lep=DEFAULT_STR_VAL;
     only_basic=DEFAULT_INT_VAL;
     compute_mpcac=DEFAULT_INT_VAL;
     analysis=DEFAULT_STR_VAL;
@@ -420,9 +418,6 @@ void read_input_glb(const char path[])
             case OUT_HADR_TK:
                 get_value_glb(fin,out_hadr);
                 break;
-            case OUT_LEP_TK:
-                get_value_glb(fin,out_lep);
-                break;
             case ONLY_BASIC_TK:
                 get_value_glb(fin,only_basic);
                 break;
@@ -519,7 +514,6 @@ void read_input_glb(const char path[])
     check_double_par(p2max,p2max_tag);
     check_double_par(thresh,thresh_tag);
     check_str_par(out_hadr,out_hadr_tag);
-    check_str_par(out_lep,out_lep_tag);
     check_int_par(only_basic,only_basic_tag);
     check_int_par(compute_mpcac,compute_mpcac_tag);
     check_str_par(analysis,analysis_tag);
@@ -837,12 +831,8 @@ void read_input(const string &path_to_ens, const string &name)
         printf("%.4lf  ",mass_val[i]);
     printf("\n\n");
 
-
-    ntypes_lep = 2;
-
     nmr=nm*nr;
     combo=nm*nr*ntypes*nhits*nconfs;
-    combo_lep=ntypes_lep*nhits*nconfs;
     neq=fact(nm+nr-1)/fact(nr)/fact(nm-1);
     neq2=nm;
 

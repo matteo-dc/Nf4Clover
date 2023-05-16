@@ -282,47 +282,6 @@ vector<string> oper_t::setup_read_qprop(FILE* input[])
     return v_path;
 }
 
-vector<string> oper_t::setup_read_lprop(FILE* input[])
-{
-    // array of the configurations
-    int conf_id[nconfs];
-    for(int iconf=0;iconf<nconfs;iconf++)
-        conf_id[iconf]=conf_init+iconf*conf_step;
-
-    // create propagator name
-    vector<string> Types={"0","F"};
-    vector<string> v_path;
-
-    const int ntypes_lep=2;
-
-    // open files
-    for(int iconf=0;iconf<nconfs;iconf++)
-        for(int ihit=0;ihit<nhits;ihit++)
-            for(int t=0;t<ntypes_lep;t++)
-            {
-                string hit_suffix = "";
-                if(nhits>1) hit_suffix = "_hit_" + to_string(ihit);
-
-                int icombo=t + ntypes_lep*ihit + ntypes_lep*nhits*iconf;
-
-                string path = path_to_conf(path_to_ens,out_lep,conf_id[iconf],"L_"+Types[t]+hit_suffix);
-                v_path.push_back(path);
-
-                input[icombo] = fopen(path.c_str(),"rb");
-
-                if(input[icombo]==NULL)
-                {
-                    fprintf(stderr,"Unable to open file %s - combolep %d / %d \n", path.c_str(), icombo, combo);
-                    exit(1);
-                }
-            }
-
-    printf("Opened all the files in %s\n",path_to_ens.c_str());
-
-    return v_path;
-}
-
-
 //read a propagator file
 prop_t read_prop(FILE* input, const string &path, const int imom)
 {
@@ -385,31 +344,6 @@ vvvprop_t read_qprop_mom(FILE* input[],const vector<string> v_path,const int i_i
 
     return S;
 }
-
-// read all the lepton propagators at a given momentum
-vvprop_t read_lprop_mom(FILE* input[],const vector<string> v_path,const int i_in_clust,const int ihit,const int imom)
-{
-    vvprop_t L(vprop_t(prop_t::Zero(),ntypes_lep),njacks);
-
-#pragma omp parallel for
-    for(int ilin=0;ilin<ntypes_lep*njacks;ilin++)
-    {
-        int k=ilin;
-        int t = k % ntypes_lep;
-        k/=ntypes_lep;
-        int ijack = k % njacks;
-
-        int iconf=clust_size*ijack+i_in_clust;
-        int icombo = t + ntypes_lep*ihit + ntypes_lep*nhits*iconf;
-
-        //create all the propagators in a given conf and a given mom
-        L[ijack][t] = read_prop(input[icombo],v_path[icombo],imom);
-    }
-
-    return L;
-}
-
-
 
 //read file
 void read_internal(double &t,ifstream& infile)

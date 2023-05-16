@@ -34,8 +34,6 @@ extern int ntypes;
 extern int nhits;
 // number of combos
 extern int combo;
-// number of lepton combos
-extern int combo_lep;
 //// number of momenta
 //extern int moms;
 // number of equivalent momenta
@@ -120,10 +118,6 @@ extern vector<bool> filt_moms;
 extern double thresh;
 // out folder for quarks
 extern string out_hadr;
-// out folder for leptons
-extern string out_lep;
-// types of lepton propagators
-extern int ntypes_lep;
 // create only basic
 extern int only_basic;
 // compute mPCAC
