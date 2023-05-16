@@ -356,25 +356,18 @@ oper_t oper_t::interpolate_to_p2ref(int b)
             for(int ijack=0;ijack<njacks;ijack++)
             {
                 y_Zbil[ijack][imom] = jZ[imom][ibil][ijack][0][0];
-//                y_Zbil_EM[ijack][imom] = jZ_EM[imom][ibil][ijack][0][0];
             }
 
             dy_Zbil[imom] = dy_Zbil_tmp[imom][ibil][0][0];
-//            dy_Zbil_EM[imom] = dy_Zbil_EM_tmp[imom][ibil][0][0];
         }
 
         vvd_t jZ_pars = polyfit(coord,npar-1,dy_Zbil,y_Zbil,p2min,p2max); // [ijack][ipar]
-//        vvd_t jZ_EM_pars = polyfit(coord,npar,dy_Zbil_EM,y_Zbil_EM,p2_min,p2_max); // [ijack][ipar]
 
         for(int ijack=0;ijack<njacks;ijack++)
         {
             (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0];
 //            + jZ_pars[ijack][1]*p2ref +
 //            jZ_pars[ijack][2]*p2ref*p2ref;
-
-//            (out.jZ_EM)[0][ibil][ijack][0][0] = jZ_EM_pars[ijack][0] +
-//            jZ_EM_pars[ijack][1]*p2ref +
-//            jZ_EM_pars[ijack][2]*p2ref*p2ref;
         }
     }
 

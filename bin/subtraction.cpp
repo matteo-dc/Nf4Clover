@@ -82,10 +82,8 @@ double G_sub_Pla(const double a2p2, const double a4p4, const double CSW, const d
   return G_sub[ibil];
 }
 
-double subSigma1(const int imom, const vector<double> Np, const double CSW, const vector<double> a2p2_vec, const vector<double> a4p4_vec, const bool QED)
+double subSigma1(const int imom, const vector<double> Np, const double CSW, const vector<double> a2p2_vec, const vector<double> a4p4_vec)
 {
-  bool QCD=!QED;
-
   double a2p2 = a2p2_vec[imom];
   double a4p4 = a4p4_vec[imom];
   double np = Np[imom];
@@ -101,42 +99,21 @@ double subSigma1(const int imom, const vector<double> Np, const double CSW, cons
 
   if(free_analysis) //pure QED
   {
-    if(QCD)
-    {
       Zq_sub = 0.0; // no subtraction in free theory
-    }
-    if(QED)
-    {
-      if(!UseSigma1)
-      Zq_sub = Zq_sub_RIprime_Pla(a2p2,a4p4,CSW,beta);
-      else
-      Zq_sub = Zq_sub_Sigma1_Pla(a2p2,a4p4,CSW,beta,np);
-    }
   }
   else if(inte_analysis) //QCD+QED  (Iwasaki)
   {
-    if(QCD) //pure QCD
-    {
       if(!UseSigma1)
       Zq_sub = Zq_sub_RIprime_Iwa(a2p2,a4p4,CSW,beta);
       else
       Zq_sub = Zq_sub_Sigma1_Iwa(a2p2,a4p4,CSW,beta,np);
-    }
-    if(QED) // QCD+QED (subtract only QED, because this is the relative EM correction)
-    {
-      if(!UseSigma1)
-      Zq_sub = Zq_sub_RIprime_Pla(a2p2,a4p4,CSW,beta);
-      else
-      Zq_sub = Zq_sub_Sigma1_Pla(a2p2,a4p4,CSW,beta,np);
-    }
   }
 
   return Zq_sub;
 }
 
-double subG(const int imom, const double CSW, const vector<double> a2p2_vec, const vector<double> a4p4_vec, const int ibil, const bool QED)
+double subG(const int imom, const double CSW, const vector<double> a2p2_vec, const vector<double> a4p4_vec, const int ibil)
 {
-  bool QCD=!QED;
 
   double a2p2 = a2p2_vec[imom];
   double a4p4 = a4p4_vec[imom];
@@ -151,25 +128,11 @@ double subG(const int imom, const double CSW, const vector<double> a2p2_vec, con
 
   if(free_analysis) //pure QED
   {
-    if(QCD)
-    {
       G_sub = 0.0; // no subtraction in free theory
-    }
-    if(QED)
-    {
-      G_sub = G_sub_Pla(a2p2,a4p4,CSW,beta,ibil);
-    }
   }
   else if(inte_analysis) //QCD+QED  (Iwasaki)
   {
-    if(QCD) //pure QCD
-    {
       G_sub = G_sub_Iwa(a2p2,a4p4,CSW,beta,ibil);
-    }
-    if(QED) // QCD+QED (subtract only QED, because this is the relative EM correction)
-    {
-      G_sub = G_sub_Pla(a2p2,a4p4,CSW,beta,ibil);
-    }
   }
 
   return G_sub;
@@ -208,14 +171,13 @@ oper_t oper_t::subOa2(const int b)
     // Zq
     for(int imom=0;imom<out._linmoms;imom++)
     {
-      double sub = CF*g2*subSigma1(imom,Np,CSW,P2,P4,0);
+      double sub = CF*g2*subSigma1(imom,Np,CSW,P2,P4);
 
       #pragma omp parallel for collapse(2)
       for(int ijack=0;ijack<njacks;ijack++)
       for(int mr=0;mr<out._nmr;mr++)
       {
         (out.sigma)[imom][sigma::SIGMA1][sigma::LO][ijack][mr] -= sub;
-        //                (out.sigma)[imom][sigma::SIGMA1][sigma::QED][ijack][mr] -= subSigma1(imom,Np,CSW,P2,P4,1);
       }
     }
 
@@ -225,7 +187,7 @@ oper_t oper_t::subOa2(const int b)
     for(int imom=0;imom<out._bilmoms;imom++)
     for(int ibil=0;ibil<nbil;ibil++)
     {
-      double sub = CF*g2*subG(imom,CSW,P2,P4,ibil,0);
+      double sub = CF*g2*subG(imom,CSW,P2,P4,ibil);
 
       #pragma omp parallel for collapse(3)
       for(int ijack=0;ijack<njacks;ijack++)
@@ -233,7 +195,6 @@ oper_t oper_t::subOa2(const int b)
       for(int mr2=0;mr2<out._nmr;mr2++)
       {
         (out.jG)[imom][gbil::LO][ibil][ijack][mr1][mr2] -= sub;
-        //                        (out.jG)[imom][gbil::QED][ibil][ijack][mr1][mr2] -= subG(imom,CSW,P2,P4,ibil,1);
       }
     }
 

@@ -16,16 +16,6 @@ namespace sigma
 {
     void set_ins()
     {
-        if(ntypes==6)
-        {
-            ins_list={LO,PH,P,S};
-            ins_tag={"LO","PH","P","S"};
-        }
-        if(ntypes==3)
-        {
-            ins_list={LO,QED};
-            ins_tag={"LO","QED"};
-        }
         if(ntypes==1)
         {
             ins_list={LO};

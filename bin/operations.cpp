@@ -237,10 +237,7 @@ void oper_t::create_basic(const int b, const int th, const int msea)
     if(UseEffMass and !free_analysis and !recompute_basic)
     {
         eff_mass=read_eff_mass(path_to_ens+"eff_mass_array");
-        eff_mass_corr=read_eff_mass_corr(path_to_ens+"eff_mass_corr_array");
-
         eff_mass_time=read_eff_mass_time(path_to_ens+"eff_mass_array_time");
-        eff_mass_corr_time=read_eff_mass_corr_time(path_to_ens+"eff_mass_corr_array_time");
 
         if(_nm_Sea>1 and !free_analysis and !recompute_basic)
             eff_mass_sea=read_eff_mass_sea(path_to_ens+"eff_mass_sea_array");
@@ -461,16 +458,6 @@ oper_t oper_t::chiral_extr()
                             coord_sigma[1][m] = pow(M_eff[m][m],2.0);
                         }
 
-                        // subtraction of mass correction
-                        if(ins==sigma::QED and UseEffMass)
-                            for(int ijack=0;ijack<njacks;ijack++)
-                            {
-                                double b0 = sigma_pars_QCD[ijack][1];
-                                double varb = 2.0*b0*eff_mass[ijack][m][m]*eff_mass_corr[ijack][m][m];
-
-                                sigma[ilinmom][iproj][ins][ijack][mr] -= varb;
-                            }
-
                         for(int ijack=0;ijack<njacks;ijack++)
                         {
                             sigma_r[ijack][m]=sigma[ilinmom][iproj][ins][ijack][mr];
@@ -576,22 +563,6 @@ oper_t oper_t::chiral_extr()
                                         // 1/M^2
                                         coord_bil[2][ieq] = 1.0/coord_bil[1][ieq];
                                     }
-
-                                    // subtraction of mass correction
-                                    if(ins==gbil::QED and UseEffMass)
-                                        for(int ijack=0;ijack<njacks;ijack++)
-                                        {
-                                            double b0 = gbil_pars_QCD[ijack][1];
-                                            double c0 = gbil_pars_QCD[ijack][2];
-
-                                            double jM  = eff_mass[ijack][m1][m2];
-                                            double jdM = eff_mass_corr[ijack][m1][m2];
-
-                                            double varb = 2.0*b0*jM*jdM;
-                                            double varc = -2.0*c0*jdM/(jM*jM*jM);
-
-                                            jG[ibilmom][ins][ibil][ijack][mr1][mr2] -= varb + varc;
-                                        }
 
                                     for(int ijack=0;ijack<njacks;ijack++)
                                     {
@@ -714,22 +685,6 @@ oper_t oper_t::chiral_extr()
                                 //     // 1/M^2
                                 //     coord_bil[2][m1] = 1.0/coord_bil[1][m1];
                                 // }
-
-                                // subtraction of mass correction
-                                // if(ins==gbil::QED and UseEffMass)
-                                //     for(int ijack=0;ijack<njacks;ijack++)
-                                //     {
-                                //         double b0 = gbil_pars_QCD[ijack][1];
-                                //         double c0 = gbil_pars_QCD[ijack][2];
-                                //
-                                //         double jM  = eff_mass[ijack][m1][m2];
-                                //         double jdM = eff_mass_corr[ijack][m1][m2];
-                                //
-                                //         double varb = 2.0*b0*jM*jdM;
-                                //         double varc = -2.0*c0*jdM/(jM*jM*jM);
-                                //
-                                //         jG[ibilmom][ins][ibil][ijack][mr1][mr2] -= varb + varc;
-                                //     }
 
                                 for(int ijack=0;ijack<njacks;ijack++)
                                 {
