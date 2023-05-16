@@ -53,216 +53,168 @@ int main(int narg,char **arg)
     cout<<"Reading global input from \""<<path_glb<<"\"."<<endl;
     read_input_glb(path_glb);
 
-    int nloop;
-    if(free_analysis or inte_analysis)
-        nloop=1;
-    if(eta_analysis)
-        nloop=2;
-
     voper_t all(nbeta);
 
-    recompute_basic = false;
-
-    for(int loop=0;loop<nloop;loop++)
+    for(int b=0; b<nbeta; b++)
     {
-        if(nloop>1)
-            cout<<" ********** LOOP "<<loop<<" ********** "<<endl;
+        voper_t basic(nm_Sea[b]);
+        voper_t filt(nm_Sea[b]);
+        voper_t ave(nm_Sea[b]);
+
+        voper_t rave(nm_Sea[b]);
+
+        voper_t val_chir(nm_Sea[b]);
+        voper_t sub(nm_Sea[b]);
+
+        oper_t sea_chir;
+        oper_t evo;
+        oper_t cont;
+        oper_t M1;
+        oper_t M2;
+        oper_t M1b;
+        oper_t M2b;
+        oper_t M3;
+        oper_t M4;
 
 
-        if(loop>0) recompute_basic=true;
-
-        //////////
-
-        for(int b=0; b<nbeta; b++)
+        for(int m=0; m<nm_Sea[b]; m++)
         {
-            voper_t basic(nm_Sea[b]);
-            voper_t filt(nm_Sea[b]);
-            voper_t ave(nm_Sea[b]);
+            /*  basic  */
 
-            voper_t rave(nm_Sea[b]);
-
-            voper_t val_chir(nm_Sea[b]);
-            voper_t sub(nm_Sea[b]);
-
-            oper_t sea_chir;
-            oper_t evo;
-            oper_t cont;
-            oper_t M1;
-            oper_t M2;
-            oper_t M1b;
-            oper_t M2b;
-            oper_t M3;
-            oper_t M4;
-
-
-            for(int m=0; m<nm_Sea[b]; m++)
-            {
-                /*  basic  */
-
-                basic[m].create_basic(b,m);
-                if(!load_ave)  basic[m].plot("");
-
-                if(!only_basic)
-                {
-
-                    /*  average r  */
-
-                    rave[m] = basic[m].average_r();
-                    if(!load_ave) rave[m].plot("rave");
-
-
-                    /*  no sub  */
-
-                    if(subtraction == 0)
-                    {
-                        sub[m] = rave[m];
-                        if(!load_ave) sub[m].plot("sub_nosub");
-                    }
-
-                    /*  perturbative subtraction of O(a2)  */
-
-                    if(subtraction == 1)
-                    {
-                        sub[m] = rave[m].subOa2(b);
-                        if(!load_ave) sub[m].plot("sub_a2");
-                    }
-
-                    /*  perturbative subtraction of O(ainf)  */
-
-                    if(subtraction == 2)
-                    {
-                        sub[m] = rave[m].subOainf(b,"allmoms");
-                        if(!load_ave) sub[m].plot("sub_ainf");
-
-                        /*  perturbative subtraction of O(ainf) à la Martha  */
-
-                        // sub[m] = rave[m].subOainfMartha(b,"allmoms");
-                        // sub[m].plot("sub_ainf_Martha");
-                    }
-
-                    /*  democratic filter on momenta  */
-
-                    filt[m] = sub[m].filter_moms();
-                    if(!load_ave)  filt[m].plot("filt");
-
-                    /*  average over equivalent momenta  */
-
-                    ave[m] = filt[m].average_equiv_moms();
-                    if(!load_ave) ave[m].plot("ave");
-
-                    /* store averaged ingredients */
-
-                    if(!load_ave) ave[m].print(load_label);
-                    // if(!load_ave) ave[m].print("ave_mdc");        // printing on other file:    04/22 [new projectors]
-                    // if(!load_ave) ave[m].print("ave_Enr028");  // latest working version: 10/03/22
-                    // if(!load_ave) ave[m].print("ave_Martha");
-
-                    /* load averaged ingredients if needed */
-
-                    if(load_ave) ave[m].load(load_label);
-                    // if(load_ave) ave[m].load("ave_Enr028");  // latest working version: 10/03/22
-                    // if(load_ave) ave[m].load("ave_Martha");
-
-
-                    /////////////////////////////////////////////////////
-
-                    /*  valence chiral extr  */
-                    if(free_analysis or recompute_basic)
-                    {
-                        val_chir[m] = ave[m];
-                        val_chir[m].plot("chir");
-
-                        /* store extrapolated ingredients */
-                        if(!load_chir) val_chir[m].printZ("chir");
-                    }
-                    else
-                    {
-                        val_chir[m] = ave[m].chiral_extr();
-                        val_chir[m].plot("chir");
-
-                        /* store extrapolated ingredients */
-                        if(!load_chir) val_chir[m].printZ("chir");
-                    }
-
-
-                    if(eta_analysis)
-                    {
-                        // oper_for_eta[b][m][loop] = val_chir[m];
-                        exit(0);
-                    }
-                    else
-                    {
-                        //
-                    }
-
-                } //close if(!only_basic)
-
-            } //close nm_sea
+            basic[m].create_basic(b,m);
+            if(!load_ave)  basic[m].plot("");
 
             if(!only_basic)
             {
-                if(eta_analysis)
-                    exit(0);
-                else
+
+                /*  average r  */
+
+                rave[m] = basic[m].average_r();
+                if(!load_ave) rave[m].plot("rave");
+
+
+                /*  no sub  */
+
+                if(subtraction == 0)
                 {
-                    sea_chir = chiral_sea_extr(val_chir);
-                    sea_chir.plot("sea");
-
-                    evo = sea_chir.evolve(ainv[b],p2ref);
-                    evo.plot("evo");
-
-                    // save all the curves for combined fit
-                    all[b] = evo;
-
-                    // linear extrapolation
-                    M1 = evo.a2p2_extr(b);
-                    M1.plot("M1");
-
-                    // constant interpolation
-                    M2 = evo.interpolate_to_p2ref(b);
-                    M2.plot("M2");
-
-                    // linear + pole 1/p2 extrapolation
-                    M3 = evo.a2p2_extr_with_pole(b);
-                    M3.plot("M3");
-
-                    // cout<<"-----------ZA/ZV-----------"<<endl;
-                    // for(int ijack=0;ijack<njacks;ijack++)
-                    // {
-                    //     cout<< (M3.jZ[0][3][ijack][0][0]/M3.jZ[0][1][ijack][0][0])<<endl;
-                    // }
-                    // cout<<"--------------------------"<<endl;
-
-                    // // quadratic + pole 1/p2 extrapolation
-                    M4 = evo.a2p2_extr_with_pole_and_p4(b);
-                    M4.plot("M4");
-
-                    // quadratic
-                    // M4 = evo.a2p2_extr_with_p4(b);
-                    // M4.plot("M4");
-
-                    // /*****/
-                    //
-                    // cont = sea_chir.remove_hadr_cont(ainv[b]);
-                    // cont = cont.evolve(ainv[b],p2ref);
-                    // cont.plot("cont");
-                    //
-                    // M1b = cont.a2p2_extr(ainv[b]);
-                    // M1b.plot("M1b");
-                    //
-                    // M2b = cont.interpolate_to_p2ref(b);
-                    // M2b.plot("M2b");
-
-                    /* Method 1 : Z-improvement */
-                    cont = evo.Z_improvement(ainv[b]);
-                    cont.plot("a1");
-
+                    sub[m] = rave[m];
+                    if(!load_ave) sub[m].plot("sub_nosub");
                 }
-            }
 
-        } //close nbeta
+                /*  perturbative subtraction of O(a2)  */
 
-    } //close nloop
+                if(subtraction == 1)
+                {
+                    sub[m] = rave[m].subOa2(b);
+                    if(!load_ave) sub[m].plot("sub_a2");
+                }
+
+                /*  perturbative subtraction of O(ainf)  */
+
+                if(subtraction == 2)
+                {
+                    sub[m] = rave[m].subOainf(b,"allmoms");
+                    if(!load_ave) sub[m].plot("sub_ainf");
+
+                    /*  perturbative subtraction of O(ainf) à la Martha  */
+
+                    // sub[m] = rave[m].subOainfMartha(b,"allmoms");
+                    // sub[m].plot("sub_ainf_Martha");
+                }
+
+                /*  democratic filter on momenta  */
+
+                filt[m] = sub[m].filter_moms();
+                if(!load_ave)  filt[m].plot("filt");
+
+                /*  average over equivalent momenta  */
+
+                ave[m] = filt[m].average_equiv_moms();
+                if(!load_ave) ave[m].plot("ave");
+
+                /* store averaged ingredients */
+
+                if(!load_ave) ave[m].print(load_label);
+                // if(!load_ave) ave[m].print("ave_mdc");        // printing on other file:    04/22 [new projectors]
+                // if(!load_ave) ave[m].print("ave_Enr028");  // latest working version: 10/03/22
+                // if(!load_ave) ave[m].print("ave_Martha");
+
+                /* load averaged ingredients if needed */
+
+                if(load_ave) ave[m].load(load_label);
+                // if(load_ave) ave[m].load("ave_Enr028");  // latest working version: 10/03/22
+                // if(load_ave) ave[m].load("ave_Martha");
+
+
+                /////////////////////////////////////////////////////
+
+                /*  valence chiral extr  */
+                val_chir[m] = ave[m].chiral_extr();
+                val_chir[m].plot("chir");
+
+                /* store extrapolated ingredients */
+                if(!load_chir) val_chir[m].printZ("chir");
+
+            } //close if(!only_basic)
+
+        } //close nm_sea
+
+        if(!only_basic)
+        {
+            sea_chir = chiral_sea_extr(val_chir);
+            sea_chir.plot("sea");
+
+            evo = sea_chir.evolve(ainv[b],p2ref);
+            evo.plot("evo");
+
+            // save all the curves for combined fit
+            all[b] = evo;
+
+            // linear extrapolation
+            M1 = evo.a2p2_extr(b);
+            M1.plot("M1");
+
+            // constant interpolation
+            M2 = evo.interpolate_to_p2ref(b);
+            M2.plot("M2");
+
+            // linear + pole 1/p2 extrapolation
+            M3 = evo.a2p2_extr_with_pole(b);
+            M3.plot("M3");
+
+            // cout<<"-----------ZA/ZV-----------"<<endl;
+            // for(int ijack=0;ijack<njacks;ijack++)
+            // {
+            //     cout<< (M3.jZ[0][3][ijack][0][0]/M3.jZ[0][1][ijack][0][0])<<endl;
+            // }
+            // cout<<"--------------------------"<<endl;
+
+            // // quadratic + pole 1/p2 extrapolation
+            M4 = evo.a2p2_extr_with_pole_and_p4(b);
+            M4.plot("M4");
+
+            // quadratic
+            // M4 = evo.a2p2_extr_with_p4(b);
+            // M4.plot("M4");
+
+            // /*****/
+            //
+            // cont = sea_chir.remove_hadr_cont(ainv[b]);
+            // cont = cont.evolve(ainv[b],p2ref);
+            // cont.plot("cont");
+            //
+            // M1b = cont.a2p2_extr(ainv[b]);
+            // M1b.plot("M1b");
+            //
+            // M2b = cont.interpolate_to_p2ref(b);
+            // M2b.plot("M2b");
+
+            /* Method 1 : Z-improvement */
+            cont = evo.Z_improvement(ainv[b]);
+            cont.plot("a1");
+        }
+
+    } //close nbeta
 
     voper_t M3combo(nbeta);
     voper_t M4combo(nbeta);

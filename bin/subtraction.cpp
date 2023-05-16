@@ -95,13 +95,8 @@ double subSigma1(const int imom, const vector<double> Np, const double CSW, cons
   beta = 0.0; //Feynman
   else
   beta = 1.0; //Landau
-
-
-  if(free_analysis) //pure QED
-  {
-      Zq_sub = 0.0; // no subtraction in free theory
-  }
-  else if(inte_analysis) //QCD+QED  (Iwasaki)
+  
+  if(inte_analysis) //QCD+QED  (Iwasaki)
   {
       if(!UseSigma1)
       Zq_sub = Zq_sub_RIprime_Iwa(a2p2,a4p4,CSW,beta);
@@ -126,11 +121,7 @@ double subG(const int imom, const double CSW, const vector<double> a2p2_vec, con
   else
   beta = 1.0; //Landau
 
-  if(free_analysis) //pure QED
-  {
-      G_sub = 0.0; // no subtraction in free theory
-  }
-  else if(inte_analysis) //QCD+QED  (Iwasaki)
+  if(inte_analysis) //QCD+QED  (Iwasaki)
   {
       G_sub = G_sub_Iwa(a2p2,a4p4,CSW,beta,ibil);
   }

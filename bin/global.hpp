@@ -123,9 +123,7 @@ extern int only_basic;
 // compute mPCAC
 extern int compute_mpcac;
 // bool for inte or free analysis
-extern bool free_analysis;
 extern bool inte_analysis;
-extern bool eta_analysis;
 // bool for clover analysis
 extern bool clover_analysis;
 // bool for QCD factorized on the RIGHT
@@ -136,8 +134,6 @@ extern int sub_boosted;
 extern int sub_ptilde;
 // bool for cut-off subtraction procedure
 extern int subtraction;
-// bool for recomputing basic
-extern bool recompute_basic;
 // reference p2
 extern double p2ref;
 // scales for step scaling function

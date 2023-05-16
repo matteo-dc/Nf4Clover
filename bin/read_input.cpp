@@ -28,11 +28,8 @@ string load_label;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
 vector<string> volume_label;  // volume_label[Nbeta]
-bool free_analysis;
 bool inte_analysis;
-bool eta_analysis;
 bool clover_analysis;
-bool recompute_basic;
 
 coords_t size;
 
@@ -537,10 +534,7 @@ void read_input_glb(const char path[])
     fclose(fin);
 
     clover_analysis=false;
-
-    free_analysis=false;
     inte_analysis=false;
-    eta_analysis=false;
 
     if(strcmp(clover.c_str(),"no" )==0)
     {
@@ -550,25 +544,7 @@ void read_input_glb(const char path[])
 
             inte_analysis=true;
         }
-        else if(strcmp(analysis.c_str(),"free" )==0)
-        {
-            path_analysis={"free_matching"+an_suffix};
-
-            free_analysis=true;
-        }
-        else if(strcmp(analysis.c_str(),"eta")==0)
-        {
-            path_analysis={"Rat"+an_suffix,"Nf4"+an_suffix,"free_matching"+an_suffix};
-
-            eta_analysis=true;
-        }
-        else {cout<<"Choose the analysis: 'inte', 'free' or 'eta'."<<endl; exit(0);}
-
-        if(strcmp(analysis.c_str(),"free")==0 and nr>1)
-        {
-            cout<<"Nr must be 1 in free theory. Setting Nr=1 instead of Nr="<<nr<<"."<<endl;
-            nr=1;
-        }
+        else {cout<<"Choose the analysis: 'inte'."<<endl; exit(0);}
     }
     else if(strcmp(clover.c_str(),"yes" )==0)
     {
@@ -582,7 +558,7 @@ void read_input_glb(const char path[])
             inte_analysis=true;
         }
         else
-        {cout<<"Only interacting analysis implemented."<<endl; exit(0);}
+        {cout<<"Only 'inte' analysis implemented."<<endl; exit(0);}
     }
     else
     {cout<<"Specify if the analysis is Clover: 'yes' or 'no'."<<endl; exit(0);}

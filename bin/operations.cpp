@@ -130,14 +130,6 @@ void oper_t::create_basic(const int b, const int msea)
         cout<<"Only interacting analysis implemented."<<endl; exit(0);
     }
 
-
-    // impose not to read mes_contr in the 2nd loop (free)
-    if(recompute_basic)
-    {
-        compute_mpcac=0;
-        UseEffMass=0;
-    }
-
     cout<<path_to_ens<<endl;
     read_input(path_to_ens,ensemble_name);
     path_to_moms = path_to_ens + mom_path;
@@ -146,16 +138,8 @@ void oper_t::create_basic(const int b, const int msea)
 
     V=size[0]*size[1]*size[2]*size[3];
 
-    if(!recompute_basic)
-    {
-        _nm=nm;
-        _nr=nr;
-    }
-    else
-    {
-        _nm=1;
-        _nr=1;
-    }
+    _nm=nm;
+    _nr=nr;
     _nmr=_nm*_nr;
 
     g2=6.0/_beta;
@@ -171,14 +155,15 @@ void oper_t::create_basic(const int b, const int msea)
     if(compute_mpcac)
     {
         compute_mPCAC("");
-        if(!free_analysis) compute_mPCAC("sea");
+        compute_mPCAC("sea");
     }
-    if(UseEffMass and !free_analysis and !recompute_basic)
+    
+    if(UseEffMass)
     {
         eff_mass=read_eff_mass(path_to_ens+"eff_mass_array");
         eff_mass_time=read_eff_mass_time(path_to_ens+"eff_mass_array_time");
 
-        if(_nm_Sea>1 and !free_analysis and !recompute_basic)
+        if(_nm_Sea>1)
             eff_mass_sea=read_eff_mass_sea(path_to_ens+"eff_mass_sea_array");
     }
 
