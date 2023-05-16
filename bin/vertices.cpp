@@ -37,7 +37,7 @@ prop_t make_vertex(const prop_t &prop1, const prop_t &prop2, const int mu)
     return prop1*GAMMA[mu]*GAMMA[5]*prop2.adjoint()*GAMMA[5];
 }
 
-// compute LO and EM vertices
+// compute LO vertices
 void build_vert(const vvvprop_t &S1,const vvvprop_t &S2,valarray<jvert_t> &jVert)
 {
 #pragma omp parallel for collapse (4)

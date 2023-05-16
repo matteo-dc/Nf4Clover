@@ -7,7 +7,7 @@
  #define EXTERN_VERT extern
 #endif
 
-// compute LO and EM vertices
+// compute vertices
 void build_vert(const vvvprop_t &S1,const vvvprop_t &S2,valarray<jvert_t> &jVert);
 
 namespace gbil
