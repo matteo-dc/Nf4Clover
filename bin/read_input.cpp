@@ -652,7 +652,7 @@ void read_input_glb(const char path[])
     else printf("LEFT. \n");
 
     if(subtraction==0) printf(" No perturbative subtraction.\n");
-    else if(subtraction>0 && subtraction<3)
+    else if(subtraction>0 and subtraction<3)
     {
         printf(" Perturbative subtraction done at order ");
         if(subtraction==1) printf("O(g2a2)");

@@ -91,28 +91,23 @@ int main(int narg,char **arg)
 
                 rave[m] = basic[m].average_r();
                 if(!load_ave) rave[m].plot("rave");
-
-
-                /*  no sub  */
-
+                
+                /* perturbative subtraction of lattice artifacts */
                 if(subtraction == 0)
                 {
+                    /*  no sub  */
                     sub[m] = rave[m];
                     if(!load_ave) sub[m].plot("sub_nosub");
                 }
-
-                /*  perturbative subtraction of O(a2)  */
-
-                if(subtraction == 1)
+                else if(subtraction == 1)
                 {
+                    /*  perturbative subtraction of O(a2)  */
                     sub[m] = rave[m].subOa2(b);
                     if(!load_ave) sub[m].plot("sub_a2");
                 }
-
-                /*  perturbative subtraction of O(ainf)  */
-
-                if(subtraction == 2)
+                else if(subtraction == 2)
                 {
+                    /*  perturbative subtraction of O(ainf)  */
                     sub[m] = rave[m].subOainf(b,"allmoms");
                     if(!load_ave) sub[m].plot("sub_ainf");
 

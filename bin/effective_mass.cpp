@@ -31,10 +31,6 @@ double solve_Newton (vvd_t C, int ijack, int t, const int T)
 {
     double k = C[ijack][t]/C[ijack][t+1];
     
-    // cout<<"**********DEBUG*************"<<endl;
-    // cout<<"jack: "<<ijack<<"  t: "<<t<<"  c(t)/c(t+1): "<<k<<endl;
-    // cout<<"**********DEBUG*************"<<endl;
-    
     if(k<1.0)
     {return nan("");}
     else{
@@ -61,19 +57,8 @@ double solve_Newton (vvd_t C, int ijack, int t, const int T)
             
             count_iteration++;
             g++;
-            
-            //  cout<<count_iteration<<endl;
-            
+
         } while ( abs(x1-x) >= x1*eps and count_iteration!=max_iteration );
-        
-        
-        // cout<<x0<<" ";
-        
-        // cout<<"********DEBUG*****************************"<<endl;
-        // if(count_iteration==max_iteration)
-        //   cerr<<t<<" Newton's method did not converge for the jackknife n. "<<ijack<<" in "<<max_iteration<<" iterations. The value is "<<x1<<" k "<<k<<endl;
-        // else cout<<t<<" Jackknife n. "<<ijack<<" has converged with success to the value "<<x1<<" in "<<g<<" iterations"<<" k "<<k<<endl;
-        // cout<<"********DEBUG*****************************"<<endl;
         
         return x1;
     }

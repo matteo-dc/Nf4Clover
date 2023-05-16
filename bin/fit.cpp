@@ -82,15 +82,6 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
         jvpars[ijack][n_par] = chi2[ijack];///n_par; /* chi2/dof */
     }
     
-        
-    //    for(int i=range_min; i<=range_max; i++)
-    //        cout<<"(x,y) [ijack=0] = "<<coord[0][i]<<" "<<y[0][i]<<" "<<error[i]<<endl;
-    //    cout<<"Extrapolation (jpars): "<<jpars[0](0)<<endl;
-    //    cout<<"Extrapolation (jvpars): "<<jvpars[0][0]<<endl;
-    
-        
-        
-        
     return jvpars;
     
 }
@@ -164,14 +155,6 @@ vvd_t polyfit(const vvd_t &coord, const int n_par, vd_t &error, const vvd_t &y, 
         
         jvpars[ijack][n_par] = chi2[ijack];///n_par; /* chi2/dof */
     }
-    
-    
-    
-    
-//    for(int i=range_min; i<=range_max; i++)
-//        cout<<"(x,y) [ijack=0] = "<<coord[0][i]<<" "<<y[0][i]<<" "<<error[i]<<endl;
-//    cout<<"Extrapolation (jpars): "<<jpars[0](0)<<endl;
-//    cout<<"Extrapolation (jvpars): "<<jvpars[0][0]<<endl;
     
     return jvpars;
     
@@ -357,21 +340,6 @@ vvd_t fit_par(const vvd_t &coord, const vd_t &error, const vvd_t &y, const int r
         par_array[k][0] = par_ave[k];
         par_array[k][1] = par_err[k];
     }
-    
-    //    if(path!="")
-    //    {
-    //      ofstream out(path);
-    //      out<<"@type xydy"<<endl;
-    //      for(int i=1; i<range_max; i++)
-    //	out<<i<<" "<<y[0][i]<<" "<<error[i]<<endl;
-    //      out<<"&"<<endl;
-    //      out<<"@type xy"<<endl;
-    //      out<<range_min<<" "<<par_ave[0]-par_err[0]<<endl;
-    //      out<<range_min<<" "<<par_ave[0]+par_err[0]<<endl;
-    //      out<<range_max<<" "<<par_ave[0]+par_err[0]<<endl;
-    //      out<<range_min<<" "<<par_ave[0]-par_err[0]<<endl;
-    //      out<<range_max<<" "<<par_ave[0]-par_err[0]<<endl;
-    //    }
     
     return par_array;
     

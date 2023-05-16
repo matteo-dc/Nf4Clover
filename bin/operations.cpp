@@ -69,9 +69,6 @@ void oper_t::set_moms()
     print_vec(p2_tilde,path_print+"p2_tilde.txt");
     print_vec(p2,path_print+"p2.txt");
 
-//    for(int imom=0;imom<moms;imom++)
-//        if(filt_moms[imom])
-//            cout<<imom<<" "<<mom_list[imom][0]<<" "<<mom_list[imom][1]<<" "<<mom_list[imom][2]<<" "<<mom_list[imom][3]<<" "<<endl;
 }
 
 void oper_t::set_ri_mom_moms()
@@ -157,7 +154,7 @@ void oper_t::create_basic(const int b, const int msea)
         compute_mPCAC("");
         compute_mPCAC("sea");
     }
-    
+
     if(UseEffMass)
     {
         eff_mass=read_eff_mass(path_to_ens+"eff_mass_array");
@@ -188,8 +185,6 @@ void oper_t::create_basic(const int b, const int msea)
         compute_Zbil();
     }
 }
-
-//////////
 
 oper_t oper_t::average_r()
 {
@@ -417,8 +412,6 @@ oper_t oper_t::chiral_extr()
     //extrapolate bilinears
 
     vvd_t gbil_pars_QCD(vd_t(0.0,npar_bil_max),njacks);
-    // int mshift=999;
-    // int _nm4=4;
 
 //#pragma omp parallel for //collapse(4)
     for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
@@ -532,25 +525,6 @@ oper_t oper_t::chiral_extr()
                         }
                         else  /* for P of if quadratic */
                         {
-                          // #warning temporaneo
-                          //   if(strcmp(beta_label[0].c_str(),"A")==0)
-                          //   {
-                          //     mshift=0;
-                          //   }
-                          //   else if(strcmp(beta_label[0].c_str(),"B")==0)
-                          //   {
-                          //     mshift=2;
-                          //   }
-                          //   else if(strcmp(beta_label[0].c_str(),"C")==0)
-                          //   {
-                          //     mshift=1;
-                          //   }
-                          //   else
-                          //   {
-                          //     exit(0);
-                          //   }
-                          //   cout<<"mshift = "<<mshift<<endl;
-
                             vd_t x_bil(0.0,_nm);
 
                             vvd_t coord_bil(vd_t(0.0,_nm),npar_bil_max);
@@ -979,8 +953,6 @@ oper_t oper_t::filter_moms()
             (out.p_tilde)[ifilt]=p_tilde[imom];
             (out.Np)[ifilt]=Np[imom];
 
-//            (out.linmoms)[ifilt]=linmoms[imom];
-//            (out.bilmoms)[ifilt]=bilmoms[imom];
             (out.linmoms)[ifilt]={ifilt};
             (out.bilmoms)[ifilt]={ifilt,ifilt,ifilt};
             if(scheme=="SMOM"){cout<<"Filter not implemented in SMOM."<<endl;exit(0);}
@@ -1028,9 +1000,7 @@ oper_t oper_t::filter_moms()
     }
     return out;
 }
-////////////
 
-/////////
 oper_t oper_t::filter_momsZ()
 {
     cout<<endl;
@@ -1120,7 +1090,6 @@ oper_t oper_t::filter_momsZ()
     }
     return out;
 }
-////////////
 
 oper_t oper_t::average_equiv_moms()
 {
@@ -1218,51 +1187,6 @@ oper_t oper_t::average_equiv_moms()
     print_vec(out.p2,path_print+"p2_eqmoms.txt");
     print_vec(out.p2_tilde,path_print+"p2_tilde_eqmoms.txt");
 
-//    // Find equivalent bilmoms
-//    tag=0, tag_aux=0;
-//
-//    vector<int> tag_bil_vector;
-//    tag_bil_vector.push_back(0);
-//
-//    //Tag assignment to bilmoms
-//    for(int ibilmom=0;ibilmom<_bilmoms;ibilmom++)
-//    {
-//        int count_no=0;
-//
-//        const int imom1=bilmoms[ibilmom][1]; // p1
-//        const int imom2=bilmoms[ibilmom][2]; // p2
-//
-//        for(int j=0;j<ibilmom;j++)
-//        {
-//            const int imomA=bilmoms[j][1]; // p1
-//            const int imomB=bilmoms[j][2]; // p2
-//
-//            const bool cond{(tag_lin_vector[imom1]==tag_lin_vector[imomA] and
-//                             tag_lin_vector[imom2]==tag_lin_vector[imomB]) or
-//                            (tag_lin_vector[imom1]==tag_lin_vector[imomB] and
-//                             tag_lin_vector[imom2]==tag_lin_vector[imomA])};
-//
-//
-//            if(cond)
-//                tag_aux=tag_bil_vector[j];
-//            else
-//                count_no++;
-//
-//            if(count_no==ibilmom)
-//            {
-//                tag++;
-//                tag_bil_vector.push_back(tag);
-//            }
-//            else if(j==ibilmom-1)
-//            {
-//                tag_bil_vector.push_back(tag_aux);
-//            }
-//        }
-//    }
-//
-//    // number of equivalent bilmoms
-//    int neq_bil_moms = tag+1;
-
     vector<int> tag_bil_vector=tag_lin_vector;
     int neq_bil_moms = neq_lin_moms;
 
@@ -1333,8 +1257,6 @@ oper_t oper_t::average_equiv_moms()
     }
     return out;
 }
-
-////////////
 
 oper_t oper_t::average_equiv_momsZ()
 {
