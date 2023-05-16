@@ -42,7 +42,6 @@ struct oper_t
     int _nm_Sea;
     string _SeaMasses_label;
     double _mu_sea;
-    string _theta_label;
     string _volume_label;
     double g2;
     double g2_tilde;
@@ -89,7 +88,7 @@ struct oper_t
     void compute_eff_mass_sea();
 
     // compute the basic RC estimators
-    void create_basic(const int b, const int th, const int msea);
+    void create_basic(const int b, const int msea);
 
     void set_ins();
 
@@ -250,18 +249,11 @@ voper_t combined_M5_log(voper_t in);
 // chiral sea extrapolation
 oper_t chiral_sea_extr(valarray<oper_t> in);
 
-// theta average
-voper_t theta_average(vvoper_t in);
-//oper_t theta_average(valarray<oper_t> in);
-
 // difference between interacting and free theory
 oper_t compute_eta(voper_t oper_for_eta);
 oper_t compute_eta_uncorr(voper_t oper_for_eta1,voper_t oper_for_eta2);
 
 // a2p2->0 extrapolation combined on betas
 voper_t a2p2_extr_combined_on_betas(voper_t in);
-
-// combined chiral sea extrapolation
-voper_t combined_chiral_sea_extr(vvoper_t in);
 
 #endif

@@ -9,7 +9,7 @@
 #define DEFAULT_DOUBLE_VAL 1.2345
 
 // define global variables
-int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta, ntheta,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted, sub_ptilde, subtraction;
+int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted, sub_ptilde, subtraction;
 int clust_size, nbil, combo, combo_lep, ntypes_lep;
 vector<double> beta;
 vector<int> nm_Sea;
@@ -28,7 +28,6 @@ string load_label;
 vector<string> path_analysis;
 vector<string> beta_label;  // beta_label[Nbeta]
 vector<string> volume_label;  // volume_label[Nbeta]
-vector<string> theta_label;  // theta_label[Ntheta]
 bool free_analysis;
 bool inte_analysis;
 bool eta_analysis;
@@ -62,8 +61,6 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,beta_tag)==0) return BETA_TK;
     if(strcasecmp(tok,beta_label_tag)==0) return BETA_LAB_TK;
     if(strcasecmp(tok,volume_label_tag)==0) return VOLUME_LAB_TK;
-    if(strcasecmp(tok,ntheta_tag)==0) return NTHETA_TK;
-    if(strcasecmp(tok,theta_label_tag)==0) return THETA_LAB_TK;
     if(strcasecmp(tok,nm_Sea_tag)==0) return NM_SEA_TK;
     if(strcasecmp(tok,SeaMasses_label_tag)==0) return SEAMASSES_LAB_TK;
     if(strcasecmp(tok,SeaMasses_tag)==0) return SEAMASSES_TK;
@@ -307,7 +304,6 @@ void read_input_glb(const char path[])
 //    for(auto &m : nm_Sea) m=DEFAULT_INT_VAL;
 //    for(auto &a : SeaMasses_label)
 //        for(auto &b : a) b=DEFAULT_INT_VAL;
-//    for(auto &t : theta_label) t=DEFAULT_STR_VAL;
 //    for(auto &v : ainv) v=DEFAULT_DOUBLE_VAL;
 
     while(not feof(fin))
@@ -368,14 +364,6 @@ void read_input_glb(const char path[])
                     for(int m=0;m<nm_Sea[b];m++)
                         get_value_glb(fin,SeaMasses[b][m]);
                 }
-                break;
-            case NTHETA_TK:
-                get_value_glb(fin,ntheta);
-                break;
-            case THETA_LAB_TK:
-                theta_label.resize(ntheta);
-                for(int t=0;t<ntheta;t++)
-                    get_value_glb(fin,theta_label[t]);
                 break;
             case ACT_TK:
                 get_value_glb(fin,action);
@@ -526,8 +514,6 @@ void read_input_glb(const char path[])
         for(auto &jm : im) check_int_par(jm,SeaMasses_label_tag);
     for(auto &im : SeaMasses)
         for(auto &jm : im) check_double_par(jm,SeaMasses_tag);
-    check_int_par(ntheta,ntheta_tag);
-    for(auto &t : theta_label) check_str_par(t.c_str(),theta_label_tag);
     check_double_par(LambdaQCD,LambdaQCD_tag);
     check_double_par(p2min,p2min_tag);
     check_double_par(p2max,p2max_tag);

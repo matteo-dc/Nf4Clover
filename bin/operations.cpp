@@ -92,7 +92,7 @@ void oper_t::set_smom_moms()
     exit(0);
 }
 
-void oper_t::create_basic(const int b, const int th, const int msea)
+void oper_t::create_basic(const int b, const int msea)
 {
 //    step = "basic";
     cout<<endl;
@@ -104,93 +104,32 @@ void oper_t::create_basic(const int b, const int th, const int msea)
     _nm_Sea=nm_Sea[b];
     _SeaMasses_label=to_string(SeaMasses_label[b][msea]);
     _mu_sea=SeaMasses[b][msea];
-    _theta_label=theta_label[th];
     _csw=csw[b];
 
-    if(!clover_analysis)
+    if(inte_analysis)
     {
-        if(inte_analysis)
+        // e.g. /.../matteo/Nf4/
+        path_ensemble = path_folder + path_analysis[0]+"/";
+
+        // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
+        if(!(strcmp(an_suffix.c_str(),"_Clover")==0))
         {
-            // e.g. /.../matteo/Nf4/
-            path_ensemble = path_folder + path_analysis[0]+"/";
-
-            // e.g. /.../matteo/Nf4/B_b1.95/
-            if(strcmp(an_suffix.c_str(),"")==0)
-                path_to_beta = path_ensemble + _beta_label + "_b" +
-                to_string_with_precision(_beta,2) + "/";
-            else
-                path_to_beta = path_ensemble;
-
-            // e.g. B1m
-            ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
-
-            // e.g. /.../matteo/Nf4/B_b1.95/B1m/
-            path_to_ens =  path_to_beta + ensemble_name + "/";
+            cout<<"Suffix '_Clover' needed!"<<endl; exit(0);
         }
-        else if(free_analysis)
-        {
-            // e.g. /.../matteo/free_matching/
-            path_ensemble = path_folder + path_analysis[0]+"/";
 
-            // e.g. /.../matteo/free_matching/B/
-            path_to_beta = path_ensemble;
+        path_to_beta = path_ensemble;
 
-            // e.g. B1m
-            ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
+        // e.g. B1m
+        ensemble_name = _beta_label +".d."+ _SeaMasses_label +"."+ _volume_label;
 
-            // e.g. /.../matteo/free_matching/B1m/
-            path_to_ens = path_ensemble + ensemble_name + "/";
-        }
-        else if(eta_analysis)
-        {
-            // e.g. /.../matteo/Rat/
-            path_to_beta = path_folder + path_analysis[0]+"/";
-
-            // e.g. /.../matteo/****/
-            if(!recompute_basic)
-            {
-                if(strcmp(an_suffix.c_str(),"")==0) /* Nf4/B_b1.95 */
-                    path_ensemble = path_folder + path_analysis[1]+"/" +
-                    _beta_label + "_b" + to_string_with_precision(_beta,2) + "/";
-                else    /* Nf4/ */
-                    path_ensemble = path_folder + path_analysis[1]+"/";
-            }
-            else                 /* free_matching */
-                path_ensemble = path_folder + path_analysis[2]+"/";
-
-            // e.g. B1m
-            ensemble_name = _beta_label + _SeaMasses_label + _theta_label;
-
-            // e.g /.../matteo/*****/B1m/
-            path_to_ens = path_ensemble + ensemble_name + "/";
-        }
+        // e.g. /.../matteo/Nf4/B_b1.95/B1m/
+        path_to_ens =  path_to_beta + ensemble_name + "/";
     }
     else
     {
-        if(inte_analysis)
-        {
-            // e.g. /.../matteo/Nf4/
-            path_ensemble = path_folder + path_analysis[0]+"/";
-
-            // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
-            if(!(strcmp(an_suffix.c_str(),"_Clover")==0))
-            {
-                cout<<"Suffix '_Clover' needed!"<<endl; exit(0);
-            }
-
-            path_to_beta = path_ensemble;
-
-            // e.g. B1m
-            ensemble_name = _beta_label +".d."+ _SeaMasses_label +"."+ _volume_label;
-
-            // e.g. /.../matteo/Nf4/B_b1.95/B1m/
-            path_to_ens =  path_to_beta + ensemble_name + "/";
-        }
-        else
-        {
-            cout<<"Only interacting analysis implemented."<<endl; exit(0);
-        }
+        cout<<"Only interacting analysis implemented."<<endl; exit(0);
     }
+
 
     // impose not to read mes_contr in the 2nd loop (free)
     if(recompute_basic)
@@ -3078,165 +3017,6 @@ voper_t combined_M5_log(voper_t in)  // M3 method combined on all betas
   }
 
    return out;
-}
-
-voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
-{
-    cout<<endl;
-    cout<<"----- combined chiral sea extrapolation -----"<<endl<<endl;
-
-    voper_t out(nbeta);  //out
-
-    int nb=(int)in.size();
-    valarray<int> nm(nbeta);
-
-    for(int b=0; b<nb; b++)
-    {
-        out[b] = in[b][0];
-        out[b].allocate_val();
-        out[b].allocate();
-
-        out[b].path_to_ens = in[b][0].path_to_beta + in[b][0]._beta_label + in[b][0]._theta_label+"/";
-
-        nm[b]=(int)in[b].size();
-    }
-
-    int nm_Sea_tot=0;
-    for(int b=0; b<nb; b++)
-        for(int msea=0; msea<nm[b]; msea++)
-            nm_Sea_tot++;
-    cout<<"total number of sea masses: "<<nm_Sea_tot<<endl;
-
-    vd_t  x(0.0,nm_Sea_tot);                  //[nmseatot]
-    vvd_t xb(vd_t(0.0,nm_Sea_tot),nb); //[beta][nmseatot]
-
-    int iel=0;
-    int iel_tmp1=0;
-    int iel_tmp2=0;
-
-    for(int b=0; b<nb; b++)
-    {
-        iel_tmp2 += in[b].size();
-        for(int msea=0; msea<nm[b]; msea++)
-        {
-            x[iel] = get<0>(ave_err(in[b][msea].eff_mass_sea))*ainv[b];
-
-            if(iel>=iel_tmp1 and iel<iel_tmp2)
-                xb[b][iel]=1;
-
-            iel++;
-        }
-        iel_tmp1 += in[b].size();
-    }
-
-    int npar = nb+1;                   //nbeta+1
-    vvd_t coord(vd_t(0.0,nm_Sea_tot),npar);
-
-    cout<<"Squared sea masses (physical basis):"<<endl;
-    for(iel=0; iel<nm_Sea_tot;iel++)
-    {
-        for(int b=0; b<nb; b++)
-            coord[b][iel] = xb[b][iel];
-
-        coord[nb][iel] = pow(x[iel],2.0);
-        cout<<coord[nb][iel]<<endl;
-    }
-
-    // extrapolate Zq
-    vvd_t y_Zq(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_Zq(0.0,nm_Sea_tot);             // [nmseatot]
-
-    iel=0;
-    for(int b=0; b<nb; b++)
-        for(int msea=0; msea<nm[b]; msea++)
-        {
-            for(int ijack=0;ijack<njacks;ijack++)
-            {
-                y_Zq[ijack][iel] = in[b][msea].jZq[0][ijack][0];
-            }
-
-            dy_Zq[iel] = (get<1>(ave_err_Zq(in[b][msea].jZq)))[0][0];
-
-            iel++;
-        }
-
-    vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,nm_Sea_tot-1); // [ijack][ipar]
-
-    for(int b=0; b<nb; b++)
-        for(int ijack=0;ijack<njacks;ijack++)
-        {
-            (out[b].jZq)[0][ijack][0] = jZq_pars[ijack][b];
-        }
-
-
-    // extrapolate Zbil
-    vvd_t y_Z(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_Z(0.0,nm_Sea_tot);             // [nmseatot]
-
-    for(int ibil=0; ibil<nbil;ibil++)
-    {
-        iel=0;
-        for(int b=0; b<nb; b++)
-            for(int msea=0; msea<nm[b]; msea++)
-            {
-                for(int ijack=0;ijack<njacks;ijack++)
-                {
-                    y_Z[ijack][iel] = in[b][msea].jZ[0][ibil][ijack][0][0];
-                }
-
-                dy_Z[iel] = (get<1>(ave_err_Z(in[b][msea].jZ)))[0][ibil][0][0];
-
-                iel++;
-            }
-
-        vvd_t jZ_pars = polyfit(coord,npar,dy_Z,y_Z,0,nm_Sea_tot-1); // [ijack][ipar]
-
-        for(int b=0; b<nb; b++)
-            for(int ijack=0;ijack<njacks;ijack++)
-            {
-                (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
-            }
-    }
-
-    // extrapolate ZV/ZA and ZP/ZS
-    vvd_t y_ZVovZA(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_ZVovZA(0.0,nm_Sea_tot);             // [nmseatot]
-    vvd_t y_ZPovZS(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_ZPovZS(0.0,nm_Sea_tot);             // [nmseatot]
-    vvd_t y_ZAovZV(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_ZAovZV(0.0,nm_Sea_tot);             // [nmseatot]
-
-    iel=0;
-    for(int b=0; b<nb; b++)
-        for(int msea=0; msea<nm[b]; msea++)
-        {
-            for(int ijack=0;ijack<njacks;ijack++)
-            {
-                y_ZVovZA[ijack][iel] = in[b][msea].jZVoverZA[0][0][ijack][0][0];
-                y_ZPovZS[ijack][iel] = in[b][msea].jZPoverZS[0][0][ijack][0][0];
-                y_ZAovZV[ijack][iel] = in[b][msea].jZAoverZV[0][0][ijack][0][0];
-            }
-
-            dy_ZVovZA[iel] = (get<1>(ave_err_Z(in[b][msea].jZVoverZA)))[0][0][0][0];
-            dy_ZPovZS[iel] = (get<1>(ave_err_Z(in[b][msea].jZPoverZS)))[0][0][0][0];
-            dy_ZAovZV[iel] = (get<1>(ave_err_Z(in[b][msea].jZAoverZV)))[0][0][0][0];
-
-            iel++;
-        }
-
-    vvd_t jZVovZA_pars = polyfit(coord,npar,dy_ZVovZA,y_ZVovZA,0,nm_Sea_tot-1); // [ijack][ipar]
-    vvd_t jZPovZS_pars = polyfit(coord,npar,dy_ZPovZS,y_ZPovZS,0,nm_Sea_tot-1); // [ijack][ipar]
-    vvd_t jZAovZV_pars = polyfit(coord,npar,dy_ZAovZV,y_ZAovZV,0,nm_Sea_tot-1); // [ijack][ipar]
-
-    for(int b=0; b<nb; b++)
-        for(int ijack=0;ijack<njacks;ijack++)
-        {
-            (out[b].jZVoverZA)[0][0][ijack][0][0] = jZVovZA_pars[ijack][b];
-            (out[b].jZPoverZS)[0][0][ijack][0][0] = jZPovZS_pars[ijack][b];
-            (out[b].jZAoverZV)[0][0][ijack][0][0] = jZAovZV_pars[ijack][b];
-        }
-
-    return out;
 }
 
 void oper_t::plot_bil_chir_extr(int mom, int i_ins, int ibil, vd_t x, vd_t y, vd_t dy, vvd_t jpars,  string suffix)

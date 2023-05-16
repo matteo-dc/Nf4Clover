@@ -54,10 +54,6 @@ extern vector<double> beta;
 extern vector<string> beta_label;
 // beta label
 extern vector<string> volume_label;
-// number of theta
-extern int ntheta;
-// theta label
-extern vector<string> theta_label;
 // kappa
 extern double kappa;
 // number of sea masses
