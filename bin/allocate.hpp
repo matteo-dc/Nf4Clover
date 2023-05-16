@@ -30,9 +30,6 @@ void allocate_vec( T &vec, const vector<int> sizes)
 #pragma omp parallel for
     for(size_t i=0;i<vec.size();i++)
         allocate_vec_internal(vec[i],sizes,isize);
-
-//    for(auto &i : vec)
-//        allocate_vec_internal(i,sizes,isize);
 }
 
 #endif
