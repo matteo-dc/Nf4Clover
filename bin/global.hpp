@@ -122,8 +122,6 @@ extern double p2max;
 extern vector<bool> filt_moms;
 // filter threshold
 extern double thresh;
-// compute MesLep
-extern int compute_4f;
 // out folder for quarks
 extern string out_hadr;
 // out folder for leptons

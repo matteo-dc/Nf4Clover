@@ -27,16 +27,5 @@ void oper_t::compute_Zq()
             {
                 // LO
                 jZq[ilinmom][ijack][mr] = sigma[ilinmom][SIGMA1][LO][ijack][mr];
-
-                // EM (relative)
-//                jZq_EM[ilinmom][ijack][mr] =
-//                    sigma[ilinmom][SIGMA1][PH][ijack][mr] /
-//                    sigma[ilinmom][SIGMA1][LO][ijack][mr];
-//                if(ntypes==6)
-//                    jZq_EM[ilinmom][ijack][mr] +=
-//                        (sigma[ilinmom][SIGMA1][P ][ijack][mr]*deltam_cr[ijack][mr] +
-//                         sigma[ilinmom][SIGMA1][S ][ijack][mr]*deltamu[ijack][mr]) /
-//                        sigma[ilinmom][SIGMA1][LO][ijack][mr];
-
             }
 }

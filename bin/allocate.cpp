@@ -1,12 +1,10 @@
 #include "global.hpp"
 #include "aliases.hpp"
 #include "operations.hpp"
+#include "sigmas.hpp"
 #include "vertices.hpp"
-#include "meslep.hpp"
 #include "Zq.hpp"
 #include "allocate.hpp"
-
-#include "sigmas.hpp"
 
 //read file
 void allocate_vec_internal(double &t, const vector<int> sizes, int isize)
@@ -53,10 +51,6 @@ void oper_t::allocate_val()
     // allocate effective masses
     allocate_vec(eff_mass,{njacks,_nm,_nm});
     allocate_vec(eff_mass_sea,{njacks});
-
-    // allocate deltam
-    allocate_vec(deltam_cr,{njacks,_nmr});
-    allocate_vec(deltamu,{njacks,_nmr});
 }
 
 void oper_t::check_allocation()

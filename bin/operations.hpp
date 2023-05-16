@@ -21,7 +21,6 @@ struct oper_t
 {
     vector<array<int,1>> linmoms;   // list of momenta used for Z, relative to glb list
     vector<array<int,3>> bilmoms;   // lists of momenta used for bilinears {k,i,j}
-    vector<array<int,3>> meslepmoms; // list of momenta used for meslep
 
     void read_mom_list(const string &path);
 
@@ -36,7 +35,6 @@ struct oper_t
     // size of linmoms and bilmoms
     int _linmoms;
     int _bilmoms;
-    int _meslepmoms;
 
     // variables that characterize the data struct
     double _beta;
@@ -70,13 +68,6 @@ struct oper_t
 
     // mPCAC
     void compute_mPCAC(const string &suffix);
-
-    // deltamu and deltamcr
-    vvd_t deltamu;
-    vvd_t deltam_cr;
-    void compute_deltam();
-    void compute_deltam_from_prop();
-    bool deltam_computed;
 
     // effective valence mass
     vvvd_t eff_mass;
@@ -132,7 +123,6 @@ struct oper_t
     {
         compute_sigmas();
         compute_bil();
-        if(compute_4f) compute_meslep();
     }
 
     void smom()
@@ -163,11 +153,6 @@ struct oper_t
     // compute projected bils
     void compute_bil();
 
-    // definition of projected meslep
-    vector<jproj_meslep_t> jpr_meslep;
-    // compute meslep
-    void compute_meslep();
-
     // definition of jZq
     vector<jZq_t> jZq, jZq_EM;
     // compute Zq
@@ -182,11 +167,6 @@ struct oper_t
 
     // compute Zbils
     void compute_Zbil();
-
-    // definition of Z (4fermions)
-    vector<jZ4f_t> jZ_4f, jZ_4f_EM;
-    // compute Z4f
-    void compute_Z4f();
 
     // average r
     oper_t average_r(/*const bool recompute_Zbil=false*/) ;
@@ -236,7 +216,6 @@ struct oper_t
     oper_t interpolate_to_p2ref(int b);
 //    vector<jZq_t> interpolate_to_p2ref_Zq(const double a2p2_ref,const int LO_or_EM);
 //    vector<jZbil_t> interpolate_to_p2ref_Zbil(const double a2p2_ref,const int LO_or_EM);
-//    vector<jZ4f_t> interpolate_to_p2ref_Z4f(const double a2p2_ref,const int LO_or_EM);
 
     // interpolate to p2=1/a2
     oper_t interpolate_to_ainv_near_neighbour(int b);
@@ -247,7 +226,6 @@ struct oper_t
     void plot(const string suffix, int b);
     // plot chiral extrapolations
     void plot_bil_chir_extr(int mom, int ins, int ibil, vd_t x, vd_t y, vd_t dy, vvd_t jpars, string suffix);
-    void plot_meslep_chir_extr(int mom, int ins, int iop1, int iop2, vd_t x, vd_t y, vd_t dy, vvd_t jpars);
 
     // plot sigmas
     void plot_sigmas();
@@ -295,8 +273,5 @@ voper_t a2p2_extr_combined_on_betas(voper_t in);
 
 // combined chiral sea extrapolation
 voper_t combined_chiral_sea_extr(vvoper_t in);
-
-// test tree level projection
-void test_gamma();
 
 #endif

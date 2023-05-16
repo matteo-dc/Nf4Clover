@@ -9,7 +9,7 @@
 #define DEFAULT_DOUBLE_VAL 1.2345
 
 // define global variables
-int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta, ntheta, compute_4f,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted, sub_ptilde, subtraction;
+int nconfs, njacks, nr, ntypes, nhits, Nf, Nc, UseSigma1, UseEffMass, nbeta, ntheta,only_basic, compute_mpcac, load_ave, load_chir, load, QCD_on_the_right, sub_boosted, sub_ptilde, subtraction;
 int clust_size, nbil, combo, combo_lep, ntypes_lep;
 vector<double> beta;
 vector<int> nm_Sea;
@@ -82,7 +82,6 @@ TK_glb_t get_TK_glb(FILE *fin)
     if(strcasecmp(tok,p2min_tag)==0) return P2MIN_TK;
     if(strcasecmp(tok,p2max_tag)==0) return P2MAX_TK;
     if(strcasecmp(tok,thresh_tag)==0) return THRESH_TK;
-    if(strcasecmp(tok,compute_meslep_tag)==0) return COMPUTE_MESLEP_TK;
     if(strcasecmp(tok,out_hadr_tag)==0) return OUT_HADR_TK;
     if(strcasecmp(tok,out_lep_tag)==0) return OUT_LEP_TK;
     if(strcasecmp(tok,only_basic_tag)==0) return ONLY_BASIC_TK;
@@ -281,7 +280,6 @@ void read_input_glb(const char path[])
     p2min=DEFAULT_DOUBLE_VAL;
     p2max=DEFAULT_DOUBLE_VAL;
     thresh=DEFAULT_DOUBLE_VAL;
-    compute_4f=DEFAULT_INT_VAL;
     out_hadr=DEFAULT_STR_VAL;
     out_lep=DEFAULT_STR_VAL;
     only_basic=DEFAULT_INT_VAL;
@@ -431,9 +429,6 @@ void read_input_glb(const char path[])
             case THRESH_TK:
                 get_value_glb(fin,thresh);
                 break;
-            case COMPUTE_MESLEP_TK:
-                get_value_glb(fin,compute_4f);
-                break;
             case OUT_HADR_TK:
                 get_value_glb(fin,out_hadr);
                 break;
@@ -537,7 +532,6 @@ void read_input_glb(const char path[])
     check_double_par(p2min,p2min_tag);
     check_double_par(p2max,p2max_tag);
     check_double_par(thresh,thresh_tag);
-    check_int_par(compute_4f,compute_meslep_tag);
     check_str_par(out_hadr,out_hadr_tag);
     check_str_par(out_lep,out_lep_tag);
     check_int_par(only_basic,only_basic_tag);

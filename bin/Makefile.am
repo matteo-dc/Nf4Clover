@@ -16,14 +16,12 @@ main_SOURCES  =	 main.cpp \
 		 tools.cpp \
 		 contractions.cpp \
 		 fit.cpp \
-                 effective_mass.cpp \
-		 deltam_cr.cpp \
+         effective_mass.cpp \
 		 Dirac.cpp \
-                 print.cpp \
+         print.cpp \
 		 Zq.cpp \
 		 Zbil.cpp \
 		 ave_err.cpp \
 		 subtraction.cpp \
-		 meslep.cpp \
 		 interpolate.cpp
 

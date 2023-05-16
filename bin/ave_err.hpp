@@ -90,12 +90,4 @@ tuple<vd_t,vd_t> ave_err(vvd_t jdeltam);
 // average stepscaling function
 tuple<vd_t,vd_t> ave_err(vector<vd_t> jy);
 
-// average meslep
-tuple<vvvvvvd_t,vvvvvvd_t> ave_err(vector<jproj_meslep_t> jmeslep);
-
-// average Z4f
-tuple<vvvvvd_t,vvvvvd_t> ave_err_Z4f(vector<jZ4f_t> jZ4f);
-
-
-
 #endif

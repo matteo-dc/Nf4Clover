@@ -69,28 +69,3 @@ jvert_t jackknife(jvert_t &jVert)
     
     return jVert;
 }
-
-// jackknife meslep
-jmeslep_t jackknife(jmeslep_t &jmeslep)
-{
-    jvert_t jSum(vvvprop_t(vvprop_t(vprop_t(prop_t::Zero(),11),5),nmr),nmr);
-    
-#pragma omp parallel for collapse(4)
-    for(int mrA=0;mrA<nmr;mrA++)
-        for(int mrB=0;mrB<nmr;mrB++)
-            for(int iop=0;iop<5;iop++)
-                for(int iproj=0;iproj<11;iproj++)
-                    for(int ijack=0;ijack<njacks;ijack++)
-                        jSum[mrA][mrB][iop][iproj] += jmeslep[ijack][mrA][mrB][iop][iproj];
-    
-#pragma omp parallel for collapse(5)
-    for(int ijack=0;ijack<njacks;ijack++)
-        for(int mrA=0;mrA<nmr;mrA++)
-            for(int mrB=0;mrB<nmr;mrB++)
-                for(int iop=0;iop<5;iop++)
-                    for(int iproj=0;iproj<11;iproj++)
-                        jmeslep[ijack][mrA][mrB][iop][iproj] = (jSum[mrA][mrB][iop][iproj]-jmeslep[ijack][mrA][mrB][iop][iproj])/((nconfs-clust_size)/**nhits*/);
-    
-    return jmeslep;
-}
-
