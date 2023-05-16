@@ -3190,8 +3190,6 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
     // extrapolate Zq
     vvd_t y_Zq(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
     vd_t  dy_Zq(0.0,nm_Sea_tot);             // [nmseatot]
-    vvd_t y_Zq_EM(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_Zq_EM(0.0,nm_Sea_tot);             // [nmseatot]
 
     iel=0;
     for(int b=0; b<nb; b++)
@@ -3200,31 +3198,25 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
             for(int ijack=0;ijack<njacks;ijack++)
             {
                 y_Zq[ijack][iel] = in[b][msea].jZq[0][ijack][0];
-                y_Zq_EM[ijack][iel] = in[b][msea].jZq_EM[0][ijack][0];
             }
 
             dy_Zq[iel] = (get<1>(ave_err_Zq(in[b][msea].jZq)))[0][0];
-            dy_Zq_EM[iel] = (get<1>(ave_err_Zq(in[b][msea].jZq_EM)))[0][0];
 
             iel++;
         }
 
     vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,0,nm_Sea_tot-1); // [ijack][ipar]
-    vvd_t jZq_EM_pars = polyfit(coord,npar,dy_Zq_EM,y_Zq_EM,0,nm_Sea_tot-1); // [ijack][ipar]
 
     for(int b=0; b<nb; b++)
         for(int ijack=0;ijack<njacks;ijack++)
         {
             (out[b].jZq)[0][ijack][0] = jZq_pars[ijack][b];
-            (out[b].jZq_EM)[0][ijack][0] = jZq_EM_pars[ijack][b];
         }
 
 
     // extrapolate Zbil
     vvd_t y_Z(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
     vd_t  dy_Z(0.0,nm_Sea_tot);             // [nmseatot]
-    vvd_t y_Z_EM(vd_t(0.0,nm_Sea_tot),njacks); // [njacks][nmseatot]
-    vd_t  dy_Z_EM(0.0,nm_Sea_tot);             // [nmseatot]
 
     for(int ibil=0; ibil<nbil;ibil++)
     {
@@ -3235,23 +3227,19 @@ voper_t combined_chiral_sea_extr(vvoper_t in)  //  in[beta][msea]
                 for(int ijack=0;ijack<njacks;ijack++)
                 {
                     y_Z[ijack][iel] = in[b][msea].jZ[0][ibil][ijack][0][0];
-                    y_Z_EM[ijack][iel] = in[b][msea].jZ_EM[0][ibil][ijack][0][0];
                 }
 
                 dy_Z[iel] = (get<1>(ave_err_Z(in[b][msea].jZ)))[0][ibil][0][0];
-                dy_Z_EM[iel] = (get<1>(ave_err_Z(in[b][msea].jZ_EM)))[0][ibil][0][0];
 
                 iel++;
             }
 
         vvd_t jZ_pars = polyfit(coord,npar,dy_Z,y_Z,0,nm_Sea_tot-1); // [ijack][ipar]
-        vvd_t jZ_EM_pars = polyfit(coord,npar,dy_Z_EM,y_Z_EM,0,nm_Sea_tot-1); // [ijack][ipar]
 
         for(int b=0; b<nb; b++)
             for(int ijack=0;ijack<njacks;ijack++)
             {
                 (out[b].jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][b];
-                (out[b].jZ_EM)[0][ibil][ijack][0][0] = jZ_EM_pars[ijack][b];
             }
     }
 
@@ -3391,11 +3379,11 @@ void oper_t::plot(const string suffix)
     // this choice is relative to the twisted basis
     vector<string> bil={"S","V","P","A","T"};
 
-    ofstream Zq_data; //    , Zq_EM_data;
-    ofstream Zq_p2_data; //    , Zq_EM_p2_data;
+    ofstream Zq_data;
+    ofstream Zq_p2_data;
 
-    vector<ofstream> Zbil_data(nbil); //    , Zbil_EM_data(nbil);
-    vector<ofstream> Zbil_p2_data(nbil); //    , Zbil_EM_p2_data(nbil);
+    vector<ofstream> Zbil_data(nbil);
+    vector<ofstream> Zbil_p2_data(nbil);
 
     ofstream ZVovZA_data, ZPovZS_data, ZAovZV_data;
     ofstream ZVovZA_p2_data, ZPovZS_p2_data, ZAovZV_p2_data;

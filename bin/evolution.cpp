@@ -252,7 +252,6 @@ oper_t oper_t::evolve(const double _ainv, const double p2_evol)
           for(int mr1=0; mr1<_nmr; mr1++)
           {
               (out.jZq)[ilinmom][ijack][mr1] = jZq[ilinmom][ijack][mr1]/cq;
-              // (out.jZq_EM)[ilinmom][ijack][mr1] = jZq_EM[ilinmom][ijack][mr1]/cq;
           }
     }
 

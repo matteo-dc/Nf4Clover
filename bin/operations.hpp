@@ -154,12 +154,12 @@ struct oper_t
     void compute_bil();
 
     // definition of jZq
-    vector<jZq_t> jZq, jZq_EM;
+    vector<jZq_t> jZq;
     // compute Zq
     void compute_Zq();
 
     // definition of Z
-    vector<jZbil_t> jZ, jZ_EM;
+    vector<jZbil_t> jZ;
     // definition of ZV/ZA and ZP/ZS
     vector<jZbil_t> jZVoverZA;
     vector<jZbil_t> jZPoverZS;
@@ -180,11 +180,6 @@ struct oper_t
 
     // step scaling function
     vector<vd_t> stepfunc;
-
-    // O(g2a2) subtraction
-    oper_t subtract();
-    double subtraction(const int imom, const int ibil, const int LO_or_EM);
-    double subtraction_q(const int imom, const int LO_or_EM);
 
     oper_t subOa2(const int b);
 
@@ -214,8 +209,6 @@ struct oper_t
     // interpolate to p2ref
     oper_t interpolate_to_p2ref_near_neighbour(int b);
     oper_t interpolate_to_p2ref(int b);
-//    vector<jZq_t> interpolate_to_p2ref_Zq(const double a2p2_ref,const int LO_or_EM);
-//    vector<jZbil_t> interpolate_to_p2ref_Zbil(const double a2p2_ref,const int LO_or_EM);
 
     // interpolate to p2=1/a2
     oper_t interpolate_to_ainv_near_neighbour(int b);

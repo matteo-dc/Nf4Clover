@@ -94,34 +94,23 @@ oper_t oper_t::interpolate_to_ainv_near_neighbour(int b)
     vd_t  dy_Zq(0.0,_linmoms);                   // [moms]
     vvd_t dy_Zq_tmp = get<1>(ave_err_Zq((*this).jZq)); // [moms][nmr]
 
-    vvd_t y_Zq_EM(vd_t(0.0,_linmoms),njacks);       // [njacks][moms]
-    vd_t  dy_Zq_EM(0.0,_linmoms);                   // [moms]
-    vvd_t dy_Zq_EM_tmp = get<1>(ave_err_Zq((*this).jZq_EM)); // [moms][nmr]
-
     for(int imom=0;imom<_linmoms;imom++)
     {
         for(int ijack=0;ijack<njacks;ijack++)
         {
             y_Zq[ijack][imom] = jZq[imom][ijack][0];
-            y_Zq_EM[ijack][imom] = jZq_EM[imom][ijack][0];
         }
 
         dy_Zq[imom] = dy_Zq_tmp[imom][0];
-        dy_Zq_EM[imom] = dy_Zq_EM_tmp[imom][0];
     }
 
     vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,a2p2_min,a2p2_max); // [ijack][ipar]
-    vvd_t jZq_EM_pars = polyfit(coord,npar,dy_Zq_EM,y_Zq_EM,a2p2_min,a2p2_max); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZq)[0][ijack][0] = jZq_pars[ijack][0] +
                                  jZq_pars[ijack][1]*a2p2ref +
                                  jZq_pars[ijack][2]*a2p2ref*a2p2ref;
-
-        (out.jZq_EM)[0][ijack][0] = jZq_EM_pars[ijack][0] +
-                                    jZq_EM_pars[ijack][1]*a2p2ref +
-                                    jZq_EM_pars[ijack][2]*a2p2ref*a2p2ref;
     }
 
 
@@ -129,10 +118,6 @@ oper_t oper_t::interpolate_to_ainv_near_neighbour(int b)
     vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_Zbil(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
-
-    vvd_t y_Zbil_EM(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    vd_t  dy_Zbil_EM(0.0,_bilmoms);                   // [moms]
-    vvvvd_t dy_Zbil_EM_tmp = get<1>(ave_err_Z((*this).jZ_EM)); // [moms][nbil][nmr][nmr]
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
@@ -142,25 +127,18 @@ oper_t oper_t::interpolate_to_ainv_near_neighbour(int b)
             for(int ijack=0;ijack<njacks;ijack++)
             {
                 y_Zbil[ijack][imom] = jZ[imom][ibil][ijack][0][0];
-                y_Zbil_EM[ijack][imom] = jZ_EM[imom][ibil][ijack][0][0];
             }
 
             dy_Zbil[imom] = dy_Zbil_tmp[imom][ibil][0][0];
-            dy_Zbil_EM[imom] = dy_Zbil_EM_tmp[imom][ibil][0][0];
         }
 
         vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,a2p2_min,a2p2_max); // [ijack][ipar]
-        vvd_t jZ_EM_pars = polyfit(coord,npar,dy_Zbil_EM,y_Zbil_EM,a2p2_min,a2p2_max); // [ijack][ipar]
 
         for(int ijack=0;ijack<njacks;ijack++)
         {
             (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0] +
                                              jZ_pars[ijack][1]*a2p2ref +
                                              jZ_pars[ijack][2]*a2p2ref*a2p2ref;
-
-            (out.jZ_EM)[0][ibil][ijack][0][0] = jZ_EM_pars[ijack][0] +
-                                                jZ_EM_pars[ijack][1]*a2p2ref +
-                                                jZ_EM_pars[ijack][2]*a2p2ref*a2p2ref;
         }
 
     }
@@ -206,34 +184,23 @@ oper_t oper_t::interpolate_to_p2ref_near_neighbour(int b)
     vd_t  dy_Zq(0.0,_linmoms);                   // [moms]
     vvd_t dy_Zq_tmp = get<1>(ave_err_Zq((*this).jZq)); // [moms][nmr]
 
-    vvd_t y_Zq_EM(vd_t(0.0,_linmoms),njacks);       // [njacks][moms]
-    vd_t  dy_Zq_EM(0.0,_linmoms);                   // [moms]
-    vvd_t dy_Zq_EM_tmp = get<1>(ave_err_Zq((*this).jZq_EM)); // [moms][nmr]
-
     for(int imom=0;imom<_linmoms;imom++)
     {
         for(int ijack=0;ijack<njacks;ijack++)
         {
             y_Zq[ijack][imom] = jZq[imom][ijack][0];
-            y_Zq_EM[ijack][imom] = jZq_EM[imom][ijack][0];
         }
 
         dy_Zq[imom] = dy_Zq_tmp[imom][0];
-        dy_Zq_EM[imom] = dy_Zq_EM_tmp[imom][0];
     }
 
     vvd_t jZq_pars = polyfit(coord,npar,dy_Zq,y_Zq,p2_min,p2_max); // [ijack][ipar]
-    vvd_t jZq_EM_pars = polyfit(coord,npar,dy_Zq_EM,y_Zq_EM,p2_min,p2_max); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZq)[0][ijack][0] = jZq_pars[ijack][0] +
         jZq_pars[ijack][1]*p2ref +
         jZq_pars[ijack][2]*p2ref*p2ref;
-
-        (out.jZq_EM)[0][ijack][0] = jZq_EM_pars[ijack][0] +
-        jZq_EM_pars[ijack][1]*p2ref +
-        jZq_EM_pars[ijack][2]*p2ref*p2ref;
     }
 
 
@@ -241,10 +208,6 @@ oper_t oper_t::interpolate_to_p2ref_near_neighbour(int b)
     vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_Zbil(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
-
-    vvd_t y_Zbil_EM(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-    vd_t  dy_Zbil_EM(0.0,_bilmoms);                   // [moms]
-    vvvvd_t dy_Zbil_EM_tmp = get<1>(ave_err_Z((*this).jZ_EM)); // [moms][nbil][nmr][nmr]
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
@@ -254,25 +217,18 @@ oper_t oper_t::interpolate_to_p2ref_near_neighbour(int b)
             for(int ijack=0;ijack<njacks;ijack++)
             {
                 y_Zbil[ijack][imom] = jZ[imom][ibil][ijack][0][0];
-                y_Zbil_EM[ijack][imom] = jZ_EM[imom][ibil][ijack][0][0];
             }
 
             dy_Zbil[imom] = dy_Zbil_tmp[imom][ibil][0][0];
-            dy_Zbil_EM[imom] = dy_Zbil_EM_tmp[imom][ibil][0][0];
         }
 
         vvd_t jZ_pars = polyfit(coord,npar,dy_Zbil,y_Zbil,p2_min,p2_max); // [ijack][ipar]
-        vvd_t jZ_EM_pars = polyfit(coord,npar,dy_Zbil_EM,y_Zbil_EM,p2_min,p2_max); // [ijack][ipar]
 
         for(int ijack=0;ijack<njacks;ijack++)
         {
             (out.jZ)[0][ibil][ijack][0][0] = jZ_pars[ijack][0] +
             jZ_pars[ijack][1]*p2ref +
             jZ_pars[ijack][2]*p2ref*p2ref;
-
-            (out.jZ_EM)[0][ibil][ijack][0][0] = jZ_EM_pars[ijack][0] +
-            jZ_EM_pars[ijack][1]*p2ref +
-            jZ_EM_pars[ijack][2]*p2ref*p2ref;
         }
     }
 
@@ -367,34 +323,23 @@ oper_t oper_t::interpolate_to_p2ref(int b)
     vd_t  dy_Zq(0.0,_linmoms);                   // [moms]
     vvd_t dy_Zq_tmp = get<1>(ave_err_Zq((*this).jZq)); // [moms][nmr]
 
-//    vvd_t y_Zq_EM(vd_t(0.0,_linmoms),njacks);       // [njacks][moms]
-//    vd_t  dy_Zq_EM(0.0,_linmoms);                   // [moms]
-//    vvd_t dy_Zq_EM_tmp = get<1>(ave_err_Zq((*this).jZq_EM)); // [moms][nmr]
-
     for(int imom=0;imom<_linmoms;imom++)
     {
         for(int ijack=0;ijack<njacks;ijack++)
         {
             y_Zq[ijack][imom] = jZq[imom][ijack][0];
-//            y_Zq_EM[ijack][imom] = jZq_EM[imom][ijack][0];
         }
 
         dy_Zq[imom] = dy_Zq_tmp[imom][0];
-//        dy_Zq_EM[imom] = dy_Zq_EM_tmp[imom][0];
     }
 
     vvd_t jZq_pars = polyfit(coord,npar-1,dy_Zq,y_Zq,p2min,p2max); // [ijack][ipar]
-//    vvd_t jZq_EM_pars = polyfit(coord,npar,dy_Zq_EM,y_Zq_EM,p2_min,p2_max); // [ijack][ipar]
 
     for(int ijack=0;ijack<njacks;ijack++)
     {
         (out.jZq)[0][ijack][0] = jZq_pars[ijack][0];
 //        + jZq_pars[ijack][1]*p2ref +
 //        jZq_pars[ijack][2]*p2ref*p2ref;
-
-//        (out.jZq_EM)[0][ijack][0] = jZq_EM_pars[ijack][0] +
-//        jZq_EM_pars[ijack][1]*p2ref +
-//        jZq_EM_pars[ijack][2]*p2ref*p2ref;
     }
 
 
@@ -402,10 +347,6 @@ oper_t oper_t::interpolate_to_p2ref(int b)
     vvd_t y_Zbil(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
     vd_t  dy_Zbil(0.0,_bilmoms);                   // [moms]
     vvvvd_t dy_Zbil_tmp = get<1>(ave_err_Z((*this).jZ)); // [moms][nbil][nmr][nmr]
-
-//    vvd_t y_Zbil_EM(vd_t(0.0,_bilmoms),njacks);       // [njacks][moms]
-//    vd_t  dy_Zbil_EM(0.0,_bilmoms);                   // [moms]
-//    vvvvd_t dy_Zbil_EM_tmp = get<1>(ave_err_Z((*this).jZ_EM)); // [moms][nbil][nmr][nmr]
 
     for(int ibil=0;ibil<nbil;ibil++)
     {
