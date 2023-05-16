@@ -595,6 +595,12 @@ void read_input_glb(const char path[])
         exit(0);
     }
 
+    if(ntypes!=1)
+    {
+        cout<<"Only ntypes=1 implemented."<<endl; 
+        exit(0);
+    }
+
     if(strcmp(chir_ansatz_val.c_str(),"linear" )!=0 and
        strcmp(chir_ansatz_val.c_str(),"constant" )!=0 and
        strcmp(chir_ansatz_val.c_str(),"quadratic" )!=0)
