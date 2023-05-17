@@ -4,7 +4,7 @@
 #include "aliases.hpp"
 
 // clusterize propagator
-jprop_t clusterize(jprop_t &jS,vvprop_t &S);
+jprop_t clusterize(jprop_t &jS, vvprop_t &S);
 // jackknife double
 vvd_t jackknife(vvd_t &jd);
 // jackknife Propagator

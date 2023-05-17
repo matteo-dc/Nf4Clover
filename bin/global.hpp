@@ -13,7 +13,7 @@ extern int njacks;
 // size of the cluster
 extern int clust_size;
 // sizes
-extern coords_t size;
+extern coords_t sizeV;
 // confs range
 extern int conf_init, conf_step;
 // number of valence masses

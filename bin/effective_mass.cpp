@@ -84,7 +84,7 @@ void oper_t::compute_mPCAC(const string &suffix)
     for(int iconf=0;iconf<nconfs;iconf++)
         conf_id[iconf]=conf_init+iconf*conf_step;
     
-    int T=size[0];
+    int T=sizeV[0];
     
     // define jackknife correlators
     vvvvvd_t jP5P5_00(vvvvd_t(vvvd_t(vvd_t(vd_t(T/2+1),njacks),_nr),_nm),_nm);
@@ -233,7 +233,7 @@ void oper_t::compute_eff_mass()
     for(int iconf=0;iconf<nconfs;iconf++)
         conf_id[iconf]=conf_init+iconf*conf_step;
     
-    int T=size[0];
+    int T=sizeV[0];
     
     // define jackknife P5P5 correlators
     vvvvvd_t jP5P5_00(vvvvd_t(vvvd_t(vvd_t(vd_t(T/2+1),njacks),nr),nm),nm);
@@ -371,7 +371,7 @@ void oper_t::compute_eff_mass_sea()
     for(int iconf=0;iconf<nconfs;iconf++)
         conf_id[iconf]=conf_init+iconf*conf_step;
     
-    int T=size[0];
+    int T=sizeV[0];
     
     // define jackknife P5P5 correlators
     vvvd_t jP5P5_00(vvd_t(vd_t(T/2+1),njacks),nr);

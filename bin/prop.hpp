@@ -25,16 +25,6 @@ namespace qprop
     EXTERN_PROP int nins;
 }
 
-namespace lprop
-{
-    void set_ins();
-    
-    enum ins{LO,F};
-    
-    EXTERN_PROP vector<ins> ins_list;
-    EXTERN_PROP int nins;
-}
-
 // invert the propagator
 vvprop_t invert_jprop( const vvprop_t &jprop);
 
