@@ -293,6 +293,29 @@ int fact(int n)
     return 1;
 }
 
+// print line of text
+void printLine(char chLeft, char chMiddle, char chRight, int length)
+{
+  printf("%c", chLeft);
+  for (int i = 0; i < length - 2; i++)
+    printf("%c", chMiddle);
+  printf("%c", chRight);
+  printf("\n");
+}
+
+// print the box
+void printBox(const char *content)
+{
+  int contentLength = strlen(content);
+  int lineLength = 2 * contentLength + 2;
+
+  printLine('*', '-', '*', lineLength);
+  string padding(contentLength / 2, ' ');
+  cout << "|" << padding << content << padding << "|" << endl;
+  printLine('*', '-', '*', lineLength);
+  cout << endl;
+}
+
 // reads the input file
 void read_input_glb(const char path[])
 {
@@ -657,9 +680,8 @@ void read_input_glb(const char path[])
   nm_Sea_max = *max_element(nm_Sea.begin(), nm_Sea.end());
 
   // print input parameters
-  printf("*------------------------------------------------------*\n");
-  printf("|                Global configuration                  |\n");
-  printf("*------------------------------------------------------*\n\n");
+  const char *globalConf = "Global configuration";
+  printBox(globalConf);
 
   printf(" %s = %s", analysis_tag, analysis.c_str()); // free, inte, ratio
   if (clover_analysis)
@@ -880,9 +902,10 @@ void read_input(const string &path_to_ens, const string &name)
 
   sizeV = {T, L, L, L};
 
-  printf("*------------------------------------------------------*\n");
-  printf("|                     Ensemble %s                     |\n", name.c_str());
-  printf("*------------------------------------------------------*\n\n");
+  // print ensemble details
+  string ensemble = "Ensemble " + name;
+  const char *ensembleString = ensemble.c_str();
+  printBox(ensembleString);
 
   printf(" %s = \"%s\"\n", mom_list_tag, mom_path.c_str());
   printf(" Dimensions = %dc%d\n", L, T);
