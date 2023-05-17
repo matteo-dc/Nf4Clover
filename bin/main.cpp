@@ -61,14 +61,15 @@ int main(int narg, char **arg)
 
   for (int b = 0; b < nbeta; b++)
   {
-    voper_t basic(nm_Sea[b]), rave(nm_Sea[b]), sub(nm_Sea[b]), filt(nm_Sea[b]), ave(nm_Sea[b]),
-        val_chir(nm_Sea[b]);
+    voper_t basic(nm_Sea[b]), rave(nm_Sea[b]), sub(nm_Sea[b]),
+            filt(nm_Sea[b]),  ave(nm_Sea[b]),  val_chir(nm_Sea[b]);
 
     oper_t sea_chir, evo, cont;
     oper_t M1, M2, M1b, M2b, M3, M4;
 
     for (int m = 0; m < nm_Sea[b]; m++)
     {
+
       /*  basic  */
 
       basic[m].create_basic(b, m);
