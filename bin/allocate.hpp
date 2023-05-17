@@ -27,7 +27,6 @@ void allocate_vec(T &vec, const vector<int> sizes)
   vec.resize(sizes[isize]);
   isize++;
 
-#pragma omp parallel for
   for (size_t i = 0; i < vec.size(); i++)
     allocate_vec_internal(vec[i], sizes, isize);
 }
