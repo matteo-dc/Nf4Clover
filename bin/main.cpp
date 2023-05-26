@@ -61,8 +61,8 @@ int main(int narg, char **arg)
 
   for (int b = 0; b < nbeta; b++)
   {
-    voper_t basic(nm_Sea[b]), rave(nm_Sea[b]), sub(nm_Sea[b]),
-            filt(nm_Sea[b]),  ave(nm_Sea[b]),  val_chir(nm_Sea[b]);
+    voper_t basic(nm_Sea[b]), rave(nm_Sea[b]), sub(nm_Sea[b]), filt(nm_Sea[b]), ave(nm_Sea[b]),
+        val_chir(nm_Sea[b]);
 
     oper_t sea_chir, evo, cont;
     oper_t M1, M2, M1b, M2b, M3, M4;
@@ -136,7 +136,11 @@ int main(int narg, char **arg)
         /* load averaged ingredients if needed */
 
         if (load_ave)
+        {
           ave[m].load(load_label);
+          ave[m].plot("ave");
+        }
+
         // if(load_ave) ave[m].load("ave_Enr028");  // latest working version: 10/03/22
         // if(load_ave) ave[m].load("ave_Martha");
 
