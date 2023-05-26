@@ -110,7 +110,8 @@ void oper_t::create_basic(const int b, const int msea)
     path_ensemble = path_folder + path_analysis[0] + "/";
 
     // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
-    if (!(strcmp(an_suffix.c_str(), "_Clover") == 0 or strcmp(an_suffix.c_str(), "_Clover2023") == 0))
+    if (!(strcmp(an_suffix.c_str(), "_Clover") == 0 or
+          strcmp(an_suffix.c_str(), "_Clover2023") == 0))
     {
       cout << "Suffix '_Clover' needed!" << endl;
       exit(0);
@@ -3086,25 +3087,20 @@ void oper_t::plot(const string suffix)
   vvd_t Zq_ave = get<0>(Zq_ave_err); //[imom][mr]
   vvd_t Zq_err = get<1>(Zq_ave_err); //[imom][mr]
 
+  // Gbil
+  tuple<vvvvvd_t, vvvvvd_t> Gbil_ave_err = ave_err(in.jG);
+  vvvvvd_t G_ave = get<0>(Gbil_ave_err); //[imom][ins][ibil][mrA][mrB]
+  vvvvvd_t G_err = get<1>(Gbil_ave_err); //[imom][ins][ibil][mrA][mrB]
+
   // Zbil
   Zbil_tup Zbil_ave_err = ave_err_Z(in.jZ);
   vvvvd_t Z_ave = get<0>(Zbil_ave_err); //[imom][ibil][mr1][mr2]
   vvvvd_t Z_err = get<1>(Zbil_ave_err); //[imom][ibil][mr1][mr2]
 
   // ZV/ZA and ZP/ZS and ZA/ZV (S,V,P,A,T)
-  // Zbil12_tup ZVovZA_ave_err = ave_err_Z(in.jZ,1,3);
-  // Zbil12_tup ZPovZS_ave_err = ave_err_Z(in.jZ,2,0);
-  // Zbil12_tup ZAovZV_ave_err = ave_err_Z(in.jZ,3,1);
   Zbil_tup ZVovZA_ave_err = ave_err_Z(in.jZVoverZA);
   Zbil_tup ZPovZS_ave_err = ave_err_Z(in.jZPoverZS);
   Zbil_tup ZAovZV_ave_err = ave_err_Z(in.jZAoverZV);
-
-  // vvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err);    //[imom][mr1][mr2]
-  // vvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
-  // vvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);    //[imom][mr1][mr2]
-  // vvvd_t ZVovZA_err = get<1>(ZVovZA_ave_err);    //[imom][mr1][mr2]
-  // vvvd_t ZPovZS_err = get<1>(ZPovZS_ave_err);
-  // vvvd_t ZAovZV_err = get<1>(ZAovZV_ave_err);    //[imom][mr1][mr2]
   vvvvd_t ZVovZA_ave = get<0>(ZVovZA_ave_err); //[imom][0][mr1][mr2]
   vvvvd_t ZPovZS_ave = get<0>(ZPovZS_ave_err);
   vvvvd_t ZAovZV_ave = get<0>(ZAovZV_ave_err);
@@ -3130,6 +3126,9 @@ void oper_t::plot(const string suffix)
 
   ofstream Zq_data;
   ofstream Zq_p2_data;
+
+  vector<ofstream> Gbil_data(nbil);
+  vector<ofstream> Gbil_p2_data(nbil);
 
   vector<ofstream> Zbil_data(nbil);
   vector<ofstream> Zbil_p2_data(nbil);
@@ -3194,6 +3193,16 @@ void oper_t::plot(const string suffix)
 
       for (int ibil = 0; ibil < nbil; ibil++)
       {
+        if (suffix == "ave")
+        {
+          Gbil_data[ibil].open(path_to_ens + "plots/G" + bil[ibil] +
+                               (suffix != "" ? ("_" + suffix) : string("")) + "_m" +
+                               to_string(m_tmp) + ".txt");
+          Gbil_p2_data[ibil].open(path_to_ens + "plots/G" + bil[ibil] +
+                                  (suffix != "" ? ("_" + suffix) : string("")) + "_p2_m" +
+                                  to_string(m_tmp) + ".txt");
+        }
+
         Zbil_data[ibil].open(path_to_ens + "plots/Z" + bil[ibil] +
                              (suffix != "" ? ("_" + suffix) : string("")) + "_m" +
                              to_string(m_tmp) + ".txt");
@@ -3205,10 +3214,21 @@ void oper_t::plot(const string suffix)
         {
           int imomk = imom; // NB: it works only for RIMOM!
 
+          Gbil_data[ibil] << (in.p2_tilde)[imomk] << "\t" << G_ave[imom][0][ibil][m][m] << "\t"
+                          << G_err[imom][0][ibil][m][m] << endl;
+          Gbil_p2_data[ibil] << (in.p2)[imomk] << "\t" << G_ave[imom][0][ibil][m][m] << "\t"
+                             << G_err[imom][0][ibil][m][m] << endl;
+
           Zbil_data[ibil] << (in.p2_tilde)[imomk] << "\t" << Z_ave[imom][ibil][m][m] << "\t"
                           << Z_err[imom][ibil][m][m] << endl;
           Zbil_p2_data[ibil] << (in.p2)[imomk] << "\t" << Z_ave[imom][ibil][m][m] << "\t"
                              << Z_err[imom][ibil][m][m] << endl;
+        }
+
+        if (suffix == "ave")
+        {
+          Gbil_data[ibil].close();
+          Gbil_p2_data[ibil].close();
         }
 
         Zbil_data[ibil].close();
