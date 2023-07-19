@@ -3151,10 +3151,20 @@ void oper_t::plot(const string suffix)
     {
       m_tmp = mass_val[m] * 10000;
 
-      Zq_data.open(path_to_ens + "plots/Zq" + (suffix != "" ? ("_" + suffix) : string("")) + "_m" +
-                   to_string(m_tmp) + ".txt");
-      Zq_p2_data.open(path_to_ens + "plots/Zq" + (suffix != "" ? ("_" + suffix) : string("")) +
-                      "_p2_m" + to_string(m_tmp) + ".txt");
+      if (in._nm == 1)
+      {
+        Zq_data.open(path_to_ens + "plots/Zq" + (suffix != "" ? ("_" + suffix) : string("")) +
+                     ".txt");
+        Zq_p2_data.open(path_to_ens + "plots/Zq" + (suffix != "" ? ("_" + suffix) : string("")) +
+                        "_p2.txt");
+      }
+      else
+      {
+        Zq_data.open(path_to_ens + "plots/Zq" + (suffix != "" ? ("_" + suffix) : string("")) +
+                     "_m" + to_string(m_tmp) + ".txt");
+        Zq_p2_data.open(path_to_ens + "plots/Zq" + (suffix != "" ? ("_" + suffix) : string("")) +
+                        "_p2_m" + to_string(m_tmp) + ".txt");
+      }
 
       for (int imom = 0; imom < in._linmoms; imom++)
       {
