@@ -110,12 +110,12 @@ void oper_t::create_basic(const int b, const int msea)
     path_ensemble = path_folder + path_analysis[0] + "/";
 
     // e.g. /.../matteo/Nf4_Clover/C.d.50.32/
-    if (!(strcmp(an_suffix.c_str(), "_Clover") == 0 or
-          strcmp(an_suffix.c_str(), "_Clover2023") == 0))
-    {
-      cout << "Suffix '_Clover' needed!" << endl;
-      exit(0);
-    }
+    // if (!(strcmp(an_suffix.c_str(), "_Clover") == 0 or
+    //       strcmp(an_suffix.c_str(), "_Clover2023") == 0))
+    // {
+    //   cout << "Suffix '_Clover' needed!" << endl;
+    //   exit(0);
+    // }
 
     path_to_beta = path_ensemble;
 
