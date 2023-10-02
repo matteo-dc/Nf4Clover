@@ -1429,6 +1429,87 @@ oper_t oper_t::average_equiv_momsZ()
   return out;
 }
 
+oper_t oper_t::pick_democratic()
+{
+  cout << endl;
+  cout << "Picking only spatial-democratic momenta -- ";
+
+  oper_t out = (*this);
+
+  (out.mom_list).clear();
+  (out.p).clear();
+  (out.p_tilde).clear();
+  (out.filt_moms).clear();
+  (out.Np).clear();
+
+  (out.p2).clear();
+  (out.p2_tilde).clear();
+  (out.p4).clear();
+  (out.p4_tilde).clear();
+
+  (out.linmoms).clear();
+  (out.bilmoms).clear();
+
+  // Filter spatial-democratic momenta with pt > 0 and {px,py,pz} > 0
+  int count_dem = 0;
+  for (int imom = 0; imom < _linmoms; imom++)
+  {
+    bool cond{p[imom][1] == p[imom][2] && p[imom][2] == p[imom][3] && p[imom][0] > 0 &&
+              p[imom][1] > 0};
+
+    if (cond)
+    {
+      (out.mom_list).push_back(mom_list[imom]);
+      (out.p).push_back(p[imom]);
+      (out.p_tilde).push_back(p_tilde[imom]);
+      (out.filt_moms).push_back(filt_moms[imom]);
+      (out.Np).push_back(Np[imom]);
+
+      (out.p2).push_back(p2[imom]);
+      (out.p2_tilde).push_back(p2_tilde[imom]);
+      (out.p4).push_back(p4[imom]);
+      (out.p4_tilde).push_back(p4_tilde[imom]);
+
+      (out.linmoms).push_back(linmoms[imom]);
+      (out.bilmoms).push_back(bilmoms[imom]);
+
+      if (!load_ave)
+      {
+        out.allocate();
+
+        for (int ijack = 0; ijack < njacks; ijack++)
+          for (int mr = 0; mr < _nmr; mr++)
+          {
+            for (int iproj = 0; iproj < sigma::nproj; iproj++)
+              for (int ins = 0; ins < sigma::nins; ins++)
+                (out.sigma)[count_dem][iproj][ins][ijack][mr] = sigma[imom][iproj][ins][ijack][mr];
+
+            for (int ibil = 0; ibil < 5; ibil++)
+              for (int ins = 0; ins < gbil::nins; ins++)
+                for (int mr2 = 0; mr2 < _nmr; mr2++)
+                  (out.jG)[count_dem][ins][ibil][ijack][mr][mr2] =
+                      jG[imom][ins][ibil][ijack][mr][mr2];
+          }
+
+        out.compute_Zq();
+        out.compute_Zbil();
+      }
+
+      count_dem++;
+    }
+  }
+  out._linmoms = count_dem;
+  out._bilmoms = count_dem;
+
+  cout << "found: " << out._linmoms << " spatial-democratic momenta linmoms ";
+  cout << "and " << out._bilmoms << " equivalent bilmoms " << endl << endl;
+
+  print_vec(out.p2, path_print + "p2_dem_moms.txt");
+  print_vec(out.p2_tilde, path_print + "p2_tilde_dem_moms.txt");
+
+  return out;
+}
+
 void oper_t::print(const string suffix)
 {
   print_vec_bin(sigma, path_print + "sigmas_" + suffix);
