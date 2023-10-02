@@ -1494,7 +1494,7 @@ oper_t oper_t::pick_democratic()
     for (int imom = 0; imom < _linmoms; imom++)
     {
       bool cond{p[imom][1] == p[imom][2] && p[imom][2] == p[imom][3] && p[imom][0] > 0 &&
-                p[imom][1] > 0};
+                p[imom][1] < 0};
 
       if (cond)
       {
