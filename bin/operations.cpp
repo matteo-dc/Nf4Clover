@@ -1511,6 +1511,8 @@ oper_t oper_t::pick_democratic()
                   (out.jG)[count_dem][ins][ibil][ijack][mr][mr2] =
                       jG[imom][ins][ibil][ijack][mr][mr2];
           }
+
+        count_dem++;
       }
     }
   }
