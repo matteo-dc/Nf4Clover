@@ -1473,10 +1473,31 @@ oper_t oper_t::pick_democratic()
       (out.linmoms).push_back(linmoms[imom]);
       (out.bilmoms).push_back(bilmoms[imom]);
 
-      if (!load_ave)
-      {
-        out.allocate();
+      count_dem++;
+    }
+  }
 
+  out._linmoms = count_dem;
+  out._bilmoms = count_dem;
+
+  cout << "found: " << out._linmoms << " spatial-democratic momenta linmoms ";
+  cout << "and " << out._bilmoms << " equivalent bilmoms " << endl << endl;
+
+  print_vec(out.p2, path_print + "p2_dem_moms.txt");
+  print_vec(out.p2_tilde, path_print + "p2_tilde_dem_moms.txt");
+
+  if (!load_ave)
+  {
+    out.allocate();
+
+    int count_dem = 0;
+    for (int imom = 0; imom < _linmoms; imom++)
+    {
+      bool cond{p[imom][1] == p[imom][2] && p[imom][2] == p[imom][3] && p[imom][0] > 0 &&
+                p[imom][1] > 0};
+
+      if (cond)
+      {
         for (int ijack = 0; ijack < njacks; ijack++)
           for (int mr = 0; mr < _nmr; mr++)
           {
@@ -1491,22 +1512,11 @@ oper_t oper_t::pick_democratic()
                       jG[imom][ins][ibil][ijack][mr][mr2];
           }
       }
-
-      count_dem++;
     }
   }
 
   out.compute_Zq();
   out.compute_Zbil();
-
-  out._linmoms = count_dem;
-  out._bilmoms = count_dem;
-
-  cout << "found: " << out._linmoms << " spatial-democratic momenta linmoms ";
-  cout << "and " << out._bilmoms << " equivalent bilmoms " << endl << endl;
-
-  print_vec(out.p2, path_print + "p2_dem_moms.txt");
-  print_vec(out.p2_tilde, path_print + "p2_tilde_dem_moms.txt");
 
   return out;
 }
