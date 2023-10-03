@@ -130,6 +130,9 @@ int main(int narg, char **arg)
         if (!load_ave)
           dem[m].plot("dem");
 
+        // CIAO!
+        exit(0);
+
         /* store averaged ingredients */
 
         if (!load_ave)
