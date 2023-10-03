@@ -1455,7 +1455,7 @@ oper_t oper_t::pick_democratic()
   for (int imom = 0; imom < _linmoms; imom++)
   {
     bool cond{mom_list[imom][1] == mom_list[imom][2] && mom_list[imom][2] == mom_list[imom][3] &&
-              mom_list[imom][0] > 0 && mom_list[imom][1] > 0};
+              mom_list[imom][0] > 0 && mom_list[imom][1] < 0};
 
     if (cond)
     {
@@ -1494,7 +1494,7 @@ oper_t oper_t::pick_democratic()
     for (int imom = 0; imom < _linmoms; imom++)
     {
       bool cond{mom_list[imom][1] == mom_list[imom][2] && mom_list[imom][2] == mom_list[imom][3] &&
-                mom_list[imom][0] > 0 && mom_list[imom][1] > 0};
+                mom_list[imom][0] > 0 && mom_list[imom][1] < 0};
 
       if (cond)
       {
