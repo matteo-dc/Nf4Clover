@@ -1515,10 +1515,10 @@ oper_t oper_t::pick_democratic()
         count_dem++;
       }
     }
-  }
 
-  out.compute_Zq();
-  out.compute_Zbil();
+    out.compute_Zq();
+    out.compute_Zbil();
+  }
 
   return out;
 }
