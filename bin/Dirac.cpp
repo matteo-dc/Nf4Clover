@@ -73,6 +73,20 @@ vprop_t create_projectors()
   for (int igam = 0; igam < 16; igam++)
     P[igam] = GAMMA[igam].adjoint() / NL[igam];
 
+  int ig = 1;
+  prop_t lambda_igam = GAMMA[ig];
+  double res=0.0;
+
+  res +=
+      (lambda_igam * GAMMA[ig]).trace().real() / 36.0;
+  for (int ig2 = 1; ig2 <= 4; ig2++)
+  {
+    res +=
+        -0.25 * (lambda_igam * GAMMA[ig2]).trace().real() * p[ig2 % 4] / p[ig % 4] / 36.0;
+  }
+  printf("res=%f\n",res);
+  exit(0);
+  
   return P;
 }
 
