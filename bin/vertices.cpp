@@ -138,15 +138,23 @@ jproj_t compute_pr_bil(vvvprop_t &jpropOUT_inv, valarray<jvert_t> &jVert, vvvpro
 
               /* Projector for RI" scheme - compatible with WI: change in vector and axial current
                */
+              // for (int ig2 = 1; ig2 <= 4; ig2++)
+              // {
+              //   pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+              //       (lambda_igam * Proj[ig2] * (4.0 / 3.0) *
+              //        ((ig == ig2 ? 1.0 : 0.0) - p[ig % 4] * p[ig2 % 4] / p2))
+              //           .trace()
+              //           .real() /
+              //       12.0;
+              // }
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+                  (lambda_igam * GAMMA[ig]).trace().real();
               for (int ig2 = 1; ig2 <= 4; ig2++)
               {
                 pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                    (lambda_igam * Proj[ig2] * (4.0 / 3.0) *
-                     ((ig == ig2 ? 1.0 : 0.0) - p[ig % 4] * p[ig2 % 4] / p2))
-                        .trace()
-                        .real() /
-                    12.0;
+                    -0.25 * (lambda_igam * GAMMA[ig2] * p[ig2 % 4] / p[ig % 4]).trace().real();
               }
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] /= 36.0;
             }
             else if (ibil_of_igam[igam] == 3) /* A */
             {
