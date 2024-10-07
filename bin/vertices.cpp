@@ -148,13 +148,13 @@ jproj_t compute_pr_bil(vvvprop_t &jpropOUT_inv, valarray<jvert_t> &jVert, vvvpro
               //       12.0;
               // }
               pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                  (lambda_igam * GAMMA[ig]).trace().real();
+                  (lambda_igam * GAMMA[ig]).trace().real() / 36.0;
               for (int ig2 = 1; ig2 <= 4; ig2++)
               {
                 pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                    -0.25 * (lambda_igam * GAMMA[ig2] * p[ig2 % 4] / p[ig % 4]).trace().real();
+                    -0.25 * (lambda_igam * GAMMA[ig2] * p[ig2 % 4] / p[ig % 4]).trace().real() /
+                    36.0;
               }
-              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] /= 36.0;
             }
             else if (ibil_of_igam[igam] == 3) /* A */
             {
