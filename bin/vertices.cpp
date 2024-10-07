@@ -98,7 +98,7 @@ jproj_t compute_pr_bil(vvvprop_t &jpropOUT_inv, valarray<jvert_t> &jVert, vvvpro
 
 // project the amputated green function with p-dependent transverse projectors
 jproj_t compute_pr_bil(vvvprop_t &jpropOUT_inv, valarray<jvert_t> &jVert, vvvprop_t &jpropIN_inv,
-                       p_t p, const double p2)
+                       p_t p, const double p2, const double Np)
 {
   int lambda_size = gbil::nins + 2 * jprop::nins - 2;
 
@@ -147,14 +147,18 @@ jproj_t compute_pr_bil(vvvprop_t &jpropOUT_inv, valarray<jvert_t> &jVert, vvvpro
               //           .real() /
               //       12.0;
               // }
-              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                  (lambda_igam * GAMMA[ig]).trace().real() / 36.0;
-              for (int ig2 = 1; ig2 <= 4; ig2++)
+              if (p[ig % 4] != 0.)
               {
-                pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                    -0.25 * (lambda_igam * GAMMA[ig2] * p[ig2 % 4] / p[ig % 4]).trace().real() /
-                    36.0;
+                for (int ig2 = 1; ig2 <= 4; ig2++)
+                {
+                  pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+                      -(lambda_igam * GAMMA[ig2].adjoint()).trace().real() * p[ig2 % 4] / p[ig % 4];
+                }
               }
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] /= Np;
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+                  (lambda_igam * GAMMA[ig].adjoint()).trace().real();
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] /= 36.0;
             }
             else if (ibil_of_igam[igam] == 3) /* A */
             {
@@ -163,15 +167,28 @@ jproj_t compute_pr_bil(vvvprop_t &jpropOUT_inv, valarray<jvert_t> &jVert, vvvpro
 
               /* Projector for RI" scheme - compatible with WI: change in vector and axial current
                */
-              for (int ig2 = 1; ig2 <= 4; ig2++)
+              // for (int ig2 = 1; ig2 <= 4; ig2++)
+              // {
+              //   pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+              //       (lambda_igam * Proj[ig2 + 5] * (4.0 / 3.0) *
+              //        ((ig == ig2 ? 1.0 : 0.0) - p[ig % 4] * p[ig2 % 4] / p2))
+              //           .trace()
+              //           .real() /
+              //       12.0;
+              // }
+              if (p[ig % 4] != 0.)
               {
-                pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
-                    (lambda_igam * Proj[ig2 + 5] * (4.0 / 3.0) *
-                     ((ig == ig2 ? 1.0 : 0.0) - p[ig % 4] * p[ig2 % 4] / p2))
-                        .trace()
-                        .real() /
-                    12.0;
+                for (int ig2 = 1; ig2 <= 4; ig2++)
+                {
+                  pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+                      -(lambda_igam * GAMMA[ig2 + 5].adjoint()).trace().real() * p[ig2 % 4] /
+                      p[ig % 4];
+                }
               }
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] /= Np;
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] +=
+                  (lambda_igam * GAMMA[ig + 5].adjoint()).trace().real();
+              pr_bil[ip[k]][ibil_of_igam[igam]][ijack][mr_fw][mr_bw] /= 36.0;
             }
             else if (ibil_of_igam[igam] == 4) /* T */
             {
@@ -347,7 +364,8 @@ void oper_t::compute_bil()
       // jG[ibilmom] = compute_pr_bil(jS1_inv,jVert,jS2_inv);
 
       // using the RI" projectors for vector and axial currents
-      jG[ibilmom] = compute_pr_bil(jS1_inv, jVert, jS2_inv, p_tilde[ibilmom], p2_tilde[ibilmom]);
+      jG[ibilmom] =
+          compute_pr_bil(jS1_inv, jVert, jS2_inv, p_tilde[ibilmom], p2_tilde[ibilmom], Np[ibilmom]);
 
       high_resolution_clock::time_point t1 = high_resolution_clock::now();
       duration<double> t_span = duration_cast<duration<double>>(t1 - t0);
