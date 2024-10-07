@@ -88,8 +88,8 @@ double q_evolution_to_RIp(int Nf, double p2, double p2ref)
   }
   if (Nf == 4)
   {
-    cmu = 1. + 2.4000 * alm + 29.6724 * pow(alm, 2) + 719.141 * pow(alm, 3);
-    cmu0 = 1. + 2.4000 * al0 + 29.6724 * pow(al0, 2) + 719.141 * pow(al0, 3);
+    cmu = 1. + 2.0400 * alm + 29.6724 * pow(alm, 2) + 719.141 * pow(alm, 3);
+    cmu0 = 1. + 2.0400 * al0 + 29.6724 * pow(al0, 2) + 719.141 * pow(al0, 3);
   }
 
   return cmu / cmu0;
@@ -198,25 +198,25 @@ double T_evolution_to_RIp(int Nf, double p2, double p2ref)
   if (Nf == 2)
   {
     cmu =
-        pow(alm, 4. / 29) * (1. + 2.66852 * alm + 47.9701 * pow(alm, 2) + 1612.4556 * pow(alm, 3));
+        pow(alm, 4. / 29) * (1. + 2.66852 * alm + 47.9701 * pow(alm, 2) + 1599.06 * pow(alm, 3));
 
     cmu0 =
-        pow(al0, 4. / 29) * (1. + 2.66852 * al0 + 47.9701 * pow(al0, 2) + 1612.4556 * pow(al0, 3));
+        pow(al0, 4. / 29) * (1. + 2.66852 * al0 + 47.9701 * pow(al0, 2) + 1599.06 * pow(al0, 3));
   }
   if (Nf == 0)
   {
     cmu =
-        pow(alm, 4. / 33) * (1. + 2.53260 * alm + 57.8740 * pow(alm, 2) + 2275.2426 * pow(alm, 3));
+        pow(alm, 4. / 33) * (1. + 2.53260 * alm + 57.8740 * pow(alm, 2) + 2261.85 * pow(alm, 3));
 
     cmu0 =
-        pow(al0, 4. / 33) * (1. + 2.53260 * al0 + 57.8740 * pow(al0, 2) + 2275.2426 * pow(al0, 3));
+        pow(al0, 4. / 33) * (1. + 2.53260 * al0 + 57.8740 * pow(al0, 2) + 2261.85 * pow(al0, 3));
   }
   if (Nf == 4)
   {
-    cmu = pow(alm, 4. / 25) * (1. + 2.91662 * alm + 37.9471 * pow(alm, 2) + 993.7488 * pow(alm, 3));
+    cmu = pow(alm, 4. / 25) * (1. + 2.91662 * alm + 37.9471 * pow(alm, 2) + 980.356  * pow(alm, 3));
 
     cmu0 =
-        pow(al0, 4. / 25) * (1. + 2.91662 * al0 + 37.9471 * pow(al0, 2) + 993.7488 * pow(al0, 3));
+        pow(al0, 4. / 25) * (1. + 2.91662 * al0 + 37.9471 * pow(al0, 2) + 980.356 * pow(al0, 3));
   }
 
   return cmu / cmu0;
